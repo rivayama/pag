@@ -1,5 +1,12 @@
 language: python
 python:
-  - '3.4'
-install: 'pip install -r requirements.txt'
-script: 'echo'
+- '3.4'
+install: pip install -r requirements.txt
+script: echo
+deploy:
+  provider: heroku
+  api_key:
+    secure: pUkqjm72YD9cPnRIfD98ProkPpXTapILNocu6w57trT2SJ6/B2LyPWmxSvToID7mnqDJiM82JecITtF2NfrtQJR/oX38WDTrPn7Ax+K6s8DU78NpGtx5TypS9VqYEiwZT1JTJl1A97S26U8VUR/TnnbaznlQlwso0oTfbcvTD9rAklvunZkGap2yhM8nR0ZSsP7ozayo87MbsDSUSou0YLKMYtZDjINBT5YTDHt9LmFX8Ish75o8G+6HZip5uCR5bTCdJw6qdpwXqWGoN9CD1HkDUOPBQ1edX+vwHjnXaqg1WxC+FRuptoNHWShSBM1QW7cty+Gnc0D3Pb8Dk5MqwuOwwhYPUuV8U9abZ4Z6uZHwPof84VCrlM1H98NZLD9fLEERp6LoHKWYfBKXOwiFRwMGYD04eq9x9PyafC8rSmY5M6xQGf6YcYDEi3Xml8JZHxUgKNDOqfOYmFjbtqLfc7KfXEzULyKLHT0e+BEu3ohiIGZQ9aR04Lqc6ljXhz0W7xPIyS2JRlxURoM35bX8EgQJkTzoqVxlJgL8DIEUh0O5VVTJ4VrmRMGUi7iPie5dFFISoBPclnnZ2AlCTWDQgI1ykcQhDSU72GCihyCYxKVtUeSDc3AcgnvtNcPREHGCPy4rlKxwBBpBCAeGdf5Lzsu0vbU33Io+ckvdU8Y13sY=
+  app: projectautograder
+  on:
+    repo: rivayama/pag
