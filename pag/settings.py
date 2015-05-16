@@ -23,10 +23,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '8cl%=c&4#90!a+_@uyk8#w+m$5vq%5%v6d=b*j%k^!uk-@lr*8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
-
+if 'local' in hostname:
+    DEBUG = True
+    ALLOWED_HOSTS = []
+else:
+    DEBUG = True
+    ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -38,6 +40,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'home',
+    'gunicorn',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -75,12 +78,13 @@ WSGI_APPLICATION = 'pag.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
-DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    # }
-}
+if 'local' in hostname:
+    DATABASES = {}
+else:
+    import dj_database_url
+    DATABASES = {
+        'default': dj_database_url.config()
+    }
 
 
 # Internationalization

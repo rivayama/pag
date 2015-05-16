@@ -1,1 +1,9 @@
-It Works!
+<h1>Pag</h1>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form action="{% url 'auth' %}" method="post">
+  {% csrf_token %}
+  http://<input type="text" name="space" id="space"/>.backlog.jp
+  <input type="submit" value="Go!" />
+</form>

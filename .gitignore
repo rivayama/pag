@@ -12,4 +12,5 @@ log
 parts
 media/uploads
 tmp
+.env
 .DS_Store
