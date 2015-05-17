@@ -1,7 +1,9 @@
 language: python
 python:
-- '3.4'
-install: pip install -r requirements.txt
+  - '3.4'
+install:
+  - pip install -r requirements.txt
+  - python manage.py migrate
 script: hostname
 deploy:
   provider: heroku
