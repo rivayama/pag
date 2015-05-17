@@ -21,5 +21,6 @@ def auth(request):
 
 
 def callback(request):
-    context = {'auth_response': request_url}
+    context = {'auth_response': request.path}
     return render(request, 'home/callback.html', context)
+
