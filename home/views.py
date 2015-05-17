@@ -1,9 +1,10 @@
+import os
 from django.shortcuts import render, redirect
 
 from requests_oauthlib import OAuth2Session
 
-client_id     = os.environ.get(BACKLOG_CLIENT_ID)
-client_secret = os.environ.get(BACKLOG_CLIENT_SECRET)
+client_id     = os.environ.get('BACKLOG_CLIENT_ID')
+client_secret = os.environ.get('BACKLOG_CLIENT_SECRET')
 auth_path     = '/OAuth2AccessRequest.action'
 token_path    = '/api/v2/oauth2/token'
 

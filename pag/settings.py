@@ -20,15 +20,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '8cl%=c&4#90!a+_@uyk8#w+m$5vq%5%v6d=b*j%k^!uk-@lr*8'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if 'local' in hostname:
-    DEBUG = True
-    ALLOWED_HOSTS = []
-else:
-    DEBUG = True
-    ALLOWED_HOSTS = ['*']
+DEBUG = os.environ.get('DEBUG') == '1'
+
+ALLOWED_HOSTS = ['*']
+
 
 # Application definition
 
@@ -40,7 +38,6 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'home',
-    'gunicorn',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -78,13 +75,12 @@ WSGI_APPLICATION = 'pag.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
-if 'local' in hostname:
-    DATABASES = {}
-else:
-    import dj_database_url
-    DATABASES = {
-        'default': dj_database_url.config()
-    }
+DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    # }
+}
 
 
 # Internationalization
