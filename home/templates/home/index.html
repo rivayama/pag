@@ -7,3 +7,8 @@
   http://<input type="text" name="space" id="space"/>.backlog.jp
   <input type="submit" value="Go!" />
 </form>
+
+{% if projects %}
+  <h2>Projects</h2>
+  {{ projects }}
+{% endif %}
