@@ -18,11 +18,11 @@ class Backlog():
         base_url = self.host + '/OAuth2AccessRequest.action'
         return self.client.authorization_url(base_url)
 
-    def fetch_token(self, auth_response):
+    def fetch_token(self, auth_response_uri):
         return self.client.fetch_token(
             self.host + '/api/v2/oauth2/token',
             client_secret=client_secret,
-            authorization_response=auth_response)
+            authorization_response=auth_response_uri)
 
     def get_projects(self):
         api = self.host + '/api/v2/projects'

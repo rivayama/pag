@@ -15,16 +15,15 @@ def index(request):
 
 def auth(request):
     client = Backlog(request.POST['space'])
-    authorization_url, state = client.auth_url()
+    auth_url, state = client.auth_url()
     request.session['space'] = request.POST['space']
-    request.session['oauth_state'] = state
-    return redirect(authorization_url)
+    request.session['state'] = state
+    return redirect(auth_url)
 
 
 def callback(request):
-    client = Backlog(request.session['space'], state=request.session['oauth_state'])
-    response_url = request.build_absolute_uri(request.get_full_path()).replace('http', 'https')
-    token = client.fetch_token(response_url)
-    request.session['token'] = token
+    client = Backlog(request.session['space'], state=request.session['state'])
+    response_uri = request.build_absolute_uri(request.get_full_path()).replace('http', 'https')
+    request.session['token'] = client.fetch_token(response_uri)
     return redirect('index')
 
