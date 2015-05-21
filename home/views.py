@@ -7,7 +7,24 @@ def index(request):
     context = {}
     try:
         backlog = __init_backlog(request, request.session['space'], token=request.session['token'])
-        context['projects'] = backlog.get_projects()
+        projects = backlog.get_projects().json()
+        # 以下はライブラリの動作確認。実際は利用しない。
+        users    = []
+        issues   = []
+        comments = []
+        for project in projects:
+            user = backlog.get_users(project['id']).json()
+            issue = backlog.get_issues(project['id']).json()
+            for i in issue:
+                comments.append(backlog.get_comment(i['id']).json())
+            users.append(user)
+            issues.append(issue)
+        context = {
+            'projects': projects,
+            'users': users,
+            'issues': issues,
+            'comments': comments,
+        }
     except KeyError:
         pass
     return render(request, 'home/index.html', context)
@@ -28,7 +45,7 @@ def callback(request):
     return redirect('index')
 
 
-# No route for this. Provate use.
+# No route for this. Private use.
 def __init_backlog(request, space, state=None, token=None):
     def token_updater(token):
         request.session['token'] = token

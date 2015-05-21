@@ -8,5 +8,26 @@
 
 {% if projects %}
   <h2>Projects</h2>
-  {{ projects }}
+  <pre>{{ projects }}</pre>
+{% endif %}
+
+{% if users %}
+  <h2>Users</h2>
+  {% for user in users %}
+    <pre>{{ user }}</pre>
+  {% endfor %}
+{% endif %}
+
+{% if issues %}
+  <h2>Issues</h2>
+  {% for issue in issues %}
+    <pre>{{ issue }}</pre>
+  {% endfor %}
+{% endif %}
+
+{% if comments %}
+  <h2>Comments</h2>
+  {% for comment in comments %}
+    <pre>{{ comment }}</pre>
+  {% endfor %}
 {% endif %}
