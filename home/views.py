@@ -6,23 +6,7 @@ def index(request):
     try:
         # 以下はライブラリの動作確認。実際は利用しない。
         backlog = utils.backlog(request, request.session['space'], token=request.session['token'])
-        projects = backlog.get_projects().json()
-        users    = []
-        issues   = []
-        comments = []
-        # for project in projects:
-        #     user = backlog.get_users(project['id']).json()
-        #     issue = backlog.get_issues(project['id']).json()
-        #     for i in issue:
-        #         comments.append(backlog.get_comment(i['id']).json())
-        #     users.append(user)
-        #     issues.append(issue)
-        context = {
-            'projects': projects,
-            'users': users,
-            'issues': issues,
-            'comments': comments,
-        }
+        context['projects'] = backlog.get_projects().json()
     except KeyError:
         pass
     return render(request, 'home/index.html', context)
