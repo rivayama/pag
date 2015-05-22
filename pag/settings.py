@@ -96,3 +96,27 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+
+LOGGING = {
+  'version': 1,
+  'disable_existing_loggers': False,
+  'formatters': {
+    'simple': {
+      'format': '%(levelname)s %(message)s'
+    },
+  },
+  'handlers': {
+    'to_file': {
+      'formatter': 'simple',
+      'level': 'DEBUG',
+      'class': 'logging.FileHandler',
+      'filename': '/tmp/error_log',
+    }
+  },
+  'loggers': {
+    'django-site': {
+      'handlers': ['to_file'],
+      'level': 'DEBUG',
+    }
+  }
+}

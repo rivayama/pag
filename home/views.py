@@ -1,4 +1,3 @@
-import os
 from django.shortcuts import render, redirect
 
 from pag.libs.backloglib2 import Backlog
@@ -6,19 +5,19 @@ from pag.libs.backloglib2 import Backlog
 def index(request):
     context = {}
     try:
+        # 以下はライブラリの動作確認。実際は利用しない。
         backlog = __init_backlog(request, request.session['space'], token=request.session['token'])
         projects = backlog.get_projects().json()
-        # 以下はライブラリの動作確認。実際は利用しない。
         users    = []
         issues   = []
         comments = []
-        for project in projects:
-            user = backlog.get_users(project['id']).json()
-            issue = backlog.get_issues(project['id']).json()
-            for i in issue:
-                comments.append(backlog.get_comment(i['id']).json())
-            users.append(user)
-            issues.append(issue)
+        # for project in projects:
+        #     user = backlog.get_users(project['id']).json()
+        #     issue = backlog.get_issues(project['id']).json()
+        #     for i in issue:
+        #         comments.append(backlog.get_comment(i['id']).json())
+        #     users.append(user)
+        #     issues.append(issue)
         context = {
             'projects': projects,
             'users': users,
