@@ -6,7 +6,7 @@ This is the project grading tool for Backlog.
 
 If you use Vagrant, add this sentence to your `Vagrantfile`.
 
-	config.vm.network :forwarded_port, guest:8000, host:8000
+	config.vm.network :forwarded_port, guest:5000, host:5000
 
 Then simply clone this repository to your VM by following:
 
@@ -32,8 +32,8 @@ Then initialize database.
 
 Now you can run the server.
 
-	$ python manage.py runserver
+	$ foreman start
 
-Access `localhost:8000` by an web browser.
+Access `localhost:5000` by an web browser.
 
 Enjoy PAG!
