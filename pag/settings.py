@@ -85,13 +85,9 @@ DATABASES = {'default': dj_database_url.config()}
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
 LANGUAGE_CODE = 'ja-jp'
-
 TIME_ZONE = 'Asia/Tokyo'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = False
 
 
