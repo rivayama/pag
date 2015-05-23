@@ -1,4 +1,4 @@
-from django.conf.urls import include, url
+from django.conf.urls import patterns, include, url
 from django.contrib import admin
 
 urlpatterns = [
@@ -7,3 +7,8 @@ urlpatterns = [
     url(r'^callback/$', 'home.views.callback', name='callback'),
     url(r'^api/', include('api.urls', namespace='api')),
 ]
+
+
+urlpatterns += patterns('django.contrib.staticfiles.views',
+    url(r'^static/(?P<path>.*)$', 'serve', kwargs={"insecure": True}),
+)
