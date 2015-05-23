@@ -1,6 +1,8 @@
 from django.http import JsonResponse
+from django.views.decorators.http import require_GET
 from pag import utils
 
+@require_GET
 def projects(request):
     try:
         backlog = utils.backlog(request, request.session['space'], token=request.session['token'])
@@ -10,6 +12,7 @@ def projects(request):
     return JsonResponse(projects, safe=False)
 
 
+@require_GET
 def grade(request):
     grade = {"foo": "baa"}
     return JsonResponse(grade)
