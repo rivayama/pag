@@ -20,13 +20,11 @@ Then run following commands:
 Create your local environment file:
 
 	$ vi .env
-	==================================================
 	DJANGO_SECRET_KEY="your django secret key"
 	DEBUG=1
 	DATABASE_URL="sqlite:///db.sqlite3"
 	BACKLOG_CLIENT_ID="your backlog client id"
 	BACKLOG_CLIENT_SECRET="your backlog client secret"
-	==================================================
 
 Then initialize database.
 
