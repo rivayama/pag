@@ -1,2 +1,0 @@
-## Package Installation
-$ npm install

@@ -16,6 +16,8 @@ Then run following commands:
 
 	$ cd pag
 	$ pip install -r requirements.txt
+	$ npm install
+	$ npm install webpack -g
 
 Create your local environment file:
 
@@ -33,6 +35,10 @@ Then initialize database.
 Now you can run the server.
 
 	$ foreman start
+
+Build react project automatically by this command: 
+
+	$ webpack --watch
 
 Access `localhost:5000` by an web browser.
 

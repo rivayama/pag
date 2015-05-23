@@ -1,8 +1,8 @@
 // webpack.config.js
 module.exports = {
-  entry : './src/scripts/main.js',   // メインとなるのjsパス
+  entry : './home/static/home/src/scripts/main.js',   // メインとなるのjsパス
   output: {
-    path    : __dirname + '/build/',
+    path    : './home/static/home//build/',
     filename: 'bundle.js'
   },
   module: {
