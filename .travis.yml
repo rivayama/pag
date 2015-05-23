@@ -3,7 +3,7 @@ python:
   - '3.4'
 env:
   global:
-    DJANGO_SECRET_KEY="pag"
+    DJANGO_SECRET_KEY="Dummy django_secret_key"
     DEBUG=0
     DATABASE_URL="sqlite:///db.sqlite3"
     BACKLOG_CLIENT_ID="Dummy client_id"
