@@ -13,7 +13,7 @@ def projects(request):
 
 
 @require_GET
-def grade(request):
-    grade = {"foo": "baa"}
+def grade(request, project_id):
+    grade = {"your project_id": project_id}
     return JsonResponse(grade)
 
