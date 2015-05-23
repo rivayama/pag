@@ -8,7 +8,7 @@ def projects(request):
         backlog = utils.backlog(request, request.session['space'], token=request.session['token'])
         projects = backlog.get_projects().json()
     except KeyError:
-        projects = {}
+        projects = []
     return JsonResponse(projects, safe=False)
 
 
