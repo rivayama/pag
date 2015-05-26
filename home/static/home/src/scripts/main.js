@@ -1,9 +1,7 @@
-/*** @jsx React.DOM */
+/** @jsx React.DOM */
 'use strict';
 
-// moduleを読み込む
 var React = require('react');
-var mount = document.getElementById('app-conteiner');
 var Router = require('director').Router;
 
 // Projectの一覧を生成
@@ -12,16 +10,39 @@ var ProjectList = React.createClass({
     return (
       <ul>
         {this.props.data.map(function(result) {
-           return <ListItemWrapper key={result.name} data={result}/>;
+           return <ProjectItemWrapper key={result.name} data={result}/>;
         })}
       </ul>
     );
   }
 });
-
-var ListItemWrapper = React.createClass({
+var ProjectItemWrapper = React.createClass({
   render: function() {
-    return <li><a href="#/result" >{this.props.data.name}</a></li>;
+    return <li><a href={'#/grade/'+this.props.data.id}>{this.props.data.name}</a></li>;
+  }
+});
+
+// 採点の一覧を生成
+var GradeList = React.createClass({
+  render: function() {
+    return (
+      <table>
+        {this.props.data.map(function(result) {
+           return <GradeItemWrapper key={result.title} data={result}/>;
+        })}
+      </table>
+    );
+  }
+});
+var GradeItemWrapper = React.createClass({
+  render: function() {
+    return (
+      <tr>
+        <td>{this.props.data.title}</td>
+        <td>{this.props.data.count}/{this.props.data.all_count}</td>
+        <td>{this.props.data.point}</td>
+      </tr>
+    );
   }
 });
 
@@ -29,34 +50,31 @@ var ListItemWrapper = React.createClass({
 var App = React.createClass({
   getInitialState: function() {
     return {
-      data: [],
-      page: 'non'
+      projects: [],
+      grade: [],
+      page: 'unauthorized'
     };
   },
-  componentWillMount: function() {
+  loadProjects: function() {
     $.ajax({
-      url: this.props.url,
+      url: '/api/projects',
       dataType: 'json',
       cache: false,
       success: function(data) {
-        this.setState({data: data});
+        this.setState({projects: data, page: 'projects'});
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(this.props.url, status, err.toString());
       }.bind(this)
     });
   },
-  handleSubmit: function(project) {
-    var projects = this.state.data;
-    var newProjects = projects.concat([project]);
-    this.setState({data: newProjects});
+  loadGrade: function(project_id) {
     $.ajax({
-      url: this.props.url,
+      url: '/api/grade/' + project_id,
       dataType: 'json',
-      type: 'POST',
-      data: project,
+      cache: false,
       success: function(data) {
-        this.setState({data: data});
+        this.setState({grade: data, page: 'grade'});
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(this.props.url, status, err.toString());
@@ -64,30 +82,31 @@ var App = React.createClass({
     });
   },
   componentDidMount: function() {
-    var setResultPage = function() {
-      this.setState({ page: 'result'});
+    var setGradePage = function(project_id) {
+      this.setState({grade: [], page: 'loading'});
+      this.loadGrade(project_id);
     }.bind(this);
-    var setNonResultPage = function() {
-      this.setState({ page: 'non' });
+    var setUnauthorizedPage = function() {
+      this.setState({page: 'unauthorized'});
     }.bind(this);
     var router = Router({
-      '/result': setResultPage,
-      '*': setNonResultPage,
+      '/grade/:project_id': setGradePage,
+      '*': setUnauthorizedPage,
     });
     router.init();
+    this.loadProjects();
   },
   render: function() {
-    var page = this.state.page === 'result' ?
-      <h2>分析結果を表示</h2> :
-      <h2> </h2> ;
     return (
       <div className="Project Auto Grader">
-        <h2>Result</h2>
-        <ProjectList data={this.state.data} />
-        {page}
+        <ProjectList data={this.state.projects} />
+        <GradeList data={this.state.grade} />
       </div>
     );
   }
 });
 
-React.render(<App url="/api/projects/" />, mount);
+React.render(
+  <App />,
+  document.getElementById('app-conteiner')
+);

@@ -44,12 +44,10 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/*** @jsx React.DOM */
+	/** @jsx React.DOM */
 	'use strict';
 
-	// moduleを読み込む
 	var React = __webpack_require__(1);
-	var mount = document.getElementById('app-conteiner');
 	var Router = __webpack_require__(2).Router;
 
 	// Projectの一覧を生成
@@ -58,16 +56,39 @@
 	    return (
 	      React.createElement("ul", null, 
 	        this.props.data.map(function(result) {
-	           return React.createElement(ListItemWrapper, {key: result.name, data: result});
+	           return React.createElement(ProjectItemWrapper, {key: result.name, data: result});
 	        })
 	      )
 	    );
 	  }
 	});
-
-	var ListItemWrapper = React.createClass({displayName: "ListItemWrapper",
+	var ProjectItemWrapper = React.createClass({displayName: "ProjectItemWrapper",
 	  render: function() {
-	    return React.createElement("li", null, React.createElement("a", {href: "#/result"}, this.props.data.name));
+	    return React.createElement("li", null, React.createElement("a", {href: '#/grade/'+this.props.data.id}, this.props.data.name));
+	  }
+	});
+
+	// 採点の一覧を生成
+	var GradeList = React.createClass({displayName: "GradeList",
+	  render: function() {
+	    return (
+	      React.createElement("table", null, 
+	        this.props.data.map(function(result) {
+	           return React.createElement(GradeItemWrapper, {key: result.title, data: result});
+	        })
+	      )
+	    );
+	  }
+	});
+	var GradeItemWrapper = React.createClass({displayName: "GradeItemWrapper",
+	  render: function() {
+	    return (
+	      React.createElement("tr", null, 
+	        React.createElement("td", null, this.props.data.title), 
+	        React.createElement("td", null, this.props.data.count, "/", this.props.data.all_count), 
+	        React.createElement("td", null, this.props.data.point)
+	      )
+	    );
 	  }
 	});
 
@@ -75,34 +96,31 @@
 	var App = React.createClass({displayName: "App",
 	  getInitialState: function() {
 	    return {
-	      data: [],
-	      page: 'non'
+	      projects: [],
+	      grade: [],
+	      page: 'unauthorized'
 	    };
 	  },
-	  componentWillMount: function() {
+	  loadProjects: function() {
 	    $.ajax({
-	      url: this.props.url,
+	      url: '/api/projects',
 	      dataType: 'json',
 	      cache: false,
 	      success: function(data) {
-	        this.setState({data: data});
+	        this.setState({projects: data, page: 'projects'});
 	      }.bind(this),
 	      error: function(xhr, status, err) {
 	        console.error(this.props.url, status, err.toString());
 	      }.bind(this)
 	    });
 	  },
-	  handleSubmit: function(project) {
-	    var projects = this.state.data;
-	    var newProjects = projects.concat([project]);
-	    this.setState({data: newProjects});
+	  loadGrade: function(project_id) {
 	    $.ajax({
-	      url: this.props.url,
+	      url: '/api/grade/' + project_id,
 	      dataType: 'json',
-	      type: 'POST',
-	      data: project,
+	      cache: false,
 	      success: function(data) {
-	        this.setState({data: data});
+	        this.setState({grade: data, page: 'grade'});
 	      }.bind(this),
 	      error: function(xhr, status, err) {
 	        console.error(this.props.url, status, err.toString());
@@ -110,33 +128,34 @@
 	    });
 	  },
 	  componentDidMount: function() {
-	    var setResultPage = function() {
-	      this.setState({ page: 'result'});
+	    var setGradePage = function(project_id) {
+	      this.setState({grade: [], page: 'loading'});
+	      this.loadGrade(project_id);
 	    }.bind(this);
-	    var setNonResultPage = function() {
-	      this.setState({ page: 'non' });
+	    var setUnauthorizedPage = function() {
+	      this.setState({page: 'unauthorized'});
 	    }.bind(this);
 	    var router = Router({
-	      '/result': setResultPage,
-	      '*': setNonResultPage,
+	      '/grade/:project_id': setGradePage,
+	      '*': setUnauthorizedPage,
 	    });
 	    router.init();
+	    this.loadProjects();
 	  },
 	  render: function() {
-	    var page = this.state.page === 'result' ?
-	      React.createElement("h2", null, "分析結果を表示") :
-	      React.createElement("h2", null, " ") ;
 	    return (
 	      React.createElement("div", {className: "Project Auto Grader"}, 
-	        React.createElement("h2", null, "Result"), 
-	        React.createElement(ProjectList, {data: this.state.data}), 
-	        page
+	        React.createElement(ProjectList, {data: this.state.projects}), 
+	        React.createElement(GradeList, {data: this.state.grade})
 	      )
 	    );
 	  }
 	});
 
-	React.render(React.createElement(App, {url: "/api/projects/"}), mount);
+	React.render(
+	  React.createElement(App, null),
+	  document.getElementById('app-conteiner')
+	);
 
 
 /***/ },
