@@ -1,22 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head lang="en">
+  {% load staticfiles %}
   <meta charset="UTF-8">
   <title>PAG</title>
-  {% load staticfiles %}
-  <script src="{% static 'home/build/jquery.js' %}"></script>
-  <script src="{% static 'home/build/react-with-addons.js' %}"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <link href="{% static 'home/build/style.css' %}" type="text/css" rel="stylesheet"/>
 </head>
 <body>
-
-<h1>Pag</h1>
-<form action="{% url 'auth' %}" method="post">
-  {% csrf_token %}
-  http://<input type="text" name="space" id="space"/>.backlog.jp
-  <input type="submit" value="Go!" />
-</form>
-<div id="app-conteiner"></div>
-<script src="{% static 'home/build/bundle.js' %}"></script>
-
+  <div id="app-conteiner"></div>
+  <script src="{% static 'home/build/jquery.js' %}"></script>
+  <script src="{% static 'home/build/react-with-addons.js' %}"></script>
+  <script src="{% static 'home/build/bundle.js' %}"></script>
 </body>
 </html>

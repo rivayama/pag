@@ -1,3 +1,4 @@
+from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, redirect
 from pag import utils
 
@@ -12,6 +13,9 @@ def index(request):
     return render(request, 'home/index.html', context)
 
 
+# XXX CSRFトークンのチェックを無効にする
+# Reactでフォームを描画するとトークンの埋め込みに別途処理が必要になるため
+@csrf_exempt
 def auth(request):
     backlog = utils.backlog(request, request.POST['space'])
     auth_url, state = backlog.auth_url()
