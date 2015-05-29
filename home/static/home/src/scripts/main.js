@@ -8,7 +8,25 @@ var AppBar = require('material-ui/lib/app-bar');
 var RaisedButton = require('material-ui/lib/raised-button');
 var ThemeManager = require('material-ui/lib/styles/theme-manager')();
 
-// Form
+// Randing page
+var RandingPage = React.createClass({
+  render: function() {
+    return (
+      <AttractiveBackground>
+        <AuthForm />
+      </AttractiveBackground>
+    );
+  }
+});
+var AttractiveBackground = React.createClass({
+  render: function() {
+    return (
+      <div>
+        {this.props.children}
+      </div>
+    );
+  }
+});
 var AuthForm = React.createClass({
   render: function() {
     return (
@@ -20,7 +38,7 @@ var AuthForm = React.createClass({
   }
 });
 
-// Grader
+// Grader page
 var Grader = React.createClass({
   render: function() {
     return (
@@ -30,8 +48,6 @@ var Grader = React.createClass({
     );
   }
 });
-
-// Projectの一覧を生成
 var ProjectList = React.createClass({
   render: function() {
     return (
@@ -49,8 +65,6 @@ var ProjectItemWrapper = React.createClass({
     return <li><a href={'#/grade/'+this.props.data.id}>{this.props.data.name}</a></li>;
   }
 });
-
-// 採点の一覧を生成
 var GradeList = React.createClass({
   render: function() {
     console.log(this.props.data);
@@ -90,7 +104,9 @@ var App = React.createClass({
       dataType: 'json',
       cache: false,
       success: function(data) {
-        this.setState({page: 'authorized', projects: data});
+        if (data.length > 0) {
+          this.setState({page: 'authorized', projects: data});
+        }
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(this.props.url, status, err.toString());
@@ -105,12 +121,11 @@ var App = React.createClass({
     };
   },
 
-  componentWillMount: function() {
-  },
+  componentWillMount: function() {},
 
   render: function() {
     var page = this.state.page === 'unauthorized' ?
-      <AuthForm /> :
+      <RandingPage /> :
       <Grader data={this.state.projects}/>
     return (
       <div className="Project Auto Grader">
@@ -121,18 +136,12 @@ var App = React.createClass({
   },
 
   componentDidMount: function() {
-    // var setGradePage = function(project_id) {
-    //   this.setState({grade: [], page: 'loading'});
-    //   this.loadGrade(project_id);
-    // }.bind(this);
-    // var setUnauthorizedPage = function() {
-    //   this.setState({page: 'unauthorized'});
-    // }.bind(this);
-    // var router = Router({
-    //   '/grade/:project_id': setGradePage,
-    //   '*': setUnauthorizedPage,
-    // });
-    // router.init();
+    var router = Router({
+      '/grade/:project_id': function(){},
+      '*': function(){}
+    });
+    router.init();
+    this.loadProjects();
   }
 
 });

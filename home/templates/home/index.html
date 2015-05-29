@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head lang="en">
-  {% load staticfiles %}
   <meta charset="UTF-8">
-  <title>PAG</title>
+  <title>Project Auto Grader</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <link href="{% static 'home/build/style.css' %}" type="text/css" rel="stylesheet"/>
-</head>
-<body>
-  <div id="app-conteiner"></div>
+  {% load staticfiles %}
   <script src="{% static 'home/build/jquery.js' %}"></script>
   <script src="{% static 'home/build/react-with-addons.js' %}"></script>
   <script src="{% static 'home/build/bundle.js' %}"></script>
+  <style>
+  body{ margin:0; }
+  </style>
+</head>
+<body>
+  <div id="app-conteiner"></div>
 </body>
 </html>
