@@ -60,7 +60,6 @@ def grade(request, project_id):
             for comment in comments:
                 point = utils.get_linear_point(len(comment["content"]))
                 detailed_comment_count += point
-                # adv_issues_little_comment = list(set(utils.append_adv_issues(adv_issues_little_comment, issue["issueKey"], point)))
                 adv_issues_little_comment = utils.append_adv_issues(adv_issues_little_comment, issue["issueKey"], point)
                 all_comment_count += 1
 
@@ -132,16 +131,16 @@ def grade(request, project_id):
 
         adv_issues_little_comment = list(set(adv_issues_little_comment))
         adviceRows = [
-                ["もっと詳細を詳細に書こう", adv_issues_little_detailed],
-                ["もう少し詳しくコメントを書いてあげよう",adv_issues_little_comment],
-                ["終了したチケットにコメントを残そう",adv_closed_issues_no_comment],
-                ["期限日を入力しよう",adv_readied_issue_no_duedate],
-                ["実績時間を入力しよう",adv_readied_issues_no_estimated],
-                ["期限を過ぎているタスクを終了しよう",adv_expired_closed_issues],
-                ["実績時間を入力しよう",adv_closed_issues_no_actualHours],
-                ["チケットへ担当者をアサインしよう",adv_readied_issues_no_assigner],
-                ["終了したチケットに完了理由をを入力しよう",adv_closed_issues_no_resolution],
-                ["チケットをマイルストーンへ関連づけよう",adv_readied_issues_no_milestones]
+                ["もっと詳細を詳細に書こう",                 adv_issues_little_detailed],
+                ["もう少し詳しくコメントを書いてあげよう",   adv_issues_little_comment],
+                ["終了したチケットにコメントを残そう",       adv_closed_issues_no_comment],
+                ["期限日を入力しよう",                       adv_readied_issue_no_duedate],
+                ["実績時間を入力しよう",                     adv_readied_issues_no_estimated],
+                ["期限を過ぎているタスクを終了しよう",       adv_expired_closed_issues],
+                ["実績時間を入力しよう",                     adv_closed_issues_no_actualHours],
+                ["チケットへ担当者をアサインしよう",         adv_readied_issues_no_assigner],
+                ["終了したチケットに完了理由をを入力しよう", adv_closed_issues_no_resolution],
+                ["チケットをマイルストーンへ関連づけよう",   adv_readied_issues_no_milestones]
                 ]
 
         keyList = ["message","issues"]
