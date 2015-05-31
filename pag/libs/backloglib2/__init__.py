@@ -2,7 +2,7 @@
 # -*- coding:utf-8 -*-
 
 import os
-
+from django.http import JsonResponse
 from requests_oauthlib import OAuth2Session
 
 client_id     = os.environ.get('BACKLOG_CLIENT_ID')
@@ -41,14 +41,19 @@ class Backlog():
 
 
     def get_users(self, project_id):
-        api = '%s/api/v2/projects/%d/users' % (self.host, project_id)
+        api = '%s/api/v2/projects/%s/users' % (self.host, project_id)
         return self.client.get(api)
 
 
     def get_issues(self, project_id):
-        api = '%s/api/v2/issues' % (self.host)
-        params = {'projectId[]': project_id}
-        return self.client.get(api, params)
+        api = '%s/api/v2/issues?projectId[]=%s' % (self.host, project_id)
+        #params = {'projectId[]': project_id}
+        return self.client.get(api)
+
+
+    def get_count_issues(self, project_id):
+        api = '%s/api/v2/issues/count?projectId[]=%s' % (self.host, project_id)
+        return self.client.get(api)
 
 
     def get_comment(self, issue_id):
