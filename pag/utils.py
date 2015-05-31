@@ -32,12 +32,12 @@ def _get_linear_point(strcount, amount):
 
 def get_row(title, numer, denom, max_point):
     try:
-        point = round(max_point * (numer / denom),0)
+        point = max_point * (numer / denom)
     except ZeroDivisionError:
         point = 0
-    return [title, numer, denom, point]
+    return [title, int(numer), int(denom), int(point)]
 
-def append_imp_issues(issue_list, append_issue, point):
+def append_adv_issues(issue_list, append_issue, point):
     if point < 1: issue_list.append(append_issue)
     return issue_list
 
