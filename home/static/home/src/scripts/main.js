@@ -4,34 +4,34 @@
 var React = require('react');
 var Router = require('director').Router;
 
-var AppBar = require('material-ui/lib/app-bar');
-var RaisedButton = require('material-ui/lib/raised-button');
-var ThemeManager = require('material-ui/lib/styles/theme-manager')();
-
 // {{{ Randing page
 var RandingPage = React.createClass({
   render: function() {
-    return (
-      <AttractiveBackground>
-        <AuthForm />
-      </AttractiveBackground>
-    );
-  }
-});
-var AttractiveBackground = React.createClass({
-  render: function() {
+    var paperStyle = {
+      position: 'fixed',
+      zIndex: '9999',
+      top: '20%',
+      left: '0',
+      right: '0',
+      margin: '0 auto',
+      width: '500px',
+      textAlign: 'center'
+    };
     return (
       <div>
-        {this.props.children}
+        <AuthForm />
       </div>
     );
   }
 });
+
 var AuthForm = React.createClass({
   render: function() {
     return (
       <form action="/auth/" method="post">
-        http://<input type="text" name="space" id="space"/>.backlog.jp
+        http://
+        <input type="text" name="space" id="space"/>
+        .backlog.jp
         <input type="submit" value="Go!" />
       </form>
     );
@@ -53,7 +53,6 @@ var ProjectList = React.createClass({
   render: function() {
     return (
       <ul>
-        <RaisedButton label="Default" primary={true} />
         {this.props.data.map(function(result) {
            return <ProjectItemWrapper key={result.name} data={result}/>;
         })}
@@ -94,12 +93,6 @@ var GradeItemWrapper = React.createClass({
 // {{{ App
 var App = React.createClass({
 
-  childContextTypes: {muiTheme: React.PropTypes.object},
-
-  getChildContext: function() {
-    return {muiTheme: ThemeManager.getCurrentTheme()};
-  },
-
   loadProjects: function() {
     $.ajax({
       url: '/api/projects',
@@ -129,9 +122,13 @@ var App = React.createClass({
     var page = this.state.page === 'unauthorized' ?
       <RandingPage /> :
       <Grader data={this.state.projects}/>
+
+    var barStyle = {
+      zIndex: '9999'
+    };
+
     return (
-      <div className="Project Auto Grader">
-        <AppBar title="Project Auto Grader" />
+      <div className="pag">
         {page}
       </div>
     );
