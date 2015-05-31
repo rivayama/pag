@@ -2,21 +2,15 @@
 <html>
 <head lang="en">
   <meta charset="UTF-8">
-  <title>PAG</title>
+  <title>Project Auto Grader</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <style>body{margin:0}</style>
+</head>
+<body>
+  <div id="app-conteiner"></div>
   {% load staticfiles %}
   <script src="{% static 'home/build/jquery.js' %}"></script>
   <script src="{% static 'home/build/react-with-addons.js' %}"></script>
-</head>
-<body>
-
-<h1>Pag</h1>
-<form action="{% url 'auth' %}" method="post">
-  {% csrf_token %}
-  http://<input type="text" name="space" id="space"/>.backlog.jp
-  <input type="submit" value="Go!" />
-</form>
-<div id="app-conteiner"></div>
-<script src="{% static 'home/build/bundle.js' %}"></script>
-
+  <script src="{% static 'home/build/bundle.js' %}"></script>
 </body>
 </html>

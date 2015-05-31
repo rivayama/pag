@@ -40,17 +40,62 @@
 /******/ 	return __webpack_require__(0);
 /******/ })
 /************************************************************************/
-/******/ ([
-/* 0 */
+/******/ ({
+
+/***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
 	'use strict';
 
-	var React = __webpack_require__(1);
-	var Router = __webpack_require__(2).Router;
+	var React = __webpack_require__(102);
+	var Router = __webpack_require__(5).Router;
 
-	// Projectの一覧を生成
+	// {{{ Randing page
+	var RandingPage = React.createClass({displayName: "RandingPage",
+	  render: function() {
+	    var paperStyle = {
+	      position: 'fixed',
+	      zIndex: '9999',
+	      top: '20%',
+	      left: '0',
+	      right: '0',
+	      margin: '0 auto',
+	      width: '500px',
+	      textAlign: 'center'
+	    };
+	    return (
+	      React.createElement("div", null, 
+	        React.createElement(AuthForm, null)
+	      )
+	    );
+	  }
+	});
+
+	var AuthForm = React.createClass({displayName: "AuthForm",
+	  render: function() {
+	    return (
+	      React.createElement("form", {action: "/auth/", method: "post"}, 
+	        "http://", 
+	        React.createElement("input", {type: "text", name: "space", id: "space"}), 
+	        ".backlog.jp", 
+	        React.createElement("input", {type: "submit", value: "Go!"})
+	      )
+	    );
+	  }
+	});
+	// }}}
+
+	// {{{ Grader page
+	var Grader = React.createClass({displayName: "Grader",
+	  render: function() {
+	    return (
+	      React.createElement("div", null, 
+	        React.createElement(ProjectList, {data: this.props.data})
+	      )
+	    );
+	  }
+	});
 	var ProjectList = React.createClass({displayName: "ProjectList",
 	  render: function() {
 	    return (
@@ -67,10 +112,9 @@
 	    return React.createElement("li", null, React.createElement("a", {href: '#/grade/'+this.props.data.id}, this.props.data.name));
 	  }
 	});
-
-	// 採点の一覧を生成
 	var GradeList = React.createClass({displayName: "GradeList",
 	  render: function() {
+	    console.log(this.props.data);
 	    return (
 	      React.createElement("table", null, 
 	        this.props.data.map(function(result) {
@@ -91,81 +135,70 @@
 	    );
 	  }
 	});
+	// }}}
 
-	// App本体
+	// {{{ App
 	var App = React.createClass({displayName: "App",
-	  getInitialState: function() {
-	    return {
-	      projects: [],
-	      grade: [],
-	      page: 'unauthorized'
-	    };
-	  },
+
 	  loadProjects: function() {
 	    $.ajax({
 	      url: '/api/projects',
 	      dataType: 'json',
 	      cache: false,
 	      success: function(data) {
-	        this.setState({projects: data, page: 'projects'});
+	        if (data.length > 0) {
+	          this.setState({page: 'authorized', projects: data});
+	        }
 	      }.bind(this),
 	      error: function(xhr, status, err) {
 	        console.error(this.props.url, status, err.toString());
 	      }.bind(this)
 	    });
 	  },
-	  loadGrade: function(project_id) {
-	    $.ajax({
-	      url: '/api/grade/' + project_id,
-	      dataType: 'json',
-	      cache: false,
-	      success: function(data) {
-	        this.setState({grade: data, page: 'grade'});
-	      }.bind(this),
-	      error: function(xhr, status, err) {
-	        console.error(this.props.url, status, err.toString());
-	      }.bind(this)
-	    });
+
+	  getInitialState: function() {
+	    return {
+	      page: 'unauthorized',
+	      projects: [],
+	    };
 	  },
+
+	  componentWillMount: function() {},
+
+	  render: function() {
+	    var page = this.state.page === 'unauthorized' ?
+	      React.createElement(RandingPage, null) :
+	      React.createElement(Grader, {data: this.state.projects})
+
+	    var barStyle = {
+	      zIndex: '9999'
+	    };
+
+	    return (
+	      React.createElement("div", {className: "pag"}, 
+	        page
+	      )
+	    );
+	  },
+
 	  componentDidMount: function() {
-	    var setGradePage = function(project_id) {
-	      this.setState({grade: [], page: 'loading'});
-	      this.loadGrade(project_id);
-	    }.bind(this);
-	    var setUnauthorizedPage = function() {
-	      this.setState({page: 'unauthorized'});
-	    }.bind(this);
 	    var router = Router({
-	      '/grade/:project_id': setGradePage,
-	      '*': setUnauthorizedPage,
+	      '/grade/:project_id': function(){},
+	      '*': function(){}
 	    });
 	    router.init();
 	    this.loadProjects();
-	  },
-	  render: function() {
-	    return (
-	      React.createElement("div", {className: "Project Auto Grader"}, 
-	        React.createElement(ProjectList, {data: this.state.projects}), 
-	        React.createElement(GradeList, {data: this.state.grade})
-	      )
-	    );
 	  }
+
 	});
+	// }}}
 
-	React.render(
-	  React.createElement(App, null),
-	  document.getElementById('app-conteiner')
-	);
+	React.render(React.createElement(App, null), document.getElementById('app-conteiner'));
 
 
 /***/ },
-/* 1 */
-/***/ function(module, exports, __webpack_require__) {
 
-	module.exports = React;
-
-/***/ },
-/* 2 */
+/***/ 5:
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -894,5 +927,13 @@
 
 	}(true ? exports : window));
 
+/***/ },
+
+/***/ 102:
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = React;
+
 /***/ }
-/******/ ]);
+
+/******/ });
