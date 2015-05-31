@@ -60,7 +60,7 @@ def grade(request, project_id):
             for comment in comments:
                 point = utils.get_linear_point(len(comment["content"]))
                 detailed_comment_count += point
-                adv_issues_little_comment = utils.append_adv_issues(adv_issues_little_comment, issue["issueKey"], point)
+                adv_issues_little_comment = utils.append_adv_issues(adv_issues_little_comment, issue["issueKey"]+"#comment-"+str(comment["id"]), point)
                 all_comment_count += 1
 
             point = utils.get_linear_point(len(issue["description"]))
