@@ -2,7 +2,6 @@
 # -*- coding:utf-8 -*-
 
 import os
-import pag.utils
 from django.http import JsonResponse
 from requests_oauthlib import OAuth2Session
 
@@ -61,7 +60,3 @@ class Backlog():
         api = '%s/api/v2/issues/%d/comments' % (self.host, issue_id)
         return self.client.get(api)
 
-
-    def get_grade(self, project_id):
-        result = pag.utils._get_grade(self, project_id)
-        return result
