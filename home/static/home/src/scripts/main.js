@@ -8,7 +8,7 @@ var AppBar = require('material-ui/lib/app-bar');
 var RaisedButton = require('material-ui/lib/raised-button');
 var ThemeManager = require('material-ui/lib/styles/theme-manager')();
 
-// Randing page
+// {{{ Randing page
 var RandingPage = React.createClass({
   render: function() {
     return (
@@ -37,8 +37,9 @@ var AuthForm = React.createClass({
     );
   }
 });
+// }}}
 
-// Grader page
+// {{{ Grader page
 var Grader = React.createClass({
   render: function() {
     return (
@@ -88,8 +89,9 @@ var GradeItemWrapper = React.createClass({
     );
   }
 });
+// }}}
 
-// App本体
+// {{{ App
 var App = React.createClass({
 
   childContextTypes: {muiTheme: React.PropTypes.object},
@@ -145,5 +147,6 @@ var App = React.createClass({
   }
 
 });
+// }}}
 
 React.render(<App />, document.getElementById('app-conteiner'));
