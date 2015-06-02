@@ -58,7 +58,7 @@ def grade(request, project_id):
             # get comment
             comments = backlog.get_comment(issue["id"]).json()
             for comment in comments:
-                point = utils.get_linear_point(len(comment["content"]))
+                point = utils.get_linear_point(len(comment["content"])) if comment["content"] else 0
                 detailed_comment_count += point
                 adv_issues_little_comment = utils.append_adv_issues(adv_issues_little_comment, issue["issueKey"]+"#comment-"+str(comment["id"]), point)
                 all_comment_count += 1
@@ -150,7 +150,7 @@ def grade(request, project_id):
           for j in range(len(keyList)):
             result_advice[i][keyList[j]] = adviceRows[i][j]
 
-        result = [{"grade" : result_grade }, {"advice" : result_advice }]
+        result = [{"grade": result_grade}, {"advice": result_advice}]
     except KeyError:
         result = []
     return JsonResponse(result, safe=False)
