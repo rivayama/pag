@@ -10,18 +10,34 @@ var ButtonInput = require('react-bootstrap').ButtonInput;
 var RandingPage = React.createClass({
   render: function() {
     return (
-      <AuthForm />
-    );
-  }
-});
-
-var AuthForm = React.createClass({
-  render: function() {
-    return (
-      <form action="/auth/" method="post" className="lead">
-        <p>http://<input type="text" name="space" id="space"/>.backlog.jp</p>
-        <ButtonInput type="submit" value="Grade Your Project" bsSize="large" />
-      </form>
+      <div className="cover-container">
+        <div className="masthead clearfix">
+          <div className="inner">
+            <h3 className="masthead-brand">PAG</h3>
+          </div>
+        </div>
+        <div className="inner cover">
+          <h1 className="cover-heading">Project Auto Grader</h1>
+          <p className="lead">Backlogのスペース名を入力してください。認証後、プロジェクトの採点が始まります。</p>
+          <p className="lead">
+            <form action="/auth/" method="post" className="form-inline">
+              <div className="form-group">
+                <div className="input-group">
+                  <div className="input-group-addon">http://</div>
+                  <input type="text" name="space" className="form-control input-lg" id="exampleInputAmount" placeholder="Space name"/>
+                  <div className="input-group-addon">.backlog.jp</div>
+                </div>
+              </div>
+              <ButtonInput type="submit" value="Grade Your Project" bsSize="large" />
+            </form>
+          </p>
+        </div>
+        <div className="mastfoot">
+          <div className="inner">
+            <p>2015 Koyama PBL / AIIT</p>
+          </div>
+        </div>
+      </div>
     );
   }
 });
@@ -90,7 +106,7 @@ var GradeList = React.createClass({
     console.log(this.props.data);
     return (
       <table>
-        {this.props.data[0]['grade'].map(function(grade) {
+        {this.props.data.map(function(grade) {
           console.log(grade);
           return <GradeItemWrapper key={grade.title} data={grade}/>;
         })}
@@ -145,7 +161,7 @@ var App = React.createClass({
       <RandingPage /> :
       <Grader data={this.state.projects}/>
 
-    return <div className="pag">{page}</div>;
+    return <div className="site-wrapper-inner">{page}</div>;
   },
 
   componentDidMount: function() {

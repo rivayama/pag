@@ -56,17 +56,33 @@
 	var RandingPage = React.createClass({displayName: "RandingPage",
 	  render: function() {
 	    return (
-	      React.createElement(AuthForm, null)
-	    );
-	  }
-	});
-
-	var AuthForm = React.createClass({displayName: "AuthForm",
-	  render: function() {
-	    return (
-	      React.createElement("form", {action: "/auth/", method: "post", className: "lead"}, 
-	        React.createElement("p", null, "http://", React.createElement("input", {type: "text", name: "space", id: "space"}), ".backlog.jp"), 
-	        React.createElement(ButtonInput, {type: "submit", value: "Grade Your Project", bsSize: "large"})
+	      React.createElement("div", {className: "cover-container"}, 
+	        React.createElement("div", {className: "masthead clearfix"}, 
+	          React.createElement("div", {className: "inner"}, 
+	            React.createElement("h3", {className: "masthead-brand"}, "PAG")
+	          )
+	        ), 
+	        React.createElement("div", {className: "inner cover"}, 
+	          React.createElement("h1", {className: "cover-heading"}, "Project Auto Grader"), 
+	          React.createElement("p", {className: "lead"}, "Backlogのスペース名を入力してください。認証後、プロジェクトの採点が始まります。"), 
+	          React.createElement("p", {className: "lead"}, 
+	            React.createElement("form", {action: "/auth/", method: "post", className: "form-inline"}, 
+	              React.createElement("div", {className: "form-group"}, 
+	                React.createElement("div", {className: "input-group"}, 
+	                  React.createElement("div", {className: "input-group-addon"}, "http://"), 
+	                  React.createElement("input", {type: "text", name: "space", className: "form-control input-lg", id: "exampleInputAmount", placeholder: "Space name"}), 
+	                  React.createElement("div", {className: "input-group-addon"}, ".backlog.jp")
+	                )
+	              ), 
+	              React.createElement(ButtonInput, {type: "submit", value: "Grade Your Project", bsSize: "large"})
+	            )
+	          )
+	        ), 
+	        React.createElement("div", {className: "mastfoot"}, 
+	          React.createElement("div", {className: "inner"}, 
+	            React.createElement("p", null, "2015 Koyama PBL / AIIT")
+	          )
+	        )
 	      )
 	    );
 	  }
@@ -136,7 +152,7 @@
 	    console.log(this.props.data);
 	    return (
 	      React.createElement("table", null, 
-	        this.props.data[0]['grade'].map(function(grade) {
+	        this.props.data.map(function(grade) {
 	          console.log(grade);
 	          return React.createElement(GradeItemWrapper, {key: grade.title, data: grade});
 	        })
@@ -191,7 +207,7 @@
 	      React.createElement(RandingPage, null) :
 	      React.createElement(Grader, {data: this.state.projects})
 
-	    return React.createElement("div", {className: "pag"}, page);
+	    return React.createElement("div", {className: "site-wrapper-inner"}, page);
 	  },
 
 	  componentDidMount: function() {
