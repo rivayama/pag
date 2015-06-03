@@ -2,48 +2,52 @@
 'use strict';
 
 var React = require('react');
-var Router = require('director').Router;
-
 var ButtonInput = require('react-bootstrap').ButtonInput;
 
 // {{{ Randing page
 var RandingPage = React.createClass({
   render: function() {
     return (
-      <div className="cover-container">
-        <div className="masthead clearfix">
-          <div className="inner">
-            <h3 className="masthead-brand">PAG</h3>
+      <div className="site-wrapper-inner">
+        <div className="cover-container">
+
+          <div className="masthead clearfix">
+            <div className="inner">
+              <h3 className="masthead-brand">PAG</h3>
+            </div>
           </div>
-        </div>
-        <div className="inner cover">
-          <h1 className="cover-heading">Project Auto Grader</h1>
-          <p className="lead">Backlogのスペース名を入力してください。認証後、プロジェクトの採点が始まります。</p>
-          <p className="lead">
-            <form action="/auth/" method="post" className="form-inline">
-              <div className="form-group">
-                <div className="input-group">
-                  <div className="input-group-addon">http://</div>
-                  <input type="text" name="space" className="form-control input-lg" id="exampleInputAmount" placeholder="Space name"/>
-                  <div className="input-group-addon">.backlog.jp</div>
+
+          <div className="inner cover">
+            <h1 className="cover-heading">Project Auto Grader</h1>
+            <p className="lead">Backlogのスペース名を入力してください。認証後、プロジェクトの採点が始まります。</p>
+            <p className="lead">
+              <form action="/auth/" method="post" className="form-inline">
+                <div className="form-group">
+                  <div className="input-group">
+                    <div className="input-group-addon">http://</div>
+                    <input type="text" name="space" className="form-control input-lg" id="exampleInputAmount" placeholder="Space name"/>
+                    <div className="input-group-addon">.backlog.jp</div>
+                  </div>
                 </div>
-              </div>
-              <ButtonInput type="submit" value="Grade Your Project" bsSize="large" />
-            </form>
-          </p>
-        </div>
-        <div className="mastfoot">
-          <div className="inner">
-            <p>2015 Koyama PBL / AIIT</p>
+                <ButtonInput type="submit" value="Grade Your Project" bsSize="large" />
+              </form>
+            </p>
           </div>
+
+          <div className="mastfoot">
+            <div className="inner">
+              <p>2015 Koyama PBL / AIIT</p>
+            </div>
+          </div>
+
         </div>
-      </div>
+       </div>
     );
   }
 });
 // }}}
 
-// {{{ Project list
+// {{{ Grader
 var Grader = React.createClass({
 
   getInitialState: function() {
@@ -72,16 +76,47 @@ var Grader = React.createClass({
   render: function() {
     return (
       <div>
-        <ul>
-          {this.props.data.map(function(project, i) {
-            return (
-              <li>
-                <a href={'#/grade/'+project.id} key={i} onClick={this.loadGrade.bind(this, i)}>{project.name}</a>
-              </li>
-            );
-          }.bind(this))}
-        </ul>
-        <GradeList data={this.state.grade} />
+
+        <nav className="navbar navbar-inverse navbar-fixed-top">
+          <div className="container-fluid">
+            <div className="navbar-header">
+              <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span className="sr-only">Toggle navigation</span>
+                <span className="icon-bar"></span>
+                <span className="icon-bar"></span>
+                <span className="icon-bar"></span>
+              </button>
+              <a className="navbar-brand" href="#">PAG</a>
+            </div>
+            <div id="navbar" className="navbar-collapse collapse">
+              <ul className="nav navbar-nav navbar-right">
+                <li><a href="#">Dashboard</a></li>
+                <li><a href="#">Settings</a></li>
+                <li><a href="#">Profile</a></li>
+                <li><a href="#">Help</a></li>
+              </ul>
+              <form className="navbar-form navbar-right">
+                <input type="text" className="form-control" placeholder="Search..." />
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div className="container-fluid">
+          <div className="row">
+            <div className="col-sm-3 col-md-2 sidebar">
+              <ul className="nav nav-sidebar">
+                {this.props.data.map(function(project, i) {
+                  return <li><a href={'#/grade/'+project.id} key={i} onClick={this.loadGrade.bind(this, i)}>{project.name}</a></li>;
+                }.bind(this))}
+              </ul>
+            </div>
+            <div className="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+              <GradeList data={this.state.grade} />
+            </div>
+          </div>
+        </div>
+
       </div>
     );
   }
@@ -157,19 +192,18 @@ var App = React.createClass({
   componentWillMount: function() {},
 
   render: function() {
-    var page = this.state.page === 'unauthorized' ?
+    if (this.state.page === 'unauthorized') {
+      $('body').attr('id', 'randing');
+    } else {
+      $('body').attr('id', 'grader');
+    }
+
+    return this.state.page === 'unauthorized' ?
       <RandingPage /> :
       <Grader data={this.state.projects}/>
-
-    return <div className="site-wrapper-inner">{page}</div>;
   },
 
   componentDidMount: function() {
-    var router = Router({
-      '/grade/:project_id': function(){},
-      '*': function(){}
-    });
-    router.init();
     this.loadProjects();
   }
 

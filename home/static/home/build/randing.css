@@ -3,23 +3,23 @@
  */
 
 /* Links */
-a,
-a:focus,
-a:hover {
+body#randing a,
+body#randing a:focus,
+body#randing a:hover {
   color: #fff;
 }
 
 /* Custom default button */
-.btn-default,
-.btn-default:hover,
-.btn-default:focus {
+body#randing .btn-default,
+body#randing .btn-default:hover,
+body#randing .btn-default:focus {
   color: #333;
   text-shadow: none; /* Prevent inheritence from `body` */
   background-color: #fff;
   border: 1px solid #ccc;
   margin-left: 5px;
 }
-.input-group-addon {
+body#randing .input-group-addon {
   color: #333;
   text-shadow: none; /* Prevent inheritence from `body` */
 }
@@ -30,20 +30,20 @@ a:hover {
  */
 
 html,
-body {
+body#randing {
   height: 100%;
+}
+body#randing {
   background-image: url('/static/home/img/bg-top4.jpg');
   background-repeat: no-repeat;
   background-size: cover;
-}
-body {
   color: #fff;
   text-align: center;
   text-shadow: 0 1px 3px rgba(0,0,0,.5);
 }
 
 /* Extra markup and styles for table-esque vertical and horizontal centering */
-.site-wrapper {
+body#randing .site-wrapper {
   display: table;
   width: 100%;
   height: 100%; /* For at least Firefox */
@@ -51,17 +51,17 @@ body {
   -webkit-box-shadow: inset 0 0 100px rgba(0,0,0,.5);
   box-shadow: inset 0 0 100px rgba(0,0,0,.5);
 }
-.site-wrapper-inner {
+body#randing .site-wrapper-inner {
   display: table-cell;
   vertical-align: top;
 }
-.cover-container {
+body#randing .cover-container {
   margin-right: auto;
   margin-left: auto;
 }
 
 /* Padding for spacing */
-.inner {
+body#randing .inner {
   padding: 30px;
 }
 
@@ -69,18 +69,18 @@ body {
 /*
  * Header
  */
-.masthead-brand {
+body#randing .masthead-brand {
   margin-top: 10px;
   margin-bottom: 10px;
 }
 
-.masthead-nav > li {
+body#randing .masthead-nav > li {
   display: inline-block;
 }
-.masthead-nav > li + li {
+body#randing .masthead-nav > li + li {
   margin-left: 20px;
 }
-.masthead-nav > li > a {
+body#randing .masthead-nav > li > a {
   padding-right: 0;
   padding-left: 0;
   font-size: 16px;
@@ -89,24 +89,24 @@ body {
   color: rgba(255,255,255,.75);
   border-bottom: 2px solid transparent;
 }
-.masthead-nav > li > a:hover,
-.masthead-nav > li > a:focus {
+body#randing .masthead-nav > li > a:hover,
+body#randing .masthead-nav > li > a:focus {
   background-color: transparent;
   border-bottom-color: #a9a9a9;
   border-bottom-color: rgba(255,255,255,.25);
 }
-.masthead-nav > .active > a,
-.masthead-nav > .active > a:hover,
-.masthead-nav > .active > a:focus {
+body#randing .masthead-nav > .active > a,
+body#randing .masthead-nav > .active > a:hover,
+body#randing .masthead-nav > .active > a:focus {
   color: #fff;
   border-bottom-color: #fff;
 }
 
 @media (min-width: 768px) {
-  .masthead-brand {
+  body#randing .masthead-brand {
     float: left;
   }
-  .masthead-nav {
+  body#randing .masthead-nav {
     float: right;
   }
 }
@@ -116,10 +116,10 @@ body {
  * Cover
  */
 
-.cover {
+body#randing .cover {
   padding: 0 20px;
 }
-.cover .btn-lg {
+body#randing .cover .btn-lg {
   padding: 10px 20px;
   font-weight: bold;
 }
@@ -129,7 +129,7 @@ body {
  * Footer
  */
 
-.mastfoot {
+body#randing .mastfoot {
   color: #999; /* IE8 proofing */
   color: rgba(255,255,255,.5);
 }
@@ -141,30 +141,30 @@ body {
 
 @media (min-width: 768px) {
   /* Pull out the header and footer */
-  .masthead {
+  body#randing .masthead {
     position: fixed;
     top: 0;
   }
-  .mastfoot {
+  body#randing .mastfoot {
     position: fixed;
     bottom: 0;
   }
   /* Start the vertical centering */
-  .site-wrapper-inner {
+  body#randing .site-wrapper-inner {
     vertical-align: middle;
   }
   /* Handle the widths */
-  .masthead,
-  .mastfoot,
-  .cover-container {
+  body#randing .masthead,
+  body#randing .mastfoot,
+  body#randing .cover-container {
     width: 100%; /* Must be percentage or pixels for horizontal alignment */
   }
 }
 
 @media (min-width: 992px) {
-  .masthead,
-  .mastfoot,
-  .cover-container {
+  body#randing .masthead,
+  body#randing .mastfoot,
+  body#randing .cover-container {
     width: 900px;
   }
 }
