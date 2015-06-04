@@ -3,6 +3,8 @@
 
 var React = require('react');
 var ButtonInput = require('react-bootstrap').ButtonInput;
+var ProgressBar = require('react-bootstrap').ProgressBar;
+var Modal = require('react-bootstrap').Modal;
 
 // {{{ Randing page
 var RandingPage = React.createClass({
@@ -52,19 +54,26 @@ var Grader = React.createClass({
 
   getInitialState: function() {
     return {
+      isLoading: false,
       grade: []
     };
   },
 
   loadGrade: function(i) {
-    var project = this.props.data[i];
+    // Activate project
+    this.props.data.map(function(project, i){
+      project.active = false;
+    });
+    this.props.data[i].active = true;
+    this.setState({isLoading: true, grade: []});
+
     $.ajax({
-      url: '/api/grade/' + project.id,
+      url: '/api/grade/' + this.props.data[i].id,
       dataType: 'json',
       cache: false,
       success: function(data) {
         if (data.length > 0) {
-          this.setState({grade: data});
+          this.setState({isLoading: false, grade: data});
         }
       }.bind(this),
       error: function(xhr, status, err) {
@@ -73,31 +82,30 @@ var Grader = React.createClass({
     });
   },
 
+  componentDidMount: function() {
+    if (! this.state.isLoading) {
+      this.loadGrade(0);// Automatically load the first project
+    }
+  },
+
   render: function() {
+    var grader = this.state.isLoading ?
+      <Loading /> : 
+      <GradeList data={this.state.grade} />
+
     return (
       <div>
 
         <nav className="navbar navbar-inverse navbar-fixed-top">
           <div className="container-fluid">
             <div className="navbar-header">
-              <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                <span className="sr-only">Toggle navigation</span>
-                <span className="icon-bar"></span>
-                <span className="icon-bar"></span>
-                <span className="icon-bar"></span>
-              </button>
+              <MenuButton />
               <a className="navbar-brand" href="#">PAG</a>
             </div>
             <div id="navbar" className="navbar-collapse collapse">
               <ul className="nav navbar-nav navbar-right">
-                <li><a href="#">Dashboard</a></li>
-                <li><a href="#">Settings</a></li>
-                <li><a href="#">Profile</a></li>
-                <li><a href="#">Help</a></li>
+                <li><a href="/signout/">サインアウト</a></li>
               </ul>
-              <form className="navbar-form navbar-right">
-                <input type="text" className="form-control" placeholder="Search..." />
-              </form>
             </div>
           </div>
         </nav>
@@ -107,12 +115,18 @@ var Grader = React.createClass({
             <div className="col-sm-3 col-md-2 sidebar">
               <ul className="nav nav-sidebar">
                 {this.props.data.map(function(project, i) {
-                  return <li><a href={'#/grade/'+project.id} key={i} onClick={this.loadGrade.bind(this, i)}>{project.name}</a></li>;
+                  return (
+                    <li className={project.active ? 'active' : ''}>
+                      <a href={'#/grade/'+project.id} key={i} onClick={this.loadGrade.bind(this, i)}>
+                        {project.name}
+                      </a>
+                    </li>
+                  );
                 }.bind(this))}
               </ul>
             </div>
             <div className="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-              <GradeList data={this.state.grade} />
+              {grader}
             </div>
           </div>
         </div>
@@ -121,6 +135,31 @@ var Grader = React.createClass({
     );
   }
 
+});
+
+var MenuButton = React.createClass({
+  render: function () {
+    return (
+      <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+        <span className="sr-only">Toggle navigation</span>
+        <span className="icon-bar"></span>
+        <span className="icon-bar"></span>
+        <span className="icon-bar"></span>
+      </button>
+    );
+  }
+});
+
+var Loading = React.createClass({
+  render: function () {
+    return (
+      <Modal {...this.props} bsSize='small' title='Loading...' animation={false}>
+        <div className='modal-body'>
+          <ProgressBar active now={100} />
+        </div>
+      </Modal>
+    );
+  }
 });
 // }}}
 
@@ -141,9 +180,8 @@ var GradeList = React.createClass({
     console.log(this.props.data);
     return (
       <table>
-        {this.props.data.map(function(grade) {
-          console.log(grade);
-          return <GradeItemWrapper key={grade.title} data={grade}/>;
+        {this.props.data.map(function(grade, i) {
+          return <GradeItemWrapper key={i} data={grade}/>;
         })}
       </table>
     );
