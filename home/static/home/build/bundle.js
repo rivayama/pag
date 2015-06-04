@@ -49,8 +49,6 @@
 
 	var React = __webpack_require__(36);
 	var ButtonInput = __webpack_require__(2).ButtonInput;
-	var ProgressBar = __webpack_require__(2).ProgressBar;
-	var Modal = __webpack_require__(2).Modal;
 
 	// {{{ Randing page
 	var RandingPage = React.createClass({displayName: "RandingPage",
@@ -198,13 +196,7 @@
 
 	var Loading = React.createClass({displayName: "Loading",
 	  render: function () {
-	    return (
-	      React.createElement(Modal, React.__spread({},  this.props, {bsSize: "small", title: "Loading...", animation: false}), 
-	        React.createElement("div", {className: "modal-body"}, 
-	          React.createElement(ProgressBar, {active: true, now: 100})
-	        )
-	      )
-	    );
+	    return React.createElement("img", {src: "/static/home/img/loading.gif"});
 	  }
 	});
 	// }}}

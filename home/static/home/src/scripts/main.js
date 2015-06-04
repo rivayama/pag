@@ -3,8 +3,6 @@
 
 var React = require('react');
 var ButtonInput = require('react-bootstrap').ButtonInput;
-var ProgressBar = require('react-bootstrap').ProgressBar;
-var Modal = require('react-bootstrap').Modal;
 
 // {{{ Randing page
 var RandingPage = React.createClass({
@@ -152,13 +150,7 @@ var MenuButton = React.createClass({
 
 var Loading = React.createClass({
   render: function () {
-    return (
-      <Modal {...this.props} bsSize='small' title='Loading...' animation={false}>
-        <div className='modal-body'>
-          <ProgressBar active now={100} />
-        </div>
-      </Modal>
-    );
+    return <img src="/static/home/img/loading.gif" />;
   }
 });
 // }}}
