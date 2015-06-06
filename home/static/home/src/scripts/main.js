@@ -227,7 +227,7 @@ var GradeList = React.createClass({
 
 var GradeItemWrapper = React.createClass({
   render: function() {
-      var title = <h3>{this.props.data.point}/10 {this.props.data.title}</h3>;
+    var title = <h3>{this.props.data.point}/10 {this.props.data.title}</h3>;
     return this.props.data.title === 'Total Point' ?
       <GradeSummaryItemWrapper data={this.props.data}/> :
       <GradeDetailItemWrapper data={this.props.data}/>
@@ -236,7 +236,7 @@ var GradeItemWrapper = React.createClass({
 
 var GradeDetailItemWrapper = React.createClass({
   render: function() {
-      var title = <h3>{this.props.data.title} : {this.props.data.point}/10</h3>;
+    var title = <h3>{this.props.data.title} : {this.props.data.point}/10</h3>;
     return (
       <Panel header={title} bsStyle='primary' >
         <ListGroup detail>

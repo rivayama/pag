@@ -273,7 +273,7 @@
 
 	var GradeItemWrapper = React.createClass({displayName: "GradeItemWrapper",
 	  render: function() {
-	      var title = React.createElement("h3", null, this.props.data.point, "/10 ", this.props.data.title);
+	    var title = React.createElement("h3", null, this.props.data.point, "/10 ", this.props.data.title);
 	    return this.props.data.title === 'Total Point' ?
 	      React.createElement(GradeSummaryItemWrapper, {data: this.props.data}) :
 	      React.createElement(GradeDetailItemWrapper, {data: this.props.data})
@@ -282,7 +282,7 @@
 
 	var GradeDetailItemWrapper = React.createClass({displayName: "GradeDetailItemWrapper",
 	  render: function() {
-	      var title = React.createElement("h3", null, this.props.data.title, " : ", this.props.data.point, "/10");
+	    var title = React.createElement("h3", null, this.props.data.title, " : ", this.props.data.point, "/10");
 	    return (
 	      React.createElement(Panel, {header: title, bsStyle: "primary"}, 
 	        React.createElement(ListGroup, {detail: true}, 
