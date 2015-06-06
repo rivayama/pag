@@ -244,7 +244,7 @@ var GradeDetailItemWrapper = React.createClass({
             分析したチケットまたはコメントの数：{this.props.data.all_count}<br/>
             評価基準をクリアしたチケットまたはコメントの数：{this.props.data.count}
           </ListGroupItem>
-          
+
           <ListGroupItem>
             アドバイス：{this.props.data.advice.message}<br/>
             改善が必要なチケット<br/>
