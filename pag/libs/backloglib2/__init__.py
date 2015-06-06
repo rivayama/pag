@@ -40,6 +40,11 @@ class Backlog():
         return self.client.get(api)
 
 
+    def get_myself(self):
+        api = '%s/api/v2/users/myself' % (self.host)
+        return self.client.get(api)
+
+
     def get_users(self, project_id):
         api = '%s/api/v2/projects/%s/users' % (self.host, project_id)
         return self.client.get(api)

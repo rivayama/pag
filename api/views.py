@@ -14,6 +14,16 @@ def projects(request):
 
 
 @require_GET
+def myself(request):
+    try:
+        backlog = utils.backlog(request, request.session['space'], token=request.session['token'])
+        user = backlog.get_myself().json()
+    except KeyError:
+        user = []
+    return JsonResponse(user, safe=False)
+
+
+@require_GET
 def grade(request, project_id):
     try:
         backlog = utils.backlog(request, request.session['space'], token=request.session['token'])
