@@ -3,6 +3,11 @@
 
 var React = require('react');
 var ButtonInput = require('react-bootstrap').ButtonInput;
+var Panel = require('react-bootstrap').Panel;
+var PanelGroup = require('react-bootstrap').PanelGroup;
+var ListGroup = require('react-bootstrap').ListGroup;
+var ListGroupItem = require('react-bootstrap').ListGroupItem;
+var Jumbotron = require('react-bootstrap').Jumbotron;
 
 // {{{ Randing page
 var RandingPage = React.createClass({
@@ -164,30 +169,62 @@ var GradeList = React.createClass({
 
   getDefaultProps: function() {
     return {
-      data: [{'grade': []}, {'adivice': []}]
+      data: [{'grade': []}]
     }
   },
 
   render: function() {
-    console.log(this.props.data);
+    console.log(this.props.data[0]);
+
     return (
-      <table>
+      <div>
         {this.props.data.map(function(grade, i) {
           return <GradeItemWrapper key={i} data={grade}/>;
         })}
-      </table>
+      </div>
     );
   }
 });
 
 var GradeItemWrapper = React.createClass({
   render: function() {
+      var title = <h3>{this.props.data.point}/10 {this.props.data.title}</h3>;
+    return this.props.data.title === 'Total Point' ?
+      <GradeSummaryItemWrapper data={this.props.data}/> :
+      <GradeDetailItemWrapper data={this.props.data}/>
+  }
+});
+
+var GradeDetailItemWrapper = React.createClass({
+  render: function() {
+      var title = <h3>{this.props.data.title} : {this.props.data.point}/10</h3>;
     return (
-      <tr>
-        <td>{this.props.data.title}</td>
-        <td>{this.props.data.count}/{this.props.data.all_count}</td>
-        <td>{this.props.data.point}</td>
-      </tr>
+      <Panel header={title} bsStyle='primary' >
+        <ListGroup detail>
+          <ListGroupItem>
+            分析したチケットまたはコメントの数：{this.props.data.all_count}<br/>
+            評価基準をクリアしたチケットまたはコメントの数：{this.props.data.count}
+          </ListGroupItem>
+          
+          <ListGroupItem>
+            アドバイス：{this.props.data.advice.message}<br/>
+            改善が必要なチケット<br/>
+            {this.props.data.advice.issues}
+          </ListGroupItem>
+        </ListGroup>
+      </Panel>
+    );
+  }
+});
+
+var GradeSummaryItemWrapper = React.createClass({
+  render: function() {
+    return (
+      <Jumbotron>
+      <h1>
+        {this.props.data.title} : {this.props.data.point}/100
+      </h1>
+      </Jumbotron>
     );
   }
 });
