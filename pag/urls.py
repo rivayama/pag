@@ -5,6 +5,7 @@ urlpatterns = [
     url(r'^$', 'home.views.index', name='index'),
     url(r'^auth/$', 'home.views.auth', name='auth'),
     url(r'^callback/$', 'home.views.callback', name='callback'),
+    url(r'^signout/$', 'home.views.signout', name='signout'),
     url(r'^api/', include('api.urls', namespace='api')),
 ]
 

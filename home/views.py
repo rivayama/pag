@@ -30,3 +30,9 @@ def callback(request):
     request.session['token'] = backlog.fetch_token(response_uri)
     return redirect('index')
 
+
+def signout(request):
+    request.session.flush()
+    return redirect('index')
+
+
