@@ -49,6 +49,11 @@
 
 	var React = __webpack_require__(36);
 	var ButtonInput = __webpack_require__(2).ButtonInput;
+	var Panel = __webpack_require__(2).Panel;
+	var PanelGroup = __webpack_require__(2).PanelGroup;
+	var ListGroup = __webpack_require__(2).ListGroup;
+	var ListGroupItem = __webpack_require__(2).ListGroupItem;
+	var Jumbotron = __webpack_require__(2).Jumbotron;
 
 	// {{{ Randing page
 	var RandingPage = React.createClass({displayName: "RandingPage",
@@ -251,13 +256,13 @@
 
 	  getDefaultProps: function() {
 	    return {
-	      data: [{'grade': []}, {'adivice': []}]
+	      data: [{'grade': []}]
 	    }
 	  },
 
 	  render: function() {
 	    return (
-	      React.createElement("table", null, 
+	      React.createElement("div", null, 
 	        this.props.data.map(function(grade, i) {
 	          return React.createElement(GradeItemWrapper, {key: i, data: grade});
 	        })
@@ -268,11 +273,42 @@
 
 	var GradeItemWrapper = React.createClass({displayName: "GradeItemWrapper",
 	  render: function() {
+	      var title = React.createElement("h3", null, this.props.data.point, "/10 ", this.props.data.title);
+	    return this.props.data.title === 'Total Point' ?
+	      React.createElement(GradeSummaryItemWrapper, {data: this.props.data}) :
+	      React.createElement(GradeDetailItemWrapper, {data: this.props.data})
+	  }
+	});
+
+	var GradeDetailItemWrapper = React.createClass({displayName: "GradeDetailItemWrapper",
+	  render: function() {
+	      var title = React.createElement("h3", null, this.props.data.title, " : ", this.props.data.point, "/10");
 	    return (
-	      React.createElement("tr", null, 
-	        React.createElement("td", null, this.props.data.title), 
-	        React.createElement("td", null, this.props.data.count, "/", this.props.data.all_count), 
-	        React.createElement("td", null, this.props.data.point)
+	      React.createElement(Panel, {header: title, bsStyle: "primary"}, 
+	        React.createElement(ListGroup, {detail: true}, 
+	          React.createElement(ListGroupItem, null, 
+	            "分析したチケットまたはコメントの数：", this.props.data.all_count, React.createElement("br", null), 
+	            "評価基準をクリアしたチケットまたはコメントの数：", this.props.data.count
+	          ), 
+	          
+	          React.createElement(ListGroupItem, null, 
+	            "アドバイス：", this.props.data.advice.message, React.createElement("br", null), 
+	            "改善が必要なチケット", React.createElement("br", null), 
+	            this.props.data.advice.issues
+	          )
+	        )
+	      )
+	    );
+	  }
+	});
+
+	var GradeSummaryItemWrapper = React.createClass({displayName: "GradeSummaryItemWrapper",
+	  render: function() {
+	    return (
+	      React.createElement(Jumbotron, null, 
+	      React.createElement("h1", null, 
+	        this.props.data.title, " : ", this.props.data.point, "/100"
+	      )
 	      )
 	    );
 	  }

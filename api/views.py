@@ -120,27 +120,9 @@ def grade(request, project_id):
                   adv_expired_closed_issues.append(issue["issueKey"])
 
         # out put data
-        gradeRows = [
-                utils.get_row("Detailed issue",                     detailed_issue_count,                 all_issue_count,     10),
-                utils.get_row("Detailed comment",                   detailed_comment_count,               all_comment_count,   10),
-                utils.get_row("Closed issue with comment",          closed_issue_with_comment_count,      closed_issue_count,  10),
-                utils.get_row("Readied issue with due date",        readied_issue_with_ddate_count,       readied_issue_count, 10),
-                utils.get_row("Readied issue with estimated hours", readied_issue_with_etime_count,       readied_issue_count, 10),
-                utils.get_row("Expired and closed issue",           expired_closed_issue_count,           expired_issue_count, 10),
-                utils.get_row("Closed issue with actual hours",     closed_issue_with_atime_count,        closed_issue_count,  10),
-                utils.get_row("Readied issue with assigner",        readied_issue_with_assigner_count,    readied_issue_count, 10),
-                utils.get_row("Closed issue with resolution",       closed_issue_with_resolution_count,   closed_issue_count,  10),
-                utils.get_row("Readied issue with milestones",      readied_issue_with_milestones_count,  readied_issue_count, 10)
-                ]
-        keyList = ["title","count","all_count","point"]
-        result_grade = [""] * len(gradeRows)
-        for i in range(len(gradeRows)):
-          result_grade[i] = {}
-          for j in range(len(keyList)):
-            result_grade[i][keyList[j]] = gradeRows[i][j]
 
         adv_issues_little_comment = list(set(adv_issues_little_comment))
-        adviceRows = [
+        advice_rows = [
                 ["もっと詳細を詳細に書こう",                 adv_issues_little_detailed],
                 ["もう少し詳しくコメントを書いてあげよう",   adv_issues_little_comment],
                 ["終了したチケットにコメントを残そう",       adv_closed_issues_no_comment],
@@ -150,18 +132,43 @@ def grade(request, project_id):
                 ["実績時間を入力しよう",                     adv_closed_issues_no_actualHours],
                 ["チケットへ担当者をアサインしよう",         adv_readied_issues_no_assigner],
                 ["終了したチケットに完了理由をを入力しよう", adv_closed_issues_no_resolution],
-                ["チケットをマイルストーンへ関連づけよう",   adv_readied_issues_no_milestones]
+                ["チケットをマイルストーンへ関連づけよう",   adv_readied_issues_no_milestones],
+                ["",   []]
                 ]
 
-        keyList = ["message","issues"]
-        result_advice = [""] * len(adviceRows)
-        for i in range(len(adviceRows)):
-          result_advice[i] = {}
-          for j in range(len(keyList)):
-            result_advice[i][keyList[j]] = adviceRows[i][j]
+        advice_key = ["message","issues"]
+        result_advice = utils.set_Dict(advice_key,advice_rows)
 
-        result = [{"grade": result_grade}, {"advice": result_advice}]
+        point_detailed_issue = utils.get_point(detailed_issue_count, all_issue_count, 10)
+        point_detailed_comment = utils.get_point(detailed_comment_count, all_comment_count, 10)
+        point_closed_issue_with_comment = utils.get_point(closed_issue_with_comment_count, closed_issue_count, 10)
+        point_readied_issue_with_date = utils.get_point(readied_issue_with_ddate_count, readied_issue_count, 10)
+        point_readies_issue_with_estimated_hours = utils.get_point(readied_issue_with_etime_count, readied_issue_count, 10)
+        point_expired_and_closed_issue = utils.get_point(expired_closed_issue_count, expired_issue_count, 10)
+        point_closed_issue_with_actual_hours = utils.get_point(closed_issue_with_atime_count, closed_issue_count, 10)
+        point_readies_issue_with_assigner = utils.get_point(readied_issue_with_assigner_count, readied_issue_count, 10)
+        point_closed_issue_with_resolution = utils.get_point(closed_issue_with_resolution_count, closed_issue_count, 10)
+        point_readied_issue_with_milestones = utils.get_point(readied_issue_with_milestones_count, readied_issue_count, 10)
+
+        total_point = point_detailed_issue + point_detailed_comment + point_closed_issue_with_comment + point_readied_issue_with_date + point_readies_issue_with_estimated_hours + point_expired_and_closed_issue + point_closed_issue_with_actual_hours + point_readies_issue_with_assigner + point_closed_issue_with_resolution + point_readied_issue_with_milestones
+
+        grade_rows = [
+                utils.get_row("Total Point",                     0,                 0,     total_point, result_advice[10]),
+                utils.get_row("Detailed issue",                     detailed_issue_count,                 all_issue_count,     point_detailed_issue, result_advice[0]),
+                utils.get_row("Detailed comment",                   detailed_comment_count,               all_comment_count,   point_detailed_comment, result_advice[1]),
+                utils.get_row("Closed issue with comment",          closed_issue_with_comment_count,      closed_issue_count,  point_closed_issue_with_comment, result_advice[2]),
+                utils.get_row("Readied issue with due date",        readied_issue_with_ddate_count,       readied_issue_count, point_readied_issue_with_date, result_advice[3]),
+                utils.get_row("Readied issue with estimated hours", readied_issue_with_etime_count,       readied_issue_count, point_readies_issue_with_estimated_hours, result_advice[4]),
+                utils.get_row("Expired and closed issue",           expired_closed_issue_count,           expired_issue_count, point_expired_and_closed_issue, result_advice[5]),
+                utils.get_row("Closed issue with actual hours",     closed_issue_with_atime_count,        closed_issue_count,  point_closed_issue_with_actual_hours, result_advice[6]),
+                utils.get_row("Readied issue with assigner",        readied_issue_with_assigner_count,    readied_issue_count, point_readies_issue_with_assigner, result_advice[7]),
+                utils.get_row("Closed issue with resolution",       closed_issue_with_resolution_count,   closed_issue_count,  point_closed_issue_with_resolution, result_advice[8]),
+                utils.get_row("Readied issue with milestones",      readied_issue_with_milestones_count,  readied_issue_count, point_readied_issue_with_milestones, result_advice[9])
+                ]
+        grade_key = ["title","count","all_count","point", "advice"]
+        result_grade = utils.set_Dict(grade_key, grade_rows)
+
     except KeyError:
-        result = []
-    return JsonResponse(result, safe=False)
+        result_grade = []
+    return JsonResponse(result_grade, safe=False)
 
