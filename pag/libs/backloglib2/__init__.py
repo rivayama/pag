@@ -50,11 +50,12 @@ class Backlog():
         return self.client.get(api)
 
 
-    def get_issues(self, project_id):
+    def get_issues(self, project_id, offset=0):
         api = '%s/api/v2/issues' % self.host
         params = {
-          'projectId[]': project_id,
-          'count': 100,
+            'projectId[]': project_id,
+            'offset': offset,
+            'count': 100,
         }
         return self.client.get(api, params=params)
 

@@ -1,4 +1,4 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views.decorators.http import require_GET
 from pag import utils
 from datetime import datetime
@@ -28,13 +28,19 @@ def grade(request, project_id):
     try:
         backlog = utils.backlog(request, request.session['space'], token=request.session['token'])
 
-        # get project issue
-        issues = backlog.get_issues(project_id).json()
+        all_issue_count = backlog.get_count_issues(project_id).json()["count"]
+
+        c = int(all_issue_count / 100)
+        pages = c if (all_issue_count % 100) == 0 else c + 1
+
+        issues = []
+        offset = 0
+        for n in range(0, pages):
+            issues += backlog.get_issues(project_id, offset).json()
+            offset += 100
 
         # grade data initialize
         detailed_issue_count = 0
-        all_issue_count = backlog.get_count_issues(project_id).json()["count"]
-
         detailed_comment_count = 0
         all_comment_count = 0
 
@@ -64,7 +70,10 @@ def grade(request, project_id):
         adv_closed_issues_no_resolution = []
         adv_readied_issues_no_milestones = []
 
+        ii = 1
         for issue in issues:
+            utils.debug(ii)
+            ii += 1
             # get comment
             comments = backlog.get_comment(issue["id"]).json()
             for comment in comments:
