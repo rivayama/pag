@@ -163,7 +163,7 @@
 	              React.createElement("ul", {className: "nav nav-sidebar"}, 
 	                this.props.data.map(function(project, i) {
 	                  return (
-	                    React.createElement("li", {className: project.active ? 'active' : ''}, 
+	                    React.createElement("li", {className: project.active ? 'active' : '', key: i}, 
 	                      React.createElement("a", {href: '#/grade/'+project.id, key: i, onClick: this.loadGrade.bind(this, i)}, 
 	                        project.name
 	                      )
@@ -249,7 +249,6 @@
 
 	// {{{ Grade
 	var GradeList = React.createClass({displayName: "GradeList",
-
 	  propTypes: {
 	    data: React.PropTypes.array.isRequired
 	  },
@@ -270,42 +269,43 @@
 	      )
 	    );
 	  }
-
 	});
 
 	var GradeChart = React.createClass({displayName: "GradeChart",
+	  getChartData: function() {
+	    var labels = [], points = [];
+	    this.props.data.forEach(function(grade) {
+	      if (grade.title != 'Total Point') {
+	        labels.push(grade.title);
+	        points.push(grade.point);
+	      };
+	    });
+	    return {
+	      labels : labels,
+	      datasets : [
+	        {
+	          fillColor : "rgba(151,187,205,0.5)",
+	          strokeColor : "rgba(151,187,205,1)",
+	          pointColor : "rgba(151,187,205,1)",
+	          pointStrokeColor : "#fff",
+	          data : points,
+	        }
+	      ]
+	    };
+	  },
 
-	  chartData: {
-	    labels : ["Eating","Drinking","Sleeping","Designing","Coding","Partying","Running"],
-	    datasets : [
-	      {
-	        fillColor : "rgba(220,220,220,0.5)",
-	        strokeColor : "rgba(220,220,220,1)",
-	        pointColor : "rgba(220,220,220,1)",
-	        pointStrokeColor : "#fff",
-	        data : [65,59,90,81,56,55,40],
-	        title : "Year 2014"
-	      },
-	      {
-	        fillColor : "rgba(151,187,205,0.5)",
-	        strokeColor : "rgba(151,187,205,1)",
-	        pointColor : "rgba(151,187,205,1)",
-	        pointStrokeColor : "#fff",
-	        data : [28,48,40,19,96,27,100],
-	        title : "Year 2013"
-	      }
-	    ]
+	  chartOptions: {
+	    responsive: true,
 	  },
 
 	  render: function() {
-	    return React.createElement("canvas", {id: "chart", height: "600", width: "1000"});
+	    return React.createElement("canvas", {id: "chart"});
 	  },
 
 	  componentDidMount: function() {
 	    var context = document.getElementById("chart").getContext("2d");
-	    new Chart(context).Radar(this.chartData);
+	    new Chart(context).Radar(this.getChartData(), this.chartOptions);
 	  }
-
 	});
 
 	var GradeItemWrapper = React.createClass({displayName: "GradeItemWrapper",
