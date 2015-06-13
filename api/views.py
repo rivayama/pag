@@ -70,10 +70,7 @@ def grade(request, project_id):
         adv_closed_issues_no_resolution = []
         adv_readied_issues_no_milestones = []
 
-        ii = 1
         for issue in issues:
-            utils.debug(ii)
-            ii += 1
             # get comment
             comments = backlog.get_comment(issue["id"]).json()
             for comment in comments:
