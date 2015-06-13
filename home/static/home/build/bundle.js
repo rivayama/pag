@@ -48,14 +48,17 @@
 	'use strict';
 
 	var React = __webpack_require__(36);
-	var ButtonInput = __webpack_require__(2).ButtonInput;
-	var Panel = __webpack_require__(2).Panel;
-	var PanelGroup = __webpack_require__(2).PanelGroup;
-	var ListGroup = __webpack_require__(2).ListGroup;
+
+	var ButtonInput   = __webpack_require__(2).ButtonInput;
+	var Panel         = __webpack_require__(2).Panel;
+	var PanelGroup    = __webpack_require__(2).PanelGroup;
+	var ListGroup     = __webpack_require__(2).ListGroup;
 	var ListGroupItem = __webpack_require__(2).ListGroupItem;
-	var Jumbotron = __webpack_require__(2).Jumbotron;
-	var Alert = __webpack_require__(2).Alert;
-	var Glyphicon = __webpack_require__(2).Glyphicon;
+	var Jumbotron     = __webpack_require__(2).Jumbotron;
+	var Alert         = __webpack_require__(2).Alert;
+	var Glyphicon     = __webpack_require__(2).Glyphicon;
+	var Row           = __webpack_require__(2).Row;
+	var Col           = __webpack_require__(2).Col;
 
 	// {{{ Randing page
 	var RandingPage = React.createClass({displayName: "RandingPage",
@@ -250,24 +253,52 @@
 	// }}}
 
 	// {{{ Grade
+
 	var GradeList = React.createClass({displayName: "GradeList",
 	  propTypes: {
 	    data: React.PropTypes.array.isRequired
 	  },
-
 	  getDefaultProps: function() {
 	    return {
 	      data: [{'grade': []}]
 	    }
 	  },
-
 	  render: function() {
 	    return (
 	      React.createElement("div", null, 
+	        React.createElement(GradeTotal, {data: this.props.data}), 
 	        React.createElement(GradeChart, {data: this.props.data}), 
 	        this.props.data.map(function(grade, i) {
 	          return React.createElement(GradeItemWrapper, {key: i, data: grade});
 	        })
+	      )
+	    );
+	  }
+	});
+
+	var GradeTotal = React.createClass({displayName: "GradeTotal",
+	  render: function() {
+	    if (this.props.data.length < 1) return React.createElement("div", null);
+	    var total = this.props.data[0];
+	    if (total.point <= 50) {
+	      var summaryFont = 'danger';
+	      var summaryIcon = React.createElement(Glyphicon, {glyph: "fire"});
+	    } else if (total.point <= 70){
+	      var summaryFont = 'danger';
+	      var summaryIcon = '';
+	    } else if (total.point <= 85){
+	      var summaryFont = 'warning';
+	      var summaryIcon = '';
+	    } else if (total.point <= 100){
+	      var summaryFont = 'sucess';
+	      var summaryIcon = '';
+	    }
+	    return (
+	      React.createElement(Alert, {bsStyle: summaryFont}, 
+	        summaryIcon, 
+	        React.createElement("big", null, React.createElement("strong", null, " スコア：", total.point, "/100")), 
+	        React.createElement("br", null), 
+	        total.advice.message
 	      )
 	    );
 	  }
@@ -295,15 +326,18 @@
 	      ]
 	    };
 	  },
-
 	  chartOptions: {
 	    responsive: true,
 	  },
-
 	  render: function() {
-	    return React.createElement("canvas", {id: "chart"});
+	    return (
+	      React.createElement(Row, null, 
+	        React.createElement(Col, {xs: 12, md: 12, lg: 10, lgOffset: 1}, 
+	          React.createElement("canvas", {id: "chart"})
+	        )
+	      )
+	    );
 	  },
-
 	  componentDidMount: function() {
 	    var context = document.getElementById("chart").getContext("2d");
 	    new Chart(context).Radar(this.getChartData(), this.chartOptions);
@@ -312,15 +346,8 @@
 
 	var GradeItemWrapper = React.createClass({displayName: "GradeItemWrapper",
 	  render: function() {
-	    var title = React.createElement("h3", null, this.props.data.point, "/10 ", this.props.data.title);
-	    return this.props.data.title === 'Total Point' ?
-	      React.createElement(GradeSummaryItemWrapper, {data: this.props.data}) :
-	      React.createElement(GradeDetailItemWrapper, {data: this.props.data})
-	  }
-	});
+	    if (this.props.data.title === 'Total Point') return React.createElement("div", null);
 
-	var GradeDetailItemWrapper = React.createClass({displayName: "GradeDetailItemWrapper",
-	  render: function() {
 	    var title = React.createElement("h3", null, this.props.data.title, " : ", this.props.data.point, "/10");
 	    return (
 	      React.createElement(Panel, {header: title, bsStyle: "primary"}, 
@@ -336,32 +363,6 @@
 	            this.props.data.advice.issues
 	          )
 	        )
-	      )
-	    );
-	  }
-	});
-
-	var GradeSummaryItemWrapper = React.createClass({displayName: "GradeSummaryItemWrapper",
-	  render: function() {
-	    if (this.props.data.point <= 50) {
-	      var summaryFont = 'danger';
-	      var summaryIcon = 'fire';
-	    } else if (this.props.data.point <= 70){
-	      var summaryFont = 'danger';
-	      var summaryIcon = '';
-	    } else if (this.props.data.point <= 85){
-	      var summaryFont = 'warning';
-	      var summaryIcon = '';
-	    } else if (this.props.data.point <= 100){
-	      var summaryFont = 'sucess';
-	      var summaryIcon = '';
-	    }
-	    return (
-	      React.createElement(Alert, {bsStyle: summaryFont}, 
-	          React.createElement(Glyphicon, {glyph: summaryIcon}), 
-	          React.createElement("big", null, React.createElement("strong", null, " ", this.props.data.point, "/100 スコア")), 
-	          React.createElement("br", null), 
-	          this.props.data.advice.message
 	      )
 	    );
 	  }

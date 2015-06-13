@@ -2,14 +2,17 @@
 'use strict';
 
 var React = require('react');
-var ButtonInput = require('react-bootstrap').ButtonInput;
-var Panel = require('react-bootstrap').Panel;
-var PanelGroup = require('react-bootstrap').PanelGroup;
-var ListGroup = require('react-bootstrap').ListGroup;
+
+var ButtonInput   = require('react-bootstrap').ButtonInput;
+var Panel         = require('react-bootstrap').Panel;
+var PanelGroup    = require('react-bootstrap').PanelGroup;
+var ListGroup     = require('react-bootstrap').ListGroup;
 var ListGroupItem = require('react-bootstrap').ListGroupItem;
-var Jumbotron = require('react-bootstrap').Jumbotron;
-var Alert = require('react-bootstrap').Alert;
-var Glyphicon = require('react-bootstrap').Glyphicon;
+var Jumbotron     = require('react-bootstrap').Jumbotron;
+var Alert         = require('react-bootstrap').Alert;
+var Glyphicon     = require('react-bootstrap').Glyphicon;
+var Row           = require('react-bootstrap').Row;
+var Col           = require('react-bootstrap').Col;
 
 // {{{ Randing page
 var RandingPage = React.createClass({
@@ -204,25 +207,53 @@ var Loading = React.createClass({
 // }}}
 
 // {{{ Grade
+
 var GradeList = React.createClass({
   propTypes: {
     data: React.PropTypes.array.isRequired
   },
-
   getDefaultProps: function() {
     return {
       data: [{'grade': []}]
     }
   },
-
   render: function() {
     return (
       <div>
+        <GradeTotal data={this.props.data} />
         <GradeChart data={this.props.data} />
         {this.props.data.map(function(grade, i) {
           return <GradeItemWrapper key={i} data={grade}/>;
         })}
       </div>
+    );
+  }
+});
+
+var GradeTotal = React.createClass({
+  render: function() {
+    if (this.props.data.length < 1) return <div></div>;
+    var total = this.props.data[0];
+    if (total.point <= 50) {
+      var summaryFont = 'danger';
+      var summaryIcon = <Glyphicon glyph='fire' />;
+    } else if (total.point <= 70){
+      var summaryFont = 'danger';
+      var summaryIcon = '';
+    } else if (total.point <= 85){
+      var summaryFont = 'warning';
+      var summaryIcon = '';
+    } else if (total.point <= 100){
+      var summaryFont = 'sucess';
+      var summaryIcon = '';
+    }
+    return (
+      <Alert bsStyle={summaryFont} >
+        {summaryIcon}
+        <big><strong> スコア：{total.point}/100</strong></big>
+        <br />
+        {total.advice.message}
+      </Alert>
     );
   }
 });
@@ -249,15 +280,18 @@ var GradeChart = React.createClass({
       ]
     };
   },
-
   chartOptions: {
     responsive: true,
   },
-
   render: function() {
-    return <canvas id="chart"></canvas>;
+    return (
+      <Row>
+        <Col xs={12} md={12} lg={10} lgOffset={1}>
+          <canvas id="chart"></canvas>
+        </Col>
+      </Row>
+    );
   },
-
   componentDidMount: function() {
     var context = document.getElementById("chart").getContext("2d");
     new Chart(context).Radar(this.getChartData(), this.chartOptions);
@@ -266,15 +300,8 @@ var GradeChart = React.createClass({
 
 var GradeItemWrapper = React.createClass({
   render: function() {
-    var title = <h3>{this.props.data.point}/10 {this.props.data.title}</h3>;
-    return this.props.data.title === 'Total Point' ?
-      <GradeSummaryItemWrapper data={this.props.data}/> :
-      <GradeDetailItemWrapper data={this.props.data}/>
-  }
-});
+    if (this.props.data.title === 'Total Point') return <div></div>;
 
-var GradeDetailItemWrapper = React.createClass({
-  render: function() {
     var title = <h3>{this.props.data.title} : {this.props.data.point}/10</h3>;
     return (
       <Panel header={title} bsStyle='primary' >
@@ -291,32 +318,6 @@ var GradeDetailItemWrapper = React.createClass({
           </ListGroupItem>
         </ListGroup>
       </Panel>
-    );
-  }
-});
-
-var GradeSummaryItemWrapper = React.createClass({
-  render: function() {
-    if (this.props.data.point <= 50) {
-      var summaryFont = 'danger';
-      var summaryIcon = 'fire';
-    } else if (this.props.data.point <= 70){
-      var summaryFont = 'danger';
-      var summaryIcon = '';
-    } else if (this.props.data.point <= 85){
-      var summaryFont = 'warning';
-      var summaryIcon = '';
-    } else if (this.props.data.point <= 100){
-      var summaryFont = 'sucess';
-      var summaryIcon = '';
-    }
-    return (
-      <Alert bsStyle={summaryFont} >
-          <Glyphicon glyph={summaryIcon} />
-          <big><strong> {this.props.data.point}/100 スコア</strong></big>
-          <br />
-          {this.props.data.advice.message}
-      </Alert>
     );
   }
 });

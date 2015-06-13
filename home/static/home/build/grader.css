@@ -84,6 +84,9 @@ body#grader .main {
 body#grader .main .page-header {
   margin-top: 0;
 }
+body#grader .main canvas {
+  margin: 10px 0 20px;
+}
 
 
 /*
