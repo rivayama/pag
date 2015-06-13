@@ -8,6 +8,8 @@ var PanelGroup = require('react-bootstrap').PanelGroup;
 var ListGroup = require('react-bootstrap').ListGroup;
 var ListGroupItem = require('react-bootstrap').ListGroupItem;
 var Jumbotron = require('react-bootstrap').Jumbotron;
+var Alert = require('react-bootstrap').Alert;
+var Glyphicon = require('react-bootstrap').Glyphicon;
 
 // {{{ Randing page
 var RandingPage = React.createClass({
@@ -258,12 +260,26 @@ var GradeDetailItemWrapper = React.createClass({
 
 var GradeSummaryItemWrapper = React.createClass({
   render: function() {
+    if (this.props.data.point <= 50) {
+      var summaryFont = 'danger';
+      var summaryIcon = 'fire';
+    } else if (this.props.data.point <= 70){
+      var summaryFont = 'danger';
+      var summaryIcon = '';
+    } else if (this.props.data.point <= 85){
+      var summaryFont = 'warning';
+      var summaryIcon = '';
+    } else if (this.props.data.point <= 100){
+      var summaryFont = 'sucess';
+      var summaryIcon = '';
+    }
     return (
-      <Jumbotron>
-      <h1>
-        {this.props.data.title} : {this.props.data.point}/100
-      </h1>
-      </Jumbotron>
+      <Alert bsStyle={summaryFont} >
+          <Glyphicon glyph={summaryIcon} />
+          <big><strong> {this.props.data.point}/100 スコア</strong></big>
+          <br />
+          {this.props.data.advice.message}
+      </Alert>
     );
   }
 });
