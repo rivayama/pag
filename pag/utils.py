@@ -45,16 +45,9 @@ def get_row(title, numer, denom, point, advice):
     return [title, int(numer), int(denom), int(point), advice]
 
 
-def append_adv_issues(issue_list, append_issue, point):
-    if point < 1: issue_list.append(append_issue)
-    return issue_list
-
-
 def set_Dict(key_list, rows):
-    result = [""] * len(rows)
-    for i in range(len(rows)):
-        result[i] = {}
-        for j in range(len(key_list)):
-            result[i][key_list[j]] = rows[i][j]
+    result = {}
+    for j in range(len(key_list)):
+        result[key_list[j]] = rows[j]
     return result
 
