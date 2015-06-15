@@ -11,6 +11,7 @@ var ListGroupItem = require('react-bootstrap').ListGroupItem;
 var Jumbotron     = require('react-bootstrap').Jumbotron;
 var Alert         = require('react-bootstrap').Alert;
 var Glyphicon     = require('react-bootstrap').Glyphicon;
+var Accordion = require('react-bootstrap').Accordion;
 var Row           = require('react-bootstrap').Row;
 var Col           = require('react-bootstrap').Col;
 
@@ -222,9 +223,7 @@ var GradeList = React.createClass({
       <div>
         <GradeTotal data={this.props.data} />
         <GradeChart data={this.props.data} />
-        {this.props.data.map(function(grade, i) {
-          return <GradeItemWrapper key={i} data={grade}/>;
-        })}
+        <GradeItemWrapper data={this.props.data} />
       </div>
     );
   }
@@ -300,24 +299,41 @@ var GradeChart = React.createClass({
 
 var GradeItemWrapper = React.createClass({
   render: function() {
-    if (this.props.data.title === 'Total Point') return <div></div>;
-
-    var title = <h3>{this.props.data.title} : {this.props.data.point}/10</h3>;
-    return (
-      <Panel header={title} bsStyle='primary' >
-        <ListGroup detail>
-          <ListGroupItem>
-            分析したチケットまたはコメントの数：{this.props.data.all_count}<br/>
-            評価基準をクリアしたチケットまたはコメントの数：{this.props.data.count}
-          </ListGroupItem>
-
-          <ListGroupItem>
-            アドバイス：{this.props.data.advice.message}<br/>
-            改善が必要なチケット<br/>
-            {this.props.data.advice.issues}
-          </ListGroupItem>
-        </ListGroup>
-      </Panel>
+    return ( 
+        <div>
+          {this.props.data.map(function(grade, i) {
+            var title = <h3>{grade.title}</h3>;
+            if (grade.point <= 5) {
+              var detailFont = 'danger';
+              var detailIcon = <Glyphicon glyph='fire' />;
+            } else if (grade.point <= 7){
+              var detailFont = 'danger';
+              var detailIcon = '';
+            } else if (grade.point <= 8){
+              var detailFont = 'warning';
+              var detailIcon = '';
+            } else if (grade.point <= 10){
+              var detailFont = 'default';
+              var detailIcon = '';
+            }
+            return ( grade.title == 'Total Point' ?
+              <div></div> 
+                :
+              <Panel header={title} eventKey={i} bsStyle={detailFont} >
+                    {grade.advice.message}
+                    <br/>
+                    <br/>
+                    <Accordion >
+                      <Panel header='改善が必要なチケット' eventKey={i}>
+                        {grade.advice.issues.map(function(issues, i) {
+                          return <li key={i}> <a href={issues.issueUrl}> {issues.issueSummary}({issues.issueKey}) </a> </li>;
+                        })}
+                      </Panel>
+                    </Accordion>
+              </Panel>
+            );
+          })}
+        </div>
     );
   }
 });
