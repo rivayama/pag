@@ -11,7 +11,7 @@ var ListGroupItem = require('react-bootstrap').ListGroupItem;
 var Jumbotron     = require('react-bootstrap').Jumbotron;
 var Alert         = require('react-bootstrap').Alert;
 var Glyphicon     = require('react-bootstrap').Glyphicon;
-var Accordion = require('react-bootstrap').Accordion;
+var Accordion     = require('react-bootstrap').Accordion;
 var Row           = require('react-bootstrap').Row;
 var Col           = require('react-bootstrap').Col;
 
@@ -64,6 +64,7 @@ var Grader = React.createClass({
   getInitialState: function() {
     return {
       isLoading: false,
+      isFailed: false,
       grade: []
     };
   },
@@ -74,7 +75,7 @@ var Grader = React.createClass({
       project.active = false;
     });
     this.props.data[i].active = true;
-    this.setState({isLoading: true, grade: []});
+    this.setState({isLoading: true, isFailed: false, grade: []});
 
     $.ajax({
       url: '/api/grade/' + this.props.data[i].id,
@@ -82,11 +83,11 @@ var Grader = React.createClass({
       cache: false,
       success: function(data) {
         if (data.length > 0) {
-          this.setState({isLoading: false, grade: data});
+          this.setState({isLoading: false, isFailed: false, grade: data});
         }
       }.bind(this),
       error: function(xhr, status, err) {
-        console.error(this.props.url, status, err.toString());
+        this.setState({isLoading: false, isFailed: true});
       }.bind(this)
     });
   },
@@ -98,9 +99,14 @@ var Grader = React.createClass({
   },
 
   render: function() {
-    var grader = this.state.isLoading ?
-      <Loading /> : 
-      <GradeList data={this.state.grade} />
+    var page;
+    if (this.state.isLoading) {
+      page = <Loading />;
+    } else if (this.state.isFailed) {
+      page = <Failed />;
+    } else {
+      page = <GradeList data={this.state.grade} />;
+    }
 
     return (
       <div>
@@ -133,7 +139,7 @@ var Grader = React.createClass({
               </ul>
             </div>
             <div className="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-              {grader}
+              {page}
             </div>
           </div>
         </div>
@@ -202,7 +208,13 @@ var UserMenu = React.createClass({
 
 var Loading = React.createClass({
   render: function () {
-    return <img src="/static/home/img/loading.gif" />;
+    return <p><img src="/static/home/img/loading-bubbles.svg" /></p>;
+  }
+});
+
+var Failed = React.createClass({
+  render: function () {
+    return <Alert bsStyle='danger' >エラー！接続がタイムアウトしました。</Alert>;
   }
 });
 // }}}
@@ -317,19 +329,19 @@ var GradeItemWrapper = React.createClass({
               var detailIcon = '';
             }
             return ( grade.title == 'Total Point' ?
-              <div></div> 
+              <div key={'grade_'+i}></div> 
                 :
-              <Panel header={title} eventKey={i} bsStyle={detailFont} >
-                    {grade.advice.message}
-                    <br/>
-                    <br/>
-                    <Accordion >
-                      <Panel header='改善が必要なチケット' eventKey={i}>
-                        {grade.advice.issues.map(function(issues, i) {
-                          return <li key={i}> <a href={issues.issueUrl}> {issues.issueSummary}({issues.issueKey}) </a> </li>;
-                        })}
-                      </Panel>
-                    </Accordion>
+              <Panel header={title} eventKey={i} bsStyle={detailFont} key={'grade_'+i}>
+                {grade.advice.message}
+                <br/>
+                <br/>
+                <Accordion >
+                  <Panel header='改善が必要なチケット' eventKey={i}>
+                    {grade.advice.issues.map(function(issues, i) {
+                      return <li key={'issue_'+i}> <a href={issues.issueUrl}> {issues.issueSummary}({issues.issueKey}) </a> </li>;
+                    })}
+                  </Panel>
+                </Accordion>
               </Panel>
             );
           })}
