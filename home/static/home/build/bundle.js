@@ -407,7 +407,9 @@
 	      cache: false,
 	      success: function(data) {
 	        if (data.length > 0) {
-	          this.setState({page: 'project', projects: data});
+	          this.setState({page: 'grader', projects: data});
+	        } else {
+	          this.setState({page: 'randing'});
 	        }
 	      }.bind(this),
 	      error: function(xhr, status, err) {
@@ -418,23 +420,23 @@
 
 	  getInitialState: function() {
 	    return {
-	      page: 'unauthorized',
+	      page: 'loading',
 	      projects: [],
 	    };
 	  },
 
-	  componentWillMount: function() {},
-
 	  render: function() {
-	    if (this.state.page === 'unauthorized') {
-	      $('body').attr('id', 'randing');
-	    } else {
-	      $('body').attr('id', 'grader');
-	    }
+	    if (this.state.page === 'loading') {
+	      return React.createElement("div", null);
 
-	    return this.state.page === 'unauthorized' ?
-	      React.createElement(RandingPage, null) :
-	      React.createElement(Grader, {data: this.state.projects})
+	    } else if (this.state.page === 'randing') {
+	      $('body').attr('id', 'randing');
+	      return React.createElement(RandingPage, null);
+
+	    } else if (this.state.page === 'grader') {
+	      $('body').attr('id', 'grader');
+	      return React.createElement(Grader, {data: this.state.projects});
+	    }
 	  },
 
 	  componentDidMount: function() {

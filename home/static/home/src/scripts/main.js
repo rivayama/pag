@@ -361,7 +361,9 @@ var App = React.createClass({
       cache: false,
       success: function(data) {
         if (data.length > 0) {
-          this.setState({page: 'project', projects: data});
+          this.setState({page: 'grader', projects: data});
+        } else {
+          this.setState({page: 'randing'});
         }
       }.bind(this),
       error: function(xhr, status, err) {
@@ -372,23 +374,23 @@ var App = React.createClass({
 
   getInitialState: function() {
     return {
-      page: 'unauthorized',
+      page: 'loading',
       projects: [],
     };
   },
 
-  componentWillMount: function() {},
-
   render: function() {
-    if (this.state.page === 'unauthorized') {
-      $('body').attr('id', 'randing');
-    } else {
-      $('body').attr('id', 'grader');
-    }
+    if (this.state.page === 'loading') {
+      return <div></div>;
 
-    return this.state.page === 'unauthorized' ?
-      <RandingPage /> :
-      <Grader data={this.state.projects}/>
+    } else if (this.state.page === 'randing') {
+      $('body').attr('id', 'randing');
+      return <RandingPage />;
+
+    } else if (this.state.page === 'grader') {
+      $('body').attr('id', 'grader');
+      return <Grader data={this.state.projects}/>;
+    }
   },
 
   componentDidMount: function() {

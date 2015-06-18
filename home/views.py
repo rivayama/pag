@@ -3,14 +3,12 @@ from django.shortcuts import render, redirect
 from pag import utils
 
 def index(request):
-    context = {}
     try:
-        # 以下はライブラリの動作確認。実際は利用しない。
-        backlog = utils.backlog(request, request.session['space'], token=request.session['token'])
-        context['projects'] = backlog.get_projects().json()
+        if request.session['token']:
+            pass
     except KeyError:
         pass
-    return render(request, 'home/index.html', context)
+    return render(request, 'home/index.html', {})
 
 
 # XXX CSRFトークンのチェックを無効にする
