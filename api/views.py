@@ -179,20 +179,6 @@ def grade(request, project_id):
 
         total_point = point_detailed_issue + point_detailed_comment + point_closed_issue_with_comment + point_readied_issue_with_date + point_readies_issue_with_estimated_hours + point_expired_and_closed_issue + point_closed_issue_with_actual_hours + point_readies_issue_with_assigner + point_closed_issue_with_resolution + point_readied_issue_with_milestones
 
-                #utils.get_row("Total Point",                  0,                                    0,                   total_point),
-        #grade_rows = [
-                #utils.get_row("課題の詳細を詳しく書く",       detailed_issue_count,                 all_issue_count,     point_detailed_issue),
-                #utils.get_row("コメントを詳しく書く",         detailed_comment_count,               all_comment_count,   point_detailed_comment),
-                #utils.get_row("完了した課題にコメントを残す", closed_issue_with_comment_count,      closed_issue_count,  point_closed_issue_with_comment),
-                #utils.get_row("期限日を設定する",             readied_issue_with_ddate_count,       readied_issue_count, point_readied_issue_with_date),
-                #utils.get_row("予定時間を見積もる",           readied_issue_with_etime_count,       readied_issue_count, point_readies_issue_with_estimated_hours),
-                #utils.get_row("期限までに完了させる",         expired_closed_issue_count,           expired_issue_count, point_expired_and_closed_issue),
-                #utils.get_row("実績時間を記録する",           closed_issue_with_atime_count,        closed_issue_count,  point_closed_issue_with_actual_hours),
-                #utils.get_row("担当者を設定する",             readied_issue_with_assigner_count,    readied_issue_count, point_readies_issue_with_assigner),
-                #utils.get_row("完了理由を入れる",             closed_issue_with_resolution_count,   closed_issue_count,  point_closed_issue_with_resolution),
-                #utils.get_row("マイルストーンを活用する",     readied_issue_with_milestones_count,  readied_issue_count, point_readied_issue_with_milestones)
-                #]
-
         grade_rows = [
                 utils.get_row("課題の詳細を詳しく書く",       detailed_issue_count,                 all_issue_count,     point_detailed_issue, result_advices[1]),
                 utils.get_row("コメントを詳しく書く",         detailed_comment_count,               all_comment_count,   point_detailed_comment, result_advices[2]),
