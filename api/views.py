@@ -32,8 +32,10 @@ def grade(request, project_id):
 
         # set dictionary key
         advice_key = ["message","issues"]
-        advice_issues_key = ["issueKey","issueSummary","issueUrl"]
-        grade_key = ["title","count","all_count","point", "advice"]
+        advice_issues_key = ["issue_key","issue_summary","issue_url"]
+        detail_key = ["title","count","all_count","point", "advice"]
+        summary_key = ["point","issue_count","comment_count","project_id"]
+        grade_key = ["summary","detail"]
 
         c = int(all_issue_count / 100)
         pages = c if (all_issue_count % 100) == 0 else c + 1
@@ -178,7 +180,6 @@ def grade(request, project_id):
         total_point = point_detailed_issue + point_detailed_comment + point_closed_issue_with_comment + point_readied_issue_with_date + point_readies_issue_with_estimated_hours + point_expired_and_closed_issue + point_closed_issue_with_actual_hours + point_readies_issue_with_assigner + point_closed_issue_with_resolution + point_readied_issue_with_milestones
 
         grade_rows = [
-                utils.get_row("Total Point",                  0,                                    0,                   total_point, result_advices[0]),
                 utils.get_row("課題の詳細を詳しく書く",       detailed_issue_count,                 all_issue_count,     point_detailed_issue, result_advices[1]),
                 utils.get_row("コメントを詳しく書く",         detailed_comment_count,               all_comment_count,   point_detailed_comment, result_advices[2]),
                 utils.get_row("完了した課題にコメントを残す", closed_issue_with_comment_count,      closed_issue_count,  point_closed_issue_with_comment, result_advices[3]),
@@ -191,9 +192,13 @@ def grade(request, project_id):
                 utils.get_row("マイルストーンを活用する",     readied_issue_with_milestones_count,  readied_issue_count, point_readied_issue_with_milestones, result_advices[10])
                 ]
 
-        result_grade = [""] * len(grade_rows)
+        result_detail = [""] * len(grade_rows)
         for i in range(len(grade_rows)):
-            result_grade[i] = utils.set_Dict(grade_key, grade_rows[i])
+            result_detail[i] = utils.set_Dict(detail_key, grade_rows[i])
+
+        result_summary = utils.set_Dict(summary_key, [int(total_point), all_issue_count, all_comment_count, project_id])
+        result_grade = utils.set_Dict(grade_key, [result_summary, result_detail])
+
     except KeyError:
         result_grade = []
     return JsonResponse(result_grade, safe=False)

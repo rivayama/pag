@@ -65,7 +65,7 @@ var Grader = React.createClass({
     return {
       isLoading: false,
       isFailed: false,
-      grade: []
+      grade: {detail: [], summary:{}}
     };
   },
 
@@ -82,7 +82,7 @@ var Grader = React.createClass({
       dataType: 'json',
       cache: false,
       success: function(data) {
-        if (data.length > 0) {
+        if (data.detail.length > 0) {
           this.setState({isLoading: false, isFailed: false, grade: data});
         }
       }.bind(this),
@@ -99,6 +99,7 @@ var Grader = React.createClass({
   },
 
   render: function() {
+    console.log(this.state.grade);
     var page;
     if (this.state.isLoading) {
       page = <Loading />;
@@ -233,9 +234,9 @@ var GradeList = React.createClass({
   render: function() {
     return (
       <div>
-        <GradeTotal data={this.props.data} />
-        <GradeChart data={this.props.data} />
-        <GradeItemWrapper data={this.props.data} />
+        <GradeTotal data={this.props.data.summary} />
+        <GradeChart data={this.props.data.detail} />
+        <GradeItemWrapper data={this.props.data.detail} />
       </div>
     );
   }
@@ -243,8 +244,7 @@ var GradeList = React.createClass({
 
 var GradeTotal = React.createClass({
   render: function() {
-    if (this.props.data.length < 1) return <div></div>;
-    var total = this.props.data[0];
+    var total = this.props.data;
     if (total.point <= 50) {
       var summaryFont = 'danger';
       var summaryIcon = <Glyphicon glyph='fire' />;
@@ -263,7 +263,6 @@ var GradeTotal = React.createClass({
         {summaryIcon}
         <big><strong> スコア：{total.point}/100</strong></big>
         <br />
-        {total.advice.message}
       </Alert>
     );
   }
@@ -338,7 +337,7 @@ var GradeItemWrapper = React.createClass({
                 <Accordion >
                   <Panel header='改善が必要なチケット' eventKey={i}>
                     {grade.advice.issues.map(function(issues, i) {
-                      return <li key={'issue_'+i}> <a href={issues.issueUrl}> {issues.issueSummary}({issues.issueKey}) </a> </li>;
+                      return <li key={'issue_'+i}> <a href={issues.issue_url}> {issues.issue_summary}({issues.issue_key}) </a> </li>;
                     })}
                   </Panel>
                 </Accordion>
