@@ -145,7 +145,6 @@
 	  },
 
 	  render: function() {
-	    console.log(this.state.grade);
 	    var page;
 	    if (this.state.isLoading) {
 	      page = React.createElement(Loading, null);
@@ -307,8 +306,7 @@
 	    return (
 	      React.createElement(Alert, {bsStyle: summaryFont}, 
 	        summaryIcon, 
-	        React.createElement("big", null, React.createElement("strong", null, " スコア：", total.point, "/100")), 
-	        React.createElement("br", null)
+	        React.createElement("big", null, React.createElement("strong", null, " スコア：", total.point, "/100"))
 	      )
 	    );
 	  }
@@ -356,6 +354,7 @@
 
 	var GradeItemWrapper = React.createClass({displayName: "GradeItemWrapper",
 	  render: function() {
+	    var listStyle = {marginTop: '10px'};
 	    return ( 
 	        React.createElement("div", null, 
 	          this.props.data.map(function(grade, i) {
@@ -377,11 +376,10 @@
 	              React.createElement("div", {key: 'grade_'+i}) 
 	                :
 	              React.createElement(Panel, {header: title, eventKey: i, bsStyle: detailFont, key: 'grade_'+i}, 
-	                grade.advice.message, 
-	                React.createElement("br", null), 
-	                React.createElement("br", null), 
-	                React.createElement(Accordion, null, 
-	                  React.createElement(Panel, {header: "改善が必要なチケット", eventKey: i}, 
+	                React.createElement("p", null, grade.advice.message), 
+	                React.createElement("a", {href: "#collapseIsseus"+i, "data-toggle": "collapse", "aria-expanded": "false", "aria-controls": "collapseIsseus"+i}, "改善が必要なチケット（", grade.advice.issues.length, "件）"), 
+	                React.createElement("div", {className: "collapse", id: "collapseIsseus"+i}, 
+	                  React.createElement("ul", {style: listStyle}, 
 	                    grade.advice.issues.map(function(issues, i) {
 	                      return React.createElement("li", {key: 'issue_'+i}, " ", React.createElement("a", {href: issues.issue_url}, " ", issues.issue_summary, "(", issues.issue_key, ") "), " ");
 	                    })

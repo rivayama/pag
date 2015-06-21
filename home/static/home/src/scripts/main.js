@@ -99,7 +99,6 @@ var Grader = React.createClass({
   },
 
   render: function() {
-    console.log(this.state.grade);
     var page;
     if (this.state.isLoading) {
       page = <Loading />;
@@ -262,7 +261,6 @@ var GradeTotal = React.createClass({
       <Alert bsStyle={summaryFont} >
         {summaryIcon}
         <big><strong> スコア：{total.point}/100</strong></big>
-        <br />
       </Alert>
     );
   }
@@ -310,6 +308,7 @@ var GradeChart = React.createClass({
 
 var GradeItemWrapper = React.createClass({
   render: function() {
+    var listStyle = {marginTop: '10px'};
     return ( 
         <div>
           {this.props.data.map(function(grade, i) {
@@ -331,16 +330,15 @@ var GradeItemWrapper = React.createClass({
               <div key={'grade_'+i}></div> 
                 :
               <Panel header={title} eventKey={i} bsStyle={detailFont} key={'grade_'+i}>
-                {grade.advice.message}
-                <br/>
-                <br/>
-                <Accordion >
-                  <Panel header='改善が必要なチケット' eventKey={i}>
+                <p>{grade.advice.message}</p>
+                <a href={"#collapseIsseus"+i} data-toggle="collapse" aria-expanded="false" aria-controls={"collapseIsseus"+i}>改善が必要なチケット（{grade.advice.issues.length}件）</a>
+                <div className="collapse" id={"collapseIsseus"+i}>
+                  <ul style={listStyle}>
                     {grade.advice.issues.map(function(issues, i) {
                       return <li key={'issue_'+i}> <a href={issues.issue_url}> {issues.issue_summary}({issues.issue_key}) </a> </li>;
                     })}
-                  </Panel>
-                </Accordion>
+                  </ul>
+                </div>
               </Panel>
             );
           })}
