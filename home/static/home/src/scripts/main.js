@@ -15,6 +15,8 @@ var Accordion     = require('react-bootstrap').Accordion;
 var Row           = require('react-bootstrap').Row;
 var Col           = require('react-bootstrap').Col;
 
+var project_id = 0;
+
 // {{{ Randing page
 var RandingPage = React.createClass({
   render: function() {
@@ -71,17 +73,19 @@ var Grader = React.createClass({
 
   loadGrade: function(i) {
     // Activate project
-    this.props.data.map(function(project, i){
-      project.active = false;
-    });
+    this.props.data.map(function(project, i){ project.active = false; });
     this.props.data[i].active = true;
     this.setState({isLoading: true, isFailed: false, grade: []});
 
+    project_id = this.props.data[i].id;
     $.ajax({
-      url: '/api/grade/' + this.props.data[i].id,
+      url: '/api/grade/' + project_id,
       dataType: 'json',
       cache: false,
       success: function(data) {
+        console.log(data.summary.project_id);
+        // Don't render if not current project_id
+        if (data.summary.project_id != project_id) { return; }
         if (data.detail.length > 0) {
           this.setState({isLoading: false, isFailed: false, grade: data});
         }
