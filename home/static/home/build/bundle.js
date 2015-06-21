@@ -111,7 +111,7 @@
 	    return {
 	      isLoading: false,
 	      isFailed: false,
-	      grade: []
+	      grade: {detail: [], summary:{}}
 	    };
 	  },
 
@@ -128,7 +128,7 @@
 	      dataType: 'json',
 	      cache: false,
 	      success: function(data) {
-	        if (data.length > 0) {
+	        if (data.detail.length > 0) {
 	          this.setState({isLoading: false, isFailed: false, grade: data});
 	        }
 	      }.bind(this),
@@ -145,6 +145,7 @@
 	  },
 
 	  render: function() {
+	    console.log(this.state.grade);
 	    var page;
 	    if (this.state.isLoading) {
 	      page = React.createElement(Loading, null);
@@ -279,9 +280,9 @@
 	  render: function() {
 	    return (
 	      React.createElement("div", null, 
-	        React.createElement(GradeTotal, {data: this.props.data}), 
-	        React.createElement(GradeChart, {data: this.props.data}), 
-	        React.createElement(GradeItemWrapper, {data: this.props.data})
+	        React.createElement(GradeTotal, {data: this.props.data.summary}), 
+	        React.createElement(GradeChart, {data: this.props.data.detail}), 
+	        React.createElement(GradeItemWrapper, {data: this.props.data.detail})
 	      )
 	    );
 	  }
@@ -289,8 +290,7 @@
 
 	var GradeTotal = React.createClass({displayName: "GradeTotal",
 	  render: function() {
-	    if (this.props.data.length < 1) return React.createElement("div", null);
-	    var total = this.props.data[0];
+	    var total = this.props.data;
 	    if (total.point <= 50) {
 	      var summaryFont = 'danger';
 	      var summaryIcon = React.createElement(Glyphicon, {glyph: "fire"});
@@ -308,8 +308,7 @@
 	      React.createElement(Alert, {bsStyle: summaryFont}, 
 	        summaryIcon, 
 	        React.createElement("big", null, React.createElement("strong", null, " スコア：", total.point, "/100")), 
-	        React.createElement("br", null), 
-	        total.advice.message
+	        React.createElement("br", null)
 	      )
 	    );
 	  }
@@ -384,7 +383,7 @@
 	                React.createElement(Accordion, null, 
 	                  React.createElement(Panel, {header: "改善が必要なチケット", eventKey: i}, 
 	                    grade.advice.issues.map(function(issues, i) {
-	                      return React.createElement("li", {key: 'issue_'+i}, " ", React.createElement("a", {href: issues.issueUrl}, " ", issues.issueSummary, "(", issues.issueKey, ") "), " ");
+	                      return React.createElement("li", {key: 'issue_'+i}, " ", React.createElement("a", {href: issues.issue_url}, " ", issues.issue_summary, "(", issues.issue_key, ") "), " ");
 	                    })
 	                  )
 	                )
