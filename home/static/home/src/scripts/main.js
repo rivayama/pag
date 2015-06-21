@@ -310,10 +310,12 @@ var GradeChart = React.createClass({
 
 var GradeItemWrapper = React.createClass({
   render: function() {
+    var list_styles = {marginTop: '10px'};
     return ( 
         <div>
           {this.props.data.map(function(grade, i) {
             var title = <h3>{grade.title}</h3>;
+            var length = grade.advice.issues.length;
             if (grade.point <= 5) {
               var detailFont = 'danger';
               var detailIcon = <Glyphicon glyph='fire' />;
@@ -331,16 +333,15 @@ var GradeItemWrapper = React.createClass({
               <div key={'grade_'+i}></div> 
                 :
               <Panel header={title} eventKey={i} bsStyle={detailFont} key={'grade_'+i}>
-                {grade.advice.message}
-                <br/>
-                <br/>
-                <Accordion >
-                  <Panel header='改善が必要なチケット' eventKey={i}>
+                <p>{grade.advice.message}</p>
+                <a href="#collapseIssues" data-toggle="collapse" data-target={"#collapseIssues"+i} aria-expanded="false" aria-controls={"collapseIssues"+i}>改善が必要なチケット（{length+'件'}）</a>
+                <div className="collapse" id={"collapseIssues"+i}>
+                  <ul style={list_styles}>
                     {grade.advice.issues.map(function(issues, i) {
                       return <li key={'issue_'+i}> <a href={issues.issue_url}> {issues.issue_summary}({issues.issue_key}) </a> </li>;
                     })}
-                  </Panel>
-                </Accordion>
+                  </ul>
+                </div>
               </Panel>
             );
           })}
