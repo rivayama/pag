@@ -78,19 +78,19 @@ var Grader = React.createClass({
     this.setState({isLoading: true, isFailed: false, grade: []});
 
     project_id = this.props.data[i].id;
+
     $.ajax({
       url: '/api/grade/' + project_id,
       dataType: 'json',
       cache: false,
       success: function(data) {
-        console.log(data.summary.project_id);
-        // Don't render if not current project_id
-        if (data.summary.project_id != project_id) { return; }
+        if (data.summary.project_id != project_id) { return; } // Don't render if not current project_id
         if (data.detail.length > 0) {
           this.setState({isLoading: false, isFailed: false, grade: data});
         }
       }.bind(this),
       error: function(xhr, status, err) {
+        if (data.summary.project_id != project_id) { return; } // Don't render if not current project_id
         this.setState({isLoading: false, isFailed: true});
       }.bind(this)
     });
