@@ -67,6 +67,7 @@ var Grader = React.createClass({
     return {
       isLoading: false,
       isFailed: false,
+      failedMsg: '',
       grade: {detail: [], summary:{}}
     };
   },
@@ -85,13 +86,15 @@ var Grader = React.createClass({
       cache: false,
       success: function(data) {
         if (data.summary.project_id != project_id) { return; } // Don't render if not current project_id
-        if (data.detail.length > 0) {
+        if (typeof(data.error) != 'undefined') {
+          this.setState({isLoading: false, isFailed: true, failedMsg: data.error.message});
+        } else if (data.detail.length > 0) {
           this.setState({isLoading: false, isFailed: false, grade: data});
         }
       }.bind(this),
       error: function(xhr, status, err) {
-        if (data.summary.project_id != project_id) { return; } // Don't render if not current project_id
-        this.setState({isLoading: false, isFailed: true});
+        if (! this.state.isLoading) { return; } // Don't render if loading is finished by the other project
+        this.setState({isLoading: false, isFailed: true, failedMsg: "エラー！接続がタイムアウトしました。"});
       }.bind(this)
     });
   },
@@ -107,7 +110,7 @@ var Grader = React.createClass({
     if (this.state.isLoading) {
       page = <Loading />;
     } else if (this.state.isFailed) {
-      page = <Failed />;
+      page = <Failed data={this.state.failedMsg} />;
     } else {
       page = <GradeList data={this.state.grade} />;
     }
@@ -218,7 +221,7 @@ var Loading = React.createClass({
 
 var Failed = React.createClass({
   render: function () {
-    return <Alert bsStyle='danger' >エラー！接続がタイムアウトしました。</Alert>;
+    return <Alert bsStyle='danger' >{this.props.data}</Alert>;
   }
 });
 // }}}

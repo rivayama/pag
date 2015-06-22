@@ -26,8 +26,6 @@ def myself(request):
 def grade(request, project_id):
     try:
         backlog = utils.backlog(request, request.session['space'], token=request.session['token'])
-
-        all_issue_count = backlog.get_count_issues(project_id).json()["count"]
         backlog_url = backlog.get_host()
 
         # set dictionary key
@@ -36,6 +34,13 @@ def grade(request, project_id):
         detail_key        = ["title","count","all_count","point", "advice"]
         summary_key       = ["point","issue_count","comment_count","project_id"]
         grade_key         = ["summary","detail"]
+
+        all_issue_count = backlog.get_count_issues(project_id).json()["count"]
+        limit = 200
+        if all_issue_count >= limit:
+            summary = {"project_id": project_id}
+            error   = {"message": "申し訳ございません。現在%d件以上のチケットを持つプロジェクトの分析には対応しておりません。" % limit}
+            return JsonResponse({"summary": summary, "error": error})
 
         c = int(all_issue_count / 100)
         pages = c if (all_issue_count % 100) == 0 else c + 1
