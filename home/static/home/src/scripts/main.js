@@ -14,8 +14,7 @@ var Glyphicon     = require('react-bootstrap').Glyphicon;
 var Accordion     = require('react-bootstrap').Accordion;
 var Row           = require('react-bootstrap').Row;
 var Col           = require('react-bootstrap').Col;
-
-var project_id = 0;
+var Table           = require('react-bootstrap').Table;
 
 // {{{ Randing page
 var RandingPage = React.createClass({
@@ -67,34 +66,29 @@ var Grader = React.createClass({
     return {
       isLoading: false,
       isFailed: false,
-      failedMsg: '',
       grade: {detail: [], summary:{}}
     };
   },
 
   loadGrade: function(i) {
     // Activate project
-    this.props.data.map(function(project, i){ project.active = false; });
+    this.props.data.map(function(project, i){
+      project.active = false;
+    });
     this.props.data[i].active = true;
     this.setState({isLoading: true, isFailed: false, grade: []});
 
-    project_id = this.props.data[i].id;
-
     $.ajax({
-      url: '/api/grade/' + project_id,
+      url: '/api/grade/' + this.props.data[i].id,
       dataType: 'json',
       cache: false,
       success: function(data) {
-        if (data.summary.project_id != project_id) { return; } // Don't render if not current project_id
-        if (typeof(data.error) != 'undefined') {
-          this.setState({isLoading: false, isFailed: true, failedMsg: data.error.message});
-        } else if (data.detail.length > 0) {
+        if (data.detail.length > 0) {
           this.setState({isLoading: false, isFailed: false, grade: data});
         }
       }.bind(this),
       error: function(xhr, status, err) {
-        if (! this.state.isLoading) { return; } // Don't render if loading is finished by the other project
-        this.setState({isLoading: false, isFailed: true, failedMsg: "エラー！接続がタイムアウトしました。"});
+        this.setState({isLoading: false, isFailed: true});
       }.bind(this)
     });
   },
@@ -106,11 +100,12 @@ var Grader = React.createClass({
   },
 
   render: function() {
+    console.log(this.state.grade);
     var page;
     if (this.state.isLoading) {
       page = <Loading />;
     } else if (this.state.isFailed) {
-      page = <Failed data={this.state.failedMsg} />;
+      page = <Failed />;
     } else {
       page = <GradeList data={this.state.grade} />;
     }
@@ -221,7 +216,7 @@ var Loading = React.createClass({
 
 var Failed = React.createClass({
   render: function () {
-    return <Alert bsStyle='danger' >{this.props.data}</Alert>;
+    return <Alert bsStyle='danger' >エラー！接続がタイムアウトしました。</Alert>;
   }
 });
 // }}}
@@ -251,24 +246,72 @@ var GradeList = React.createClass({
 var GradeTotal = React.createClass({
   render: function() {
     var total = this.props.data;
-    if (total.point <= 50) {
+    if (total.point < 50) {
       var summaryFont = 'danger';
       var summaryIcon = <Glyphicon glyph='fire' />;
-    } else if (total.point <= 70){
+      var summaryGrade = 'E';
+      var summaryGradeStyle = {
+        color: '#CD5629',
+      };
+    } else if (total.point < 70){
       var summaryFont = 'danger';
       var summaryIcon = '';
-    } else if (total.point <= 85){
+      var summaryGrade = 'D';
+      var summaryGradeStyle = {
+        color: '#CD5629',
+      };
+    } else if (total.point < 85){
       var summaryFont = 'warning';
       var summaryIcon = '';
+      var summaryGrade = 'C';
+      var summaryGradeStyle = {
+        color: '#FFCC00',
+      };
+    } else if (total.point < 95){
+      var summaryFont = 'warning';
+      var summaryIcon = '';
+      var summaryGrade = 'B';
+      var summaryGradeStyle = {
+        color: '#00ff00',
+      };
     } else if (total.point <= 100){
       var summaryFont = 'sucess';
       var summaryIcon = '';
+      var summaryGrade = 'A';
+      var summaryGradeStyle = {
+        color: '#00ff00',
+      };
     }
     return (
-      <Alert bsStyle={summaryFont} >
-        {summaryIcon}
-        <big><strong> スコア：{total.point}/100</strong></big>
-      </Alert>
+      <div>
+        <h2> {total.project_name} </h2>
+
+        <h3> サマリ情報 </h3>
+        <Table bordered condensed hover>
+        <thead>
+        <tr>
+          <th>grade</th>
+          <th>チケット数</th>
+          <th>コメント数</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+        <td>
+          <div style={summaryGradeStyle} >
+            <big><strong> {summaryIcon} {summaryGrade} ({total.point}%)</strong></big>
+          </div>
+        </td>
+        <td>
+          <big>{total.issue_count}</big>
+        </td>
+        <td>
+          <big>{total.comment_count}</big>
+        </td>
+        </tr>
+        </tbody>
+        </Table>
+      </div>
     );
   }
 });
@@ -277,8 +320,10 @@ var GradeChart = React.createClass({
   getChartData: function() {
     var labels = [], points = [];
     this.props.data.forEach(function(grade) {
-      if (grade.title != 'Total Point') {
-        labels.push(grade.title);
+      labels.push(grade.title);
+      if (grade.point == 0){
+        points.push(1);
+      }else{
         points.push(grade.point);
       };
     });
@@ -315,7 +360,6 @@ var GradeChart = React.createClass({
 
 var GradeItemWrapper = React.createClass({
   render: function() {
-    var listStyle = {marginTop: '10px'};
     return ( 
         <div>
           {this.props.data.map(function(grade, i) {
@@ -337,15 +381,16 @@ var GradeItemWrapper = React.createClass({
               <div key={'grade_'+i}></div> 
                 :
               <Panel header={title} eventKey={i} bsStyle={detailFont} key={'grade_'+i}>
-                <p>{grade.advice.message}</p>
-                <a href={"#collapseIsseus"+i} data-toggle="collapse" aria-expanded="false" aria-controls={"collapseIsseus"+i}>改善が必要なチケット（{grade.advice.issues.length}件）</a>
-                <div className="collapse" id={"collapseIsseus"+i}>
-                  <ul style={listStyle}>
+                {grade.advice.message}
+                <br/>
+                <br/>
+                <Accordion >
+                  <Panel header='改善が必要なチケット' eventKey={i}>
                     {grade.advice.issues.map(function(issues, i) {
                       return <li key={'issue_'+i}> <a href={issues.issue_url}> {issues.issue_summary}({issues.issue_key}) </a> </li>;
                     })}
-                  </ul>
-                </div>
+                  </Panel>
+                </Accordion>
               </Panel>
             );
           })}
