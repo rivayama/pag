@@ -62,6 +62,8 @@
 	var Col           = __webpack_require__(2).Col;
 	var Table           = __webpack_require__(2).Table;
 
+	var project_id = 0;
+
 	// {{{ Randing page
 	var RandingPage = React.createClass({displayName: "RandingPage",
 	  render: function() {
@@ -112,29 +114,34 @@
 	    return {
 	      isLoading: false,
 	      isFailed: false,
+	      failedMsg: '',
 	      grade: {detail: [], summary:{}}
 	    };
 	  },
 
 	  loadGrade: function(i) {
 	    // Activate project
-	    this.props.data.map(function(project, i){
-	      project.active = false;
-	    });
+	    this.props.data.map(function(project, i){ project.active = false; });
 	    this.props.data[i].active = true;
 	    this.setState({isLoading: true, isFailed: false, grade: []});
 
+	    project_id = this.props.data[i].id;
+
 	    $.ajax({
-	      url: '/api/grade/' + this.props.data[i].id,
+	      url: '/api/grade/' + project_id,
 	      dataType: 'json',
 	      cache: false,
 	      success: function(data) {
-	        if (data.detail.length > 0) {
+	        if (data.summary.project_id != project_id) { return; } // Don't render if not current project_id
+	        if (typeof(data.error) != 'undefined') {
+	          this.setState({isLoading: false, isFailed: true, failedMsg: data.error.message});
+	        } else if (data.detail.length > 0) {
 	          this.setState({isLoading: false, isFailed: false, grade: data});
 	        }
 	      }.bind(this),
 	      error: function(xhr, status, err) {
-	        this.setState({isLoading: false, isFailed: true});
+	        if (! this.state.isLoading) { return; } // Don't render if loading is finished by the other project
+	        this.setState({isLoading: false, isFailed: true, failedMsg: "エラー！接続がタイムアウトしました。"});
 	      }.bind(this)
 	    });
 	  },
@@ -146,12 +153,11 @@
 	  },
 
 	  render: function() {
-	    console.log(this.state.grade);
 	    var page;
 	    if (this.state.isLoading) {
 	      page = React.createElement(Loading, null);
 	    } else if (this.state.isFailed) {
-	      page = React.createElement(Failed, null);
+	      page = React.createElement(Failed, {data: this.state.failedMsg});
 	    } else {
 	      page = React.createElement(GradeList, {data: this.state.grade});
 	    }
@@ -262,7 +268,7 @@
 
 	var Failed = React.createClass({displayName: "Failed",
 	  render: function () {
-	    return React.createElement(Alert, {bsStyle: "danger"}, "エラー！接続がタイムアウトしました。");
+	    return React.createElement(Alert, {bsStyle: "danger"}, this.props.data);
 	  }
 	});
 	// }}}
@@ -332,7 +338,6 @@
 	      React.createElement("div", null, 
 	        React.createElement("h2", null, " ", total.project_name, " "), 
 
-	        React.createElement("h3", null, " サマリ情報 "), 
 	        React.createElement(Table, {bordered: true, condensed: true, hover: true}, 
 	        React.createElement("thead", null, 
 	        React.createElement("tr", null, 
@@ -406,6 +411,7 @@
 
 	var GradeItemWrapper = React.createClass({displayName: "GradeItemWrapper",
 	  render: function() {
+	    var listStyle = {marginTop: '10px'};
 	    return ( 
 	        React.createElement("div", null, 
 	          this.props.data.map(function(grade, i) {
@@ -427,11 +433,10 @@
 	              React.createElement("div", {key: 'grade_'+i}) 
 	                :
 	              React.createElement(Panel, {header: title, eventKey: i, bsStyle: detailFont, key: 'grade_'+i}, 
-	                grade.advice.message, 
-	                React.createElement("br", null), 
-	                React.createElement("br", null), 
-	                React.createElement(Accordion, null, 
-	                  React.createElement(Panel, {header: "改善が必要なチケット", eventKey: i}, 
+	                React.createElement("p", null, grade.advice.message), 
+	                React.createElement("a", {href: "#collapseIsseus"+i, "data-toggle": "collapse", "aria-expanded": "false", "aria-controls": "collapseIsseus"+i}, "改善が必要なチケット（", grade.advice.issues.length, "件）"), 
+	                React.createElement("div", {className: "collapse", id: "collapseIsseus"+i}, 
+	                  React.createElement("ul", {style: listStyle}, 
 	                    grade.advice.issues.map(function(issues, i) {
 	                      return React.createElement("li", {key: 'issue_'+i}, " ", React.createElement("a", {href: issues.issue_url}, " ", issues.issue_summary, "(", issues.issue_key, ") "), " ");
 	                    })
