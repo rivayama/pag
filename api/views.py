@@ -29,12 +29,13 @@ def grade(request, project_id):
 
         all_issue_count = backlog.get_count_issues(project_id).json()["count"]
         backlog_url = backlog.get_host()
+        project_name = backlog.get_projects_detail(project_id).json()["name"]
 
         # set dictionary key
         advice_key = ["message","issues"]
         advice_issues_key = ["issue_key","issue_summary","issue_url"]
         detail_key = ["title","count","all_count","point", "advice"]
-        summary_key = ["point","issue_count","comment_count","project_id"]
+        summary_key = ["point","issue_count","comment_count","project_id","project_name"]
         grade_key = ["summary","detail"]
 
         c = int(all_issue_count / 100)
@@ -84,10 +85,10 @@ def grade(request, project_id):
                 point = utils.get_linear_point(len(comment["content"])) if comment["content"] else 0
                 # sum comment
                 detailed_comment_count += point
-                if point < 1: adv_issues_little_comment.append(utils.set_Dict(advice_issues_key, 
+                if point > 0 and point < 1: adv_issues_little_comment.append(utils.set_Dict(advice_issues_key, 
                         [issue["issueKey"]+"#comment-"+str(comment["id"]), issue["summary"], 
                             str(backlog_url)+"/view/"+issue["issueKey"]+"#comment-"+str(comment["id"])]))
-                all_comment_count += 1
+                all_comment_count += 1 if comment["content"] else 0
 
             # sum detailed issue
             point = utils.get_linear_point(len(issue["description"]))
@@ -196,7 +197,7 @@ def grade(request, project_id):
         for i in range(len(grade_rows)):
             result_detail[i] = utils.set_Dict(detail_key, grade_rows[i])
 
-        result_summary = utils.set_Dict(summary_key, [int(total_point), all_issue_count, all_comment_count, project_id])
+        result_summary = utils.set_Dict(summary_key, [int(total_point), all_issue_count, all_comment_count, project_id, project_name])
         result_grade = utils.set_Dict(grade_key, [result_summary, result_detail])
 
     except KeyError:
