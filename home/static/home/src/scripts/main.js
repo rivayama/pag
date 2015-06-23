@@ -16,6 +16,8 @@ var Row           = require('react-bootstrap').Row;
 var Col           = require('react-bootstrap').Col;
 var Table           = require('react-bootstrap').Table;
 
+var project_id = 0;
+
 // {{{ Randing page
 var RandingPage = React.createClass({
   render: function() {
@@ -66,29 +68,34 @@ var Grader = React.createClass({
     return {
       isLoading: false,
       isFailed: false,
+      failedMsg: '',
       grade: {detail: [], summary:{}}
     };
   },
 
   loadGrade: function(i) {
     // Activate project
-    this.props.data.map(function(project, i){
-      project.active = false;
-    });
+    this.props.data.map(function(project, i){ project.active = false; });
     this.props.data[i].active = true;
     this.setState({isLoading: true, isFailed: false, grade: []});
 
+    project_id = this.props.data[i].id;
+
     $.ajax({
-      url: '/api/grade/' + this.props.data[i].id,
+      url: '/api/grade/' + project_id,
       dataType: 'json',
       cache: false,
       success: function(data) {
-        if (data.detail.length > 0) {
+        if (data.summary.project_id != project_id) { return; } // Don't render if not current project_id
+        if (typeof(data.error) != 'undefined') {
+          this.setState({isLoading: false, isFailed: true, failedMsg: data.error.message});
+        } else if (data.detail.length > 0) {
           this.setState({isLoading: false, isFailed: false, grade: data});
         }
       }.bind(this),
       error: function(xhr, status, err) {
-        this.setState({isLoading: false, isFailed: true});
+        if (! this.state.isLoading) { return; } // Don't render if loading is finished by the other project
+        this.setState({isLoading: false, isFailed: true, failedMsg: "エラー！接続がタイムアウトしました。"});
       }.bind(this)
     });
   },
@@ -100,12 +107,11 @@ var Grader = React.createClass({
   },
 
   render: function() {
-    console.log(this.state.grade);
     var page;
     if (this.state.isLoading) {
       page = <Loading />;
     } else if (this.state.isFailed) {
-      page = <Failed />;
+      page = <Failed data={this.state.failedMsg} />;
     } else {
       page = <GradeList data={this.state.grade} />;
     }
@@ -216,7 +222,7 @@ var Loading = React.createClass({
 
 var Failed = React.createClass({
   render: function () {
-    return <Alert bsStyle='danger' >エラー！接続がタイムアウトしました。</Alert>;
+    return <Alert bsStyle='danger' >{this.props.data}</Alert>;
   }
 });
 // }}}
@@ -286,7 +292,6 @@ var GradeTotal = React.createClass({
       <div>
         <h2> {total.project_name} </h2>
 
-        <h3> サマリ情報 </h3>
         <Table bordered condensed hover>
         <thead>
         <tr>
@@ -360,6 +365,7 @@ var GradeChart = React.createClass({
 
 var GradeItemWrapper = React.createClass({
   render: function() {
+    var listStyle = {marginTop: '10px'};
     return ( 
         <div>
           {this.props.data.map(function(grade, i) {
@@ -381,16 +387,15 @@ var GradeItemWrapper = React.createClass({
               <div key={'grade_'+i}></div> 
                 :
               <Panel header={title} eventKey={i} bsStyle={detailFont} key={'grade_'+i}>
-                {grade.advice.message}
-                <br/>
-                <br/>
-                <Accordion >
-                  <Panel header='改善が必要なチケット' eventKey={i}>
+                <p>{grade.advice.message}</p>
+                <a href={"#collapseIsseus"+i} data-toggle="collapse" aria-expanded="false" aria-controls={"collapseIsseus"+i}>改善が必要なチケット（{grade.advice.issues.length}件）</a>
+                <div className="collapse" id={"collapseIsseus"+i}>
+                  <ul style={listStyle}>
                     {grade.advice.issues.map(function(issues, i) {
                       return <li key={'issue_'+i}> <a href={issues.issue_url}> {issues.issue_summary}({issues.issue_key}) </a> </li>;
                     })}
-                  </Panel>
-                </Accordion>
+                  </ul>
+                </div>
               </Panel>
             );
           })}
