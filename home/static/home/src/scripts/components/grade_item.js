@@ -1,3 +1,6 @@
+var Panel     = require('react-bootstrap').Panel;
+var Glyphicon = require('react-bootstrap').Glyphicon;
+
 var GradeItem = React.createClass({
   render: function() {
     var listStyle = {marginTop: '10px'};

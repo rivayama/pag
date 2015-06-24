@@ -3,16 +3,14 @@
 
 var project_id = 0;
 
+var Alert      = require('react-bootstrap').Alert;
 var UserMenu   = require('./components/user_menu.js');
 var MenuButton = require('./components/menu_button.js');
 var Loading    = require('./components/loading.js');
+
 var GradeChart = require('./components/grade_chart.js');
 var GradeTotal = require('./components/grade_total.js');
 var GradeItem  = require('./components/grade_item.js');
-
-var Panel     = require('react-bootstrap').Panel;
-var Glyphicon = require('react-bootstrap').Glyphicon;
-var Alert     = require('react-bootstrap').Alert;
 
 
 var Grader = React.createClass({

@@ -7645,16 +7645,14 @@
 
 	var project_id = 0;
 
+	var Alert      = __webpack_require__(2).Alert;
 	var UserMenu   = __webpack_require__(74);
 	var MenuButton = __webpack_require__(75);
 	var Loading    = __webpack_require__(76);
+
 	var GradeChart = __webpack_require__(77);
 	var GradeTotal = __webpack_require__(78);
 	var GradeItem  = __webpack_require__(79);
-
-	var Panel     = __webpack_require__(2).Panel;
-	var Glyphicon = __webpack_require__(2).Glyphicon;
-	var Alert     = __webpack_require__(2).Alert;
 
 
 	var Grader = React.createClass({displayName: "Grader",
@@ -7987,6 +7985,9 @@
 /***/ },
 /* 79 */
 /***/ function(module, exports, __webpack_require__) {
+
+	var Panel     = __webpack_require__(2).Panel;
+	var Glyphicon = __webpack_require__(2).Glyphicon;
 
 	var GradeItem = React.createClass({displayName: "GradeItem",
 	  render: function() {
