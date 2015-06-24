@@ -1,4 +1,5 @@
 var Table     = require('react-bootstrap').Table;
+var Glyphicon = require('react-bootstrap').Glyphicon;
 
 var GradeTotal = React.createClass({
   render: function() {

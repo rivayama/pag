@@ -7858,6 +7858,7 @@
 	var Col = __webpack_require__(2).Col;
 
 	var GradeChart = React.createClass({displayName: "GradeChart",
+
 	  getChartData: function() {
 	    var labels = [], points = [];
 	    this.props.data.forEach(function(grade) {
@@ -7881,9 +7882,17 @@
 	      ]
 	    };
 	  },
+
 	  chartOptions: {
 	    responsive: true,
+	    scaleOverride: true,
+	    scaleSteps: 1,
+	    scaleStepWidth: 10,
+	    scaleStartValue: 0,
+	    scaleFontFamily: '"Helvetica Neue",Helvetica,Arial,sans-serif',
+	    pointLabelFontFamily: '"Helvetica Neue",Helvetica,Arial,sans-serif',
 	  },
+
 	  render: function() {
 	    return (
 	      React.createElement(Row, null, 
@@ -7893,10 +7902,12 @@
 	      )
 	    );
 	  },
+
 	  componentDidMount: function() {
 	    var context = document.getElementById("chart").getContext("2d");
 	    new Chart(context).Radar(this.getChartData(), this.chartOptions);
 	  }
+
 	});
 
 	module.exports = GradeChart;
@@ -7907,6 +7918,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var Table     = __webpack_require__(2).Table;
+	var Glyphicon = __webpack_require__(2).Glyphicon;
 
 	var GradeTotal = React.createClass({displayName: "GradeTotal",
 	  render: function() {

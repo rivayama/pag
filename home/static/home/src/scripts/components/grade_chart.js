@@ -2,6 +2,7 @@ var Row = require('react-bootstrap').Row;
 var Col = require('react-bootstrap').Col;
 
 var GradeChart = React.createClass({
+
   getChartData: function() {
     var labels = [], points = [];
     this.props.data.forEach(function(grade) {
@@ -25,9 +26,17 @@ var GradeChart = React.createClass({
       ]
     };
   },
+
   chartOptions: {
     responsive: true,
+    scaleOverride: true,
+    scaleSteps: 1,
+    scaleStepWidth: 10,
+    scaleStartValue: 0,
+    scaleFontFamily: '"Helvetica Neue",Helvetica,Arial,sans-serif',
+    pointLabelFontFamily: '"Helvetica Neue",Helvetica,Arial,sans-serif',
   },
+
   render: function() {
     return (
       <Row>
@@ -37,10 +46,12 @@ var GradeChart = React.createClass({
       </Row>
     );
   },
+
   componentDidMount: function() {
     var context = document.getElementById("chart").getContext("2d");
     new Chart(context).Radar(this.getChartData(), this.chartOptions);
   }
+
 });
 
 module.exports = GradeChart;
