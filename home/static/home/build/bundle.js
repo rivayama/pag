@@ -7706,7 +7706,11 @@
 	    } else if (this.state.isFailed) {
 	      page = React.createElement(Alert, {bsStyle: "danger"}, this.state.failedMsg);
 	    } else {
-	      page = React.createElement(GradeList, {data: this.state.grade});
+	      page = React.createElement("div", null, 
+	        React.createElement(GradeTotal, {data: this.state.grade.summary}), 
+	        React.createElement(GradeChart, {data: this.state.grade.detail}), 
+	        React.createElement(GradeItem, {data: this.state.grade.detail})
+	      );
 	    }
 	    return (
 	      React.createElement("div", null, 
@@ -7741,23 +7745,6 @@
 	            )
 	          )
 	        )
-	      )
-	    );
-	  }
-	});
-
-	var GradeList = React.createClass({displayName: "GradeList",
-	  getDefaultProps: function() {
-	    return {
-	      data: [{'grade': []}]
-	    }
-	  },
-	  render: function() {
-	    return (
-	      React.createElement("div", null, 
-	        React.createElement(GradeTotal, {data: this.props.data.summary}), 
-	        React.createElement(GradeChart, {data: this.props.data.detail}), 
-	        React.createElement(GradeItem, {data: this.props.data.detail})
 	      )
 	    );
 	  }

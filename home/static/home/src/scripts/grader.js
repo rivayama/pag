@@ -64,7 +64,11 @@ var Grader = React.createClass({
     } else if (this.state.isFailed) {
       page = <Alert bsStyle='danger'>{this.state.failedMsg}</Alert>;
     } else {
-      page = <GradeList data={this.state.grade} />;
+      page = <div>
+        <GradeTotal data={this.state.grade.summary} />
+        <GradeChart data={this.state.grade.detail} />
+        <GradeItem data={this.state.grade.detail} />
+      </div>;
     }
     return (
       <div>
@@ -99,23 +103,6 @@ var Grader = React.createClass({
             </div>
           </div>
         </div>
-      </div>
-    );
-  }
-});
-
-var GradeList = React.createClass({
-  getDefaultProps: function() {
-    return {
-      data: [{'grade': []}]
-    }
-  },
-  render: function() {
-    return (
-      <div>
-        <GradeTotal data={this.props.data.summary} />
-        <GradeChart data={this.props.data.detail} />
-        <GradeItem data={this.props.data.detail} />
       </div>
     );
   }
