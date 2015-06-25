@@ -4,9 +4,15 @@ var Glyphicon = require('react-bootstrap').Glyphicon;
 var GradeItem = React.createClass({
   render: function() {
     var listStyle = {marginTop: '10px'};
+    var grades = this.props.data.concat(); // propsの変更は全体に影響するのでconcatでコピーする
+    grades.sort(function(x,y) {
+      if (x.point < y.point) return -1;
+      if (x.point > y.point) return 1;
+      return 0;
+    });
     return ( 
       <div>
-        {this.props.data.map(function(grade, i) {
+        {grades.map(function(grade, i) {
           var title = <h3>{grade.title}</h3>;
           if (grade.point <= 5) {
             var detailFont = 'danger';
@@ -24,7 +30,7 @@ var GradeItem = React.createClass({
           return ( grade.title == 'Total Point' ?
             <div key={'grade_'+i}></div> 
               :
-            <Panel header={title} eventKey={i} bsStyle={detailFont} key={'grade_'+i}>
+            <Panel header={detailIcon + title} eventKey={i} bsStyle={detailFont} key={'grade_'+i}>
               <p>{grade.advice.message}</p>
               <a href={"#collapseIsseus"+i} data-toggle="collapse" aria-expanded="false" aria-controls={"collapseIsseus"+i}>改善が必要なチケット（{grade.advice.issues.length}件）</a>
               <div className="collapse" id={"collapseIsseus"+i}>

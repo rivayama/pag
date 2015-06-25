@@ -7991,9 +7991,15 @@
 	var GradeItem = React.createClass({displayName: "GradeItem",
 	  render: function() {
 	    var listStyle = {marginTop: '10px'};
+	    var grades = this.props.data.concat(); // propsの変更は全体に影響するのでconcatでコピーする
+	    grades.sort(function(x,y) {
+	      if (x.point < y.point) return -1;
+	      if (x.point > y.point) return 1;
+	      return 0;
+	    });
 	    return ( 
 	      React.createElement("div", null, 
-	        this.props.data.map(function(grade, i) {
+	        grades.map(function(grade, i) {
 	          var title = React.createElement("h3", null, grade.title);
 	          if (grade.point <= 5) {
 	            var detailFont = 'danger';
@@ -8011,7 +8017,7 @@
 	          return ( grade.title == 'Total Point' ?
 	            React.createElement("div", {key: 'grade_'+i}) 
 	              :
-	            React.createElement(Panel, {header: title, eventKey: i, bsStyle: detailFont, key: 'grade_'+i}, 
+	            React.createElement(Panel, {header: detailIcon + title, eventKey: i, bsStyle: detailFont, key: 'grade_'+i}, 
 	              React.createElement("p", null, grade.advice.message), 
 	              React.createElement("a", {href: "#collapseIsseus"+i, "data-toggle": "collapse", "aria-expanded": "false", "aria-controls": "collapseIsseus"+i}, "改善が必要なチケット（", grade.advice.issues.length, "件）"), 
 	              React.createElement("div", {className: "collapse", id: "collapseIsseus"+i}, 
