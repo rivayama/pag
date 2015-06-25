@@ -30,7 +30,7 @@ var GradeItem = React.createClass({
           return ( grade.title == 'Total Point' ?
             <div key={'grade_'+i}></div> 
               :
-            <Panel header={detailIcon + title} eventKey={i} bsStyle={detailFont} key={'grade_'+i}>
+            <Panel header={title} eventKey={i} bsStyle={detailFont} key={'grade_'+i}>
               <p>{grade.advice.message}</p>
               <a href={"#collapseIsseus"+i} data-toggle="collapse" aria-expanded="false" aria-controls={"collapseIsseus"+i}>改善が必要なチケット（{grade.advice.issues.length}件）</a>
               <div className="collapse" id={"collapseIsseus"+i}>

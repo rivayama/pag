@@ -8017,7 +8017,7 @@
 	          return ( grade.title == 'Total Point' ?
 	            React.createElement("div", {key: 'grade_'+i}) 
 	              :
-	            React.createElement(Panel, {header: detailIcon + title, eventKey: i, bsStyle: detailFont, key: 'grade_'+i}, 
+	            React.createElement(Panel, {header: title, eventKey: i, bsStyle: detailFont, key: 'grade_'+i}, 
 	              React.createElement("p", null, grade.advice.message), 
 	              React.createElement("a", {href: "#collapseIsseus"+i, "data-toggle": "collapse", "aria-expanded": "false", "aria-controls": "collapseIsseus"+i}, "改善が必要なチケット（", grade.advice.issues.length, "件）"), 
 	              React.createElement("div", {className: "collapse", id: "collapseIsseus"+i}, 
