@@ -10,6 +10,7 @@ var Loading    = require('./components/loading.js');
 
 var GradeChart = require('./components/grade_chart.js');
 var GradeTotal = require('./components/grade_total.js');
+var GradeUsers = require('./components/grade_users.js');
 var GradeItem  = require('./components/grade_item.js');
 
 
@@ -20,7 +21,7 @@ var Grader = React.createClass({
       isLoading: false,
       isFailed: false,
       failedMsg: '',
-      grade: {detail: [], summary:{}}
+      grade: {detail: [], summary:{}, users: []}
     };
   },
 
@@ -66,6 +67,7 @@ var Grader = React.createClass({
     } else {
       page = <div>
         <GradeTotal data={this.state.grade.summary} />
+        <GradeUsers data={this.state.grade.users} />
         <GradeChart data={this.state.grade.detail} />
         <GradeItem data={this.state.grade.detail} />
       </div>;

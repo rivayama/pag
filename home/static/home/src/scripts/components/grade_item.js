@@ -36,7 +36,7 @@ var GradeItem = React.createClass({
               <div className="collapse" id={"collapseIsseus"+i}>
                 <ul style={listStyle}>
                   {grade.advice.issues.map(function(issues, i) {
-                    return <li key={'issue_'+i}> <a href={issues.issue_url}> {issues.issue_summary}({issues.issue_key}) </a> </li>;
+                    return <li key={'issue_'+i}> <a href={issues.issue_url} target="_blank"> {issues.issue_summary}({issues.issue_key}) </a> </li>;
                   })}
                 </ul>
               </div>

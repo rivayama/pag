@@ -2,6 +2,7 @@ from django.http import JsonResponse, HttpResponse
 from django.views.decorators.http import require_GET
 from pag import utils
 from datetime import datetime
+import collections
 
 @require_GET
 def projects(request):
@@ -28,13 +29,18 @@ def grade(request, project_id):
         backlog = utils.backlog(request, request.session['space'], token=request.session['token'])
         backlog_url = backlog.get_host()
         project_name = backlog.get_projects_detail(project_id).json()["name"]
+        users = backlog.get_users(project_id).json()
+        user_comment_count = collections.defaultdict(int)
+        user_comment_chars = collections.defaultdict(int)
+        user_create_issue_count = collections.defaultdict(int)
 
         # set dictionary key
         advice_key        = ["message","issues"]
         advice_issues_key = ["issue_key","issue_summary","issue_url"]
         detail_key        = ["title","count","all_count","point", "advice"]
         summary_key       = ["point","issue_count","comment_count","project_id","project_name"]
-        grade_key         = ["summary","detail"]
+        grade_key         = ["summary","detail", "users"]
+        users_key         = ["name","created", "assigned", "closed", "in_progress", "comments_count", "comments_length"]
 
         all_issue_count = backlog.get_count_issues(project_id).json()["count"]
         limit = 200
@@ -84,9 +90,18 @@ def grade(request, project_id):
         adv_readied_issues_no_milestones = []
 
         for issue in issues:
+            user_id = issue["createdUser"]["id"]
+            user_create_issue_count[user_id] += 1
+            user_comment_count[user_id] += 1
+            user_comment_chars[user_id] += len(issue["summary"])
+            user_comment_chars[user_id] += len(issue["description"])
+
             # get comment
             comments = backlog.get_comment(issue["id"]).json()
             for comment in comments:
+                user_id = comment["createdUser"]["id"]
+                user_comment_count[user_id] += 1
+                user_comment_chars[user_id] += len(comment["content"]) if comment["content"] else 0
                 point = utils.get_linear_point(len(comment["content"])) if comment["content"] else 0
                 # sum comment
                 detailed_comment_count += point
@@ -150,6 +165,28 @@ def grade(request, project_id):
               else:
                   adv_expired_closed_issues.append(utils.set_Dict(advice_issues_key,
                         [issue["issueKey"], issue["summary"], str(backlog_url)+"/view/"+issue["issueKey"]]))
+
+        # users row
+        users_row = []
+        for user in users:
+            if user["roleType"] == 2: #一般ユーザ
+                user_id = user["id"]
+                all_count   = backlog.get_count_issues_assigned(project_id, user["id"]).json()["count"]
+                in_progress = backlog.get_count_issues_assigned_status(project_id, user["id"], "2").json()["count"]
+                closed      = backlog.get_count_issues_assigned_status(project_id, user["id"], "4").json()["count"]
+
+                users_row.append([
+                    user["name"],
+                    user_create_issue_count[user_id],
+                    all_count,
+                    closed,
+                    in_progress,
+                    user_comment_count[user_id],
+                    user_comment_chars[user_id] ])
+
+        result_users = [""] * len(users_row)
+        for i in range(len(users_row)):
+            result_users[i] = utils.set_Dict(users_key, users_row[i])
 
         # out put data
 
@@ -221,7 +258,7 @@ def grade(request, project_id):
             project_name
         ])
 
-        result_grade = utils.set_Dict(grade_key, [result_summary, result_detail])
+        result_grade = utils.set_Dict(grade_key, [result_summary, result_detail, result_users])
 
     except KeyError:
         result_grade = []
