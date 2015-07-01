@@ -1,8 +1,11 @@
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.http import require_GET
-from pag import utils
 from datetime import datetime
 import collections
+
+from pag import utils
+from .models import Grade
+
 
 @require_GET
 def projects(request):
@@ -27,11 +30,16 @@ def myself(request):
 def grade(request, project_id):
     try:
         backlog = utils.backlog(request, request.session['space'], token=request.session['token'])
-        backlog_url = backlog.get_host()
-        project_name = backlog.get_projects_detail(project_id).json()["name"]
-        users = backlog.get_users(project_id).json()
-        user_comment_count = collections.defaultdict(int)
-        user_comment_chars = collections.defaultdict(int)
+
+        cache = Grade().find_by_project_id(project_id)
+        if (cache):
+            return JsonResponse(cache.data, safe=False)
+
+        backlog_url             = backlog.get_host()
+        project_name            = backlog.get_projects_detail(project_id).json()["name"]
+        users                   = backlog.get_users(project_id).json()
+        user_comment_count      = collections.defaultdict(int)
+        user_comment_chars      = collections.defaultdict(int)
         user_create_issue_count = collections.defaultdict(int)
 
         # set dictionary key
@@ -259,6 +267,7 @@ def grade(request, project_id):
         ])
 
         result_grade = utils.set_Dict(grade_key, [result_summary, result_detail, result_users])
+        Grade(data=result_grade).save() # Save cache
 
     except KeyError:
         result_grade = []
