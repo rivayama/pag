@@ -3,8 +3,6 @@ var Glyphicon = require('react-bootstrap').Glyphicon;
 
 var GradeUsers = React.createClass({
   render: function() {
-    var users = this.props.data.concat();
-    console.log(this.props.data);
     return (
       <div>
         <Table bordered condensed hover>
@@ -20,19 +18,19 @@ var GradeUsers = React.createClass({
         </tr>
         </thead>
         <tbody>
-        {users.map(function(user, i) {
+        {this.props.data.map(function(user, i) {
           return (
             <tr>
-            <td> {user.name} </td>
-            <td> {user.created} </td>
-            <td> {user.assigned} </td>
-            <td> {user.closed} </td>
-            <td> {user.in_progress} </td>
-            <td> {user.comments_count} </td>
-            <td> {user.comments_length} </td>
+            <td>{user.name}</td>
+            <td>{user.created}</td>
+            <td>{user.assigned}</td>
+            <td>{user.closed}</td>
+            <td>{user.in_progress}</td>
+            <td>{user.comments_count}</td>
+            <td>{user.comments_length}</td>
             </tr>
-              );
-            })}
+          );
+        })}
         </tbody>
         </Table>
       </div>
