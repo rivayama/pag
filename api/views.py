@@ -32,8 +32,12 @@ def grade(request, project_id):
         backlog = utils.backlog(request, request.session['space'], token=request.session['token'])
 
         cache = Grade().find_by_project_id(project_id)
-        if (cache):
-            return JsonResponse(cache.data, safe=False)
+        if cache:
+            try:
+                f = request.GET['force']
+                cache.delete()
+            except KeyError:
+                return JsonResponse(cache.data, safe=False)
 
         backlog_url             = backlog.get_host()
         project_name            = backlog.get_projects_detail(project_id).json()["name"]

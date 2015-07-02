@@ -29,12 +29,15 @@ var Grader = React.createClass({
     // Activate project
     this.props.data.map(function(project, i){ project.active = false; });
     this.props.data[i].active = true;
-    this.setState({isLoading: true, isFailed: false, grade: []});
 
     project_id = this.props.data[i].id;
+    this.executeGradeApi(/*force*/false);
+  },
 
+  executeGradeApi: function(force) {
+    this.setState({isLoading: true, isFailed: false, grade: []});
     $.ajax({
-      url: '/api/grade/' + project_id,
+      url: '/api/grade/' + project_id + (force ? '?force=true' : ''),
       dataType: 'json',
       cache: false,
       success: function(data) {
@@ -66,7 +69,7 @@ var Grader = React.createClass({
       page = <Alert bsStyle='danger'>{this.state.failedMsg}</Alert>;
     } else {
       page = <div>
-        <GradeTotal data={this.state.grade.summary} />
+        <GradeTotal data={this.state.grade.summary} executer={this.executeGradeApi} />
         <GradeUsers data={this.state.grade.users} />
         <GradeChart data={this.state.grade.detail} />
         <GradeItem data={this.state.grade.detail} />
