@@ -200,14 +200,11 @@ def grade(request, project_id):
         for i in range(len(users_row)):
             result_users[i] = utils.set_Dict(users_key, users_row[i])
 
-        # out put data
-
-        #adv_issues_little_comment = list(set(adv_issues_little_comment))
         advice_rows = [
             [""                                                                                                     , []]                               ,
-            ["チケット開始時の詳細を十分に書いて、指示をしっかり伝えましょう"                                       , adv_issues_little_detailed]       ,
-            ["各コメントには、十分な量の文字が残して、情報をしっかりと残しましょう"                                 , adv_issues_little_comment]        ,
-            ["チケットを完了する前にコメントを残して、作業内容の情報を残しましょう"                                 , adv_closed_issues_no_comment]     ,
+            ["チケット開始時の詳細を十分に書いて、チケットの意図を正しく伝えましょう"                               , adv_issues_little_detailed]       ,
+            ["コメントには十分な量の文字を記入して、有用な情報を残しましょう"                                       , adv_issues_little_comment]        ,
+            ["チケットを完了する前にコメントを残して、作業した内容を残しましょう"                                   , adv_closed_issues_no_comment]     ,
             ["作業開始前に見積もりを完了させましょう"                                                               , adv_readied_issue_no_duedate]     ,
             ["作業開始前に見積もりを完了させましょう"                                                               , adv_readied_issues_no_estimated]  ,
             ["期日を過ぎたタスクを更新しましょう"                                                                   , adv_expired_closed_issues]        ,
