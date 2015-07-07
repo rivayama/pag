@@ -525,8 +525,8 @@
 	  chartOptions: {
 	    responsive: true,
 	    scaleOverride: true,
-	    scaleSteps: 1,
-	    scaleStepWidth: 10,
+	    scaleSteps: 10,
+	    scaleStepWidth: 1,
 	    scaleStartValue: 0,
 	    scaleFontFamily: '"Helvetica Neue",Helvetica,Arial,sans-serif',
 	    pointLabelFontFamily: '"Helvetica Neue",Helvetica,Arial,sans-serif',
