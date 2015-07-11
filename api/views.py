@@ -40,19 +40,28 @@ def grade(request, project_id):
                 return JsonResponse(cache.data, safe=False)
 
         backlog_url             = backlog.get_host()
-        project_name            = backlog.get_projects_detail(project_id).json()["name"]
+        project_detail          = backlog.get_projects_detail(project_id).json()
+        project_name            = project_detail["name"]
+        project_url             = backlog_url + "/projects/" + project_detail["projectKey"]
         users                   = backlog.get_users(project_id).json()
         user_comment_count      = collections.defaultdict(int)
+        user_update_count       = collections.defaultdict(int)
         user_comment_chars      = collections.defaultdict(int)
         user_create_issue_count = collections.defaultdict(int)
 
+        issue_all_count     = backlog.get_count_issues(project_id).json()["count"]
+        issue_no_compatible = backlog.get_count_issues_status(project_id,"1").json()["count"]
+        issue_in_progress   = backlog.get_count_issues_status(project_id,"2").json()["count"]
+        issue_prosessed     = backlog.get_count_issues_status(project_id,"3").json()["count"]
+        issue_complete      = backlog.get_count_issues_status(project_id,"4").json()["count"]
+
         # set dictionary key
-        advice_key        = ["message","issues"]
-        advice_issues_key = ["issue_key","issue_summary","issue_url"]
-        detail_key        = ["title","count","all_count","point", "advice"]
-        summary_key       = ["point","issue_count","comment_count","project_id","project_name"]
-        grade_key         = ["summary","detail", "users"]
-        users_key         = ["name","created", "assigned", "closed", "in_progress", "comments_count", "comments_length"]
+        advice_key        = ["message", "issues"]
+        advice_issues_key = ["issue_key", "issue_summary", "issue_url"]
+        detail_key        = ["title", "count", "all_count", "point", "advice"]
+        summary_key       = ["point", "issue_count", "comment_count", "project_id", "project_name", "project_url", "issue_no_compatible", "issue_in_progress", "issue_prosessed", "issue_complete"]
+        grade_key         = ["summary", "detail", "users"]
+        users_key         = ["name", "created", "assigned", "closed", "in_progress", "comments_count", "comments_length", "updated"]
 
         all_issue_count = backlog.get_count_issues(project_id).json()["count"]
         limit = 200
@@ -108,7 +117,6 @@ def grade(request, project_id):
         for issue in issues:
             user_id = issue["createdUser"]["id"]
             user_create_issue_count[user_id] += 1
-            user_comment_count[user_id] += 1
             user_comment_chars[user_id] += len(issue["summary"])
             user_comment_chars[user_id] += len(issue["description"])
 
@@ -123,20 +131,18 @@ def grade(request, project_id):
 
             for result in results:
                 comments = result.json()
+
                 for comment in comments:
                     user_id = comment["createdUser"]["id"]
-                    user_comment_count[user_id] += 1
+                    user_comment_count[user_id] += 1 if comment["content"] else 0
+                    user_update_count[user_id] += 1
                     user_comment_chars[user_id] += len(comment["content"]) if comment["content"] else 0
                     point = utils.get_linear_point(len(comment["content"])) if comment["content"] else 0
                     # sum comment
                     detailed_comment_count += point
-                    if 0 < point and point < 1:
-                        li = [
-                            issue["issueKey"] + "#comment-" + str(comment["id"]),
-                            issue["summary"], 
-                            str(backlog_url) + "/view/" + issue["issueKey"] + "#comment-" + str(comment["id"])
-                        ]
-                        adv_issues_little_comment.append(utils.set_Dict(advice_issues_key, li))
+                    if point > 0 and point < 1: adv_issues_little_comment.append(utils.set_Dict(advice_issues_key, 
+                            [issue["issueKey"]+"#comment-"+str(comment["id"]), issue["summary"], 
+                                str(backlog_url)+"/view/"+issue["issueKey"]+"#comment-"+str(comment["id"])]))
                     all_comment_count += 1 if comment["content"] else 0
 
                 # sum detailed issue
@@ -198,7 +204,7 @@ def grade(request, project_id):
         # users row
         users_row = []
         for user in users:
-            if user["roleType"] == 2: #一般ユーザ
+            if user["roleType"] != 6: #一般ユーザ
                 user_id = user["id"]
                 all_count   = backlog.get_count_issues_assigned(project_id, user["id"]).json()["count"]
                 in_progress = backlog.get_count_issues_assigned_status(project_id, user["id"], "2").json()["count"]
@@ -211,29 +217,12 @@ def grade(request, project_id):
                     closed,
                     in_progress,
                     user_comment_count[user_id],
-                    user_comment_chars[user_id] ])
+                    user_comment_chars[user_id],
+                    user_update_count[user_id] ])
 
         result_users = [""] * len(users_row)
         for i in range(len(users_row)):
             result_users[i] = utils.set_Dict(users_key, users_row[i])
-
-        advice_rows = [
-            [""                                                                                                     , []]                               ,
-            ["チケット開始時の詳細を十分に書いて、チケットの意図を正しく伝えましょう"                               , adv_issues_little_detailed]       ,
-            ["コメントには十分な量の文字を記入して、有用な情報を残しましょう"                                       , adv_issues_little_comment]        ,
-            ["チケットを完了する前にコメントを残して、作業した内容を残しましょう"                                   , adv_closed_issues_no_comment]     ,
-            ["作業開始前に見積もりを完了させましょう"                                                               , adv_readied_issue_no_duedate]     ,
-            ["作業開始前に見積もりを完了させましょう"                                                               , adv_readied_issues_no_estimated]  ,
-            ["期日を過ぎたタスクを更新しましょう"                                                                   , adv_expired_closed_issues]        ,
-            ["終了したチケットに実績時間を残して、次回作業を行う際の参考にしましょう"                               , adv_closed_issues_no_actualHours] ,
-            ["開始したチケットへ担当者をアサインして、担当者を明確にしましょう"                                     , adv_readied_issues_no_assigner]   ,
-            ["終了したチケットに完了理由をを入力して、 完了理由を明確にしましょう"                                  , adv_closed_issues_no_resolution]  ,
-            ["チケットをマイルストーンへ関連づけ、チケットがプロジェクト上のどのステップに属するか明確にしましょう" , adv_readied_issues_no_milestones] 
-        ]
-
-        result_advices = [""] * len(advice_rows)
-        for i in range(len(advice_rows)):
-            result_advices[i] = utils.set_Dict(advice_key,advice_rows[i])
 
         point_detailed_issue                     = utils.get_point(detailed_issue_count,                all_issue_count,     10)
         point_detailed_comment                   = utils.get_point(detailed_comment_count,              all_comment_count,   10)
@@ -245,6 +234,56 @@ def grade(request, project_id):
         point_readies_issue_with_assigner        = utils.get_point(readied_issue_with_assigner_count,   readied_issue_count, 10)
         point_closed_issue_with_resolution       = utils.get_point(closed_issue_with_resolution_count,  closed_issue_count,  10)
         point_readied_issue_with_milestones      = utils.get_point(readied_issue_with_milestones_count, readied_issue_count, 10)
+
+        advice_message_detailed              = "チケット開始時の詳細を十分に書いて、チケットの意図を正しく伝えましょう"
+        advice_message_comment               = "コメントには十分な量の文字を記入して、有用な情報を残しましょう"
+        advice_message_closed_no_comment     = "チケットを完了する前にコメントを残して、作業した内容を残しましょう"
+        advice_message_no_duedate            = "作業開始前に見積もりを完了させましょう"
+        advice_message_no_estimated          = "作業開始前に見積もりを完了させましょう"
+        advice_message_expired_closed_issues = "期日を過ぎたタスクを更新しましょう"
+        advice_message_no_actualHours        = "終了したチケットに実績時間を残して、次回作業を行う際の参考にしましょう"
+        advice_message_no_assigner           = "開始したチケットへ担当者をアサインして、担当者を明確にしましょう"
+        advice_message_no_resolution         = "終了したチケットに完了理由をを入力して、 完了理由を明確にしましょう"
+        advice_message_no_milestones         = "チケットをマイルストーンへ関連づけ、チケットがプロジェクト上のどのステップに属するか明確にしましょう"
+
+        if point_detailed_issue == 10:
+            advice_message_detailed = "チケット開始時の詳細に十分な文字が書かれています。この調子でチケットの意図を正しく伝えていきましょう"
+        if point_detailed_comment == 10:
+            advice_message_comment = "コメントには十分な量の文字を記入されています。この調子でコメントに有用な情報を残しましょう"                                       
+        if point_closed_issue_with_comment == 10:
+            advice_message_closed_no_comment = "チケットを完了する前にコメントが残されており、作業内容が記録されています"                                   
+        if point_readied_issue_with_date == 10:
+            advice_message_no_duedate = "作業開始前に期限日が設定されており、見積もりが完了しています"
+        if point_readies_issue_with_estimated_hours == 10:
+            advice_message_no_estimated = "作業開始前に予定時間が設定されており、見積もりが完了しています"
+        if point_expired_and_closed_issue == 10:
+            advice_message_expired_closed_issues = "期日を過ぎたタスクはありません"
+        if point_closed_issue_with_actual_hours == 10:
+            advice_message_no_actualHours = "終了したチケットに実績時間が記録されています"
+        if point_readies_issue_with_assigner == 10:
+            advice_message_no_assigner = "開始したチケットへ担当者がアサインされており、担当者が明確になっています"
+        if point_closed_issue_with_resolution == 10:
+            advice_message_no_resolution = "終了したチケットに完了理由が記入されており、完了理由が明確になっています"
+        if point_readied_issue_with_milestones == 10:
+            advice_message_no_milestones = "チケットをマイルストーンへ関連づけられています" 
+
+        advice_rows = [
+            ["", []],
+            [advice_message_detailed,          adv_issues_little_detailed],
+            [advice_message_comment,           adv_issues_little_comment],
+            [advice_message_closed_no_comment, adv_closed_issues_no_comment],
+            [advice_message_no_duedate,        adv_readied_issue_no_duedate],
+            [advice_message_no_estimated,      adv_readied_issues_no_estimated],
+            [advice_message_no_actualHours,    adv_expired_closed_issues],
+            [advice_message_no_actualHours,    adv_closed_issues_no_actualHours],
+            [advice_message_no_assigner,       adv_readied_issues_no_assigner],
+            [advice_message_no_resolution,     adv_closed_issues_no_resolution],
+            [advice_message_no_milestones,     adv_readied_issues_no_milestones]
+        ]
+
+        result_advices = [""] * len(advice_rows)
+        for i in range(len(advice_rows)):
+            result_advices[i] = utils.set_Dict(advice_key,advice_rows[i])
 
         grade_rows = [
             utils.get_row("課題の詳細を詳しく書く",       detailed_issue_count,                 all_issue_count,     point_detailed_issue,                     result_advices[1]),
@@ -281,7 +320,12 @@ def grade(request, project_id):
             all_issue_count,
             all_comment_count,
             project_id,
-            project_name
+            project_name,
+            project_url,
+            issue_no_compatible,
+            issue_in_progress,
+            issue_prosessed,
+            issue_complete
         ])
 
         result_grade = utils.set_Dict(grade_key, [result_summary, result_detail, result_users])

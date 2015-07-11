@@ -96,11 +96,16 @@ class Backlog():
         return self.client.get(api)
 
 
+    def get_count_issues_status(self, project_id, statusId):
+        api = '%s/api/v2/issues/count?projectId[]=%s&statusId[]=%s' % (self.host, project_id, statusId)
+        return self.client.get(api)
+
+
     def get_comments_in_parallel(self, issue_ids):
         self.threads = []
         self.results = []
         for issue_id in issue_ids:
             self.threads.append(gevent.spawn(self.get_comments, issue_id, True))
-
         gevent.joinall(self.threads)
         return self.results
+

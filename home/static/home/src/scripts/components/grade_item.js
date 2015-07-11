@@ -20,10 +20,10 @@ var GradeItem = React.createClass({
           } else if (grade.point <= 7){
             var detailFont = 'danger';
             var detailIcon = '';
-          } else if (grade.point <= 8){
+          } else if (grade.point <= 9){
             var detailFont = 'warning';
             var detailIcon = '';
-          } else if (grade.point <= 10){
+          } else if (grade.point == 10){
             var detailFont = 'default';
             var detailIcon = '';
           }
