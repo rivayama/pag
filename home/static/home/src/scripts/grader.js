@@ -23,7 +23,7 @@ var Grader = React.createClass({
       isFailed: false,
       failedMsg: '',
       grade: {detail: [], summary:{}, users: []},
-      summary: {}
+      summary: {projetc_id: 0}
     };
   },
 
@@ -65,7 +65,12 @@ var Grader = React.createClass({
       dataType: 'json',
       cache: false,
       success: function(summarydata) {
-        this.setState({isLoading: false, isSummary: true, isFailed: false, summary: summarydata});
+        if (summary.project_id != project_id) { return; } // Don't render if not current project_id
+        if (typeof(summarydata.error) != 'undefined') {
+          this.setState({isLoading: false, isSummary: false, isFailed: true, failedMsg: summarydata.error.message});
+        } else {
+          this.setState({isLoading: false, isSummary: true, isFailed: false, summary: summarydata});
+        }
       }.bind(this),
       error: function(xhr, status, err) {
         if (! this.state.isLoading) { return; } // Don't render if loading is finished by the other project
