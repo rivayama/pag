@@ -4,9 +4,6 @@
 import os
 from requests_oauthlib import OAuth2Session
 
-# import gevent.monkey
-# gevent.monkey.patch_socket()
-
 import gevent
 
 client_id     = os.environ.get('BACKLOG_CLIENT_ID')
