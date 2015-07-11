@@ -3,6 +3,7 @@ var Glyphicon = require('react-bootstrap').Glyphicon;
 
 var GradeItem = React.createClass({
   render: function() {
+    var preFont = '';
     var listStyle = {marginTop: '10px'};
     var grades = this.props.data.concat(); // propsの変更は全体に影響するのでconcatでコピーする
     grades.sort(function(x,y) {
@@ -13,6 +14,7 @@ var GradeItem = React.createClass({
     return ( 
       <div>
         {grades.map(function(grade, i) {
+          var caption = '';
           var title = <h3>{grade.title}</h3>;
           if (grade.point <= 5) {
             var detailFont = 'danger';
@@ -27,9 +29,35 @@ var GradeItem = React.createClass({
             var detailFont = 'default';
             var detailIcon = '';
           }
+          if (detailFont == 'danger' && preFont == '') {
+            var iconStyle = {
+              color: '#CD5629',
+            };
+            var icon = <Glyphicon glyph='exclamation-sign' />;
+            var caption =  <p><span style={iconStyle}>{icon}</span> 修正が必要：</p> ;
+            preFont = detailFont;
+          }
+          if (detailFont == 'warning' && preFont == 'danger') {
+            var iconStyle = {
+              color: '#FFCC00',
+            };
+            var icon = <Glyphicon glyph='warning-sign' />;
+            var caption =  <p><span style={iconStyle}>{icon}</span> 修正を考慮：</p> ;
+            preFont = detailFont;
+          }
+          if (detailFont == 'default' && preFont == 'warning') {
+            var iconStyle = {
+              color: '#00ff00',
+            };
+            var icon = <Glyphicon glyph='ok-sign' />;
+            var caption =  <p><span style={iconStyle}>{icon}</span> 問題は見つかりませんでした：</p> ;
+            preFont = detailFont;
+          }
           return ( grade.title == 'Total Point' ?
             <div key={'grade_'+i}></div> 
               :
+            <div>
+             {caption}
             <Panel header={title} eventKey={i} bsStyle={detailFont} key={'grade_'+i}>
               <p>{grade.advice.message}</p>
               <a href={"#collapseIsseus"+i} data-toggle="collapse" aria-expanded="false" aria-controls={"collapseIsseus"+i}>改善が必要なチケット（{grade.advice.issues.length}件）</a>
@@ -41,6 +69,7 @@ var GradeItem = React.createClass({
                 </ul>
               </div>
             </Panel>
+            </div>
           );
         })}
       </div>

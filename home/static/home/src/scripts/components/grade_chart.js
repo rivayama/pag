@@ -39,11 +39,14 @@ var GradeChart = React.createClass({
 
   render: function() {
     return (
+      <div>
+      <h3> プロジェクトの評価 </h3>
       <Row>
         <Col xs={12} md={12} lg={10} lgOffset={1}>
           <canvas id="chart"></canvas>
         </Col>
       </Row>
+      </div>
     );
   },
 
