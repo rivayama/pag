@@ -4,8 +4,6 @@
 import os
 from requests_oauthlib import OAuth2Session
 
-import gevent
-
 client_id     = os.environ.get('BACKLOG_CLIENT_ID')
 client_secret = os.environ.get('BACKLOG_CLIENT_SECRET')
 
@@ -70,12 +68,9 @@ class Backlog():
         return self.client.get(api, params=params)
 
 
-    def get_comments(self, issue_id, is_parallel=False):
+    def get_comments(self, issue_id):
         api = '%s/api/v2/issues/%d/comments' % (self.host, issue_id)
-        if is_parallel:
-            self.results.append(self.client.get(api))
-        else :
-            return self.client.get(api)
+        return self.client.get(api)
 
 
     def get_count_issues(self, project_id):
@@ -97,12 +92,4 @@ class Backlog():
         api = '%s/api/v2/issues/count?projectId[]=%s&statusId[]=%s' % (self.host, project_id, statusId)
         return self.client.get(api)
 
-
-    def get_comments_in_parallel(self, issue_ids):
-        self.threads = []
-        self.results = []
-        for issue_id in issue_ids:
-            self.threads.append(gevent.spawn(self.get_comments, issue_id, True))
-        gevent.joinall(self.threads)
-        return self.results
 
