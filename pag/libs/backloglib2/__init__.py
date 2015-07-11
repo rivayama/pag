@@ -82,6 +82,11 @@ class Backlog():
         return self.client.get(api)
 
 
+    def get_count_issues_status(self, project_id, statusId):
+        api = '%s/api/v2/issues/count?projectId[]=%s&statusId[]=%s' % (self.host, project_id, statusId)
+        return self.client.get(api)
+
+
     def get_comment(self, issue_id):
         api = '%s/api/v2/issues/%d/comments' % (self.host, issue_id)
         return self.client.get(api)
