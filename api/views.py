@@ -101,6 +101,10 @@ def grade(request, project_id):
         adv_closed_issues_no_resolution  = []
         adv_readied_issues_no_milestones = []
 
+        counter = 0
+        issue_ids = []
+        parallel_num = 10
+
         for issue in issues:
             user_id = issue["createdUser"]["id"]
             user_create_issue_count[user_id] += 1
@@ -108,75 +112,88 @@ def grade(request, project_id):
             user_comment_chars[user_id] += len(issue["summary"])
             user_comment_chars[user_id] += len(issue["description"])
 
-            # get comment
-            comments = backlog.get_comment(issue["id"]).json()
-            for comment in comments:
-                user_id = comment["createdUser"]["id"]
-                user_comment_count[user_id] += 1
-                user_comment_chars[user_id] += len(comment["content"]) if comment["content"] else 0
-                point = utils.get_linear_point(len(comment["content"])) if comment["content"] else 0
-                # sum comment
-                detailed_comment_count += point
-                if point > 0 and point < 1: adv_issues_little_comment.append(utils.set_Dict(advice_issues_key, 
-                        [issue["issueKey"]+"#comment-"+str(comment["id"]), issue["summary"], 
-                            str(backlog_url)+"/view/"+issue["issueKey"]+"#comment-"+str(comment["id"])]))
-                all_comment_count += 1 if comment["content"] else 0
+            counter += 1
+            issue_ids.append(issue["id"])
+            if counter != len(issues):
+                if len(issue_ids) < parallel_num: continue
 
-            # sum detailed issue
-            point = utils.get_linear_point(len(issue["description"]))
-            if point < 1: adv_issues_little_detailed.append(utils.set_Dict( advice_issues_key,
-                [issue["issueKey"], issue["summary"], str(backlog_url)+"/view/"+issue["issueKey"]]))
-            detailed_issue_count += point
+            # get comment in parallel
+            results = backlog.get_comments_in_parallel(issue_ids)
+            issue_ids = []
 
-            if issue["status"]["id"] == 4:
-                closed_issue_count += 1
-                if len(comments) >= 1: 
-                    closed_issue_with_comment_count += 1
-                else:
-                    adv_closed_issues_no_comment.append(utils.set_Dict(advice_issues_key, 
-                        [issue["issueKey"], issue["summary"], str(backlog_url)+"/view/"+issue["issueKey"]]))
-                if not issue["actualHours"] is None: 
-                    closed_issue_with_atime_count += 1
-                else:
-                    adv_closed_issues_no_actualHours.append(utils.set_Dict(advice_issues_key,
-                        [issue["issueKey"], issue["summary"], str(backlog_url)+"/view/"+issue["issueKey"]]))
-                if not issue["resolution"] is None: 
-                    closed_issue_with_resolution_count += 1
-                else:
-                    adv_closed_issues_no_resolution.append(utils.set_Dict(advice_issues_key,
-                        [issue["issueKey"], issue["summary"], str(backlog_url)+"/view/"+issue["issueKey"]]))
+            for result in results:
+                comments = result.json()
+                for comment in comments:
+                    user_id = comment["createdUser"]["id"]
+                    user_comment_count[user_id] += 1
+                    user_comment_chars[user_id] += len(comment["content"]) if comment["content"] else 0
+                    point = utils.get_linear_point(len(comment["content"])) if comment["content"] else 0
+                    # sum comment
+                    detailed_comment_count += point
+                    if 0 < point and point < 1:
+                        li = [
+                            issue["issueKey"] + "#comment-" + str(comment["id"]),
+                            issue["summary"], 
+                            str(backlog_url) + "/view/" + issue["issueKey"] + "#comment-" + str(comment["id"])
+                        ]
+                        adv_issues_little_comment.append(utils.set_Dict(advice_issues_key, li))
+                    all_comment_count += 1 if comment["content"] else 0
 
-            if not issue["startDate"] is None:
-                readied_issue_count += 1
-                if not issue["dueDate"] is None: 
-                    readied_issue_with_ddate_count += 1 
-                else:
-                    adv_readied_issue_no_duedate.append(utils.set_Dict(advice_issues_key,
-                        [issue["issueKey"], issue["summary"], str(backlog_url)+"/view/"+issue["issueKey"]]))
-                if not issue["assignee"] is None: 
-                    readied_issue_with_assigner_count += 1
-                else:
-                    adv_readied_issues_no_assigner.append(utils.set_Dict(advice_issues_key,
-                        [issue["issueKey"], issue["summary"], str(backlog_url)+"/view/"+issue["issueKey"]]))
-                if not issue["estimatedHours"] is None: 
-                    readied_issue_with_etime_count += 1
-                else:
-                    adv_readied_issues_no_estimated.append(utils.set_Dict(advice_issues_key,
-                        [issue["issueKey"], issue["summary"], str(backlog_url)+"/view/"+issue["issueKey"]]))
+                # sum detailed issue
+                point = utils.get_linear_point(len(issue["description"]))
+                if point < 1: adv_issues_little_detailed.append(utils.set_Dict( advice_issues_key,
+                    [issue["issueKey"], issue["summary"], str(backlog_url)+"/view/"+issue["issueKey"]]))
+                detailed_issue_count += point
 
-                if not len(issue["milestone"]) == 0 : 
-                    readied_issue_with_milestones_count += 1
-                else:
-                    adv_readied_issues_no_milestones.append(utils.set_Dict(advice_issues_key,
-                        [issue["issueKey"], issue["summary"], str(backlog_url)+"/view/"+issue["issueKey"]]))
+                if issue["status"]["id"] == 4:
+                    closed_issue_count += 1
+                    if len(comments) >= 1: 
+                        closed_issue_with_comment_count += 1
+                    else:
+                        adv_closed_issues_no_comment.append(utils.set_Dict(advice_issues_key, 
+                            [issue["issueKey"], issue["summary"], str(backlog_url)+"/view/"+issue["issueKey"]]))
+                    if not issue["actualHours"] is None: 
+                        closed_issue_with_atime_count += 1
+                    else:
+                        adv_closed_issues_no_actualHours.append(utils.set_Dict(advice_issues_key,
+                            [issue["issueKey"], issue["summary"], str(backlog_url)+"/view/"+issue["issueKey"]]))
+                    if not issue["resolution"] is None: 
+                        closed_issue_with_resolution_count += 1
+                    else:
+                        adv_closed_issues_no_resolution.append(utils.set_Dict(advice_issues_key,
+                            [issue["issueKey"], issue["summary"], str(backlog_url)+"/view/"+issue["issueKey"]]))
 
-            if not issue["dueDate"] is None and datetime.strptime(issue["dueDate"], '%Y-%m-%dT%H:%M:%SZ') < datetime.today(): 
-              expired_issue_count += 1
-              if issue["status"]["id"] == 4: 
-                  expired_closed_issue_count += 1 
-              else:
-                  adv_expired_closed_issues.append(utils.set_Dict(advice_issues_key,
-                        [issue["issueKey"], issue["summary"], str(backlog_url)+"/view/"+issue["issueKey"]]))
+                if not issue["startDate"] is None:
+                    readied_issue_count += 1
+                    if not issue["dueDate"] is None: 
+                        readied_issue_with_ddate_count += 1 
+                    else:
+                        adv_readied_issue_no_duedate.append(utils.set_Dict(advice_issues_key,
+                            [issue["issueKey"], issue["summary"], str(backlog_url)+"/view/"+issue["issueKey"]]))
+                    if not issue["assignee"] is None: 
+                        readied_issue_with_assigner_count += 1
+                    else:
+                        adv_readied_issues_no_assigner.append(utils.set_Dict(advice_issues_key,
+                            [issue["issueKey"], issue["summary"], str(backlog_url)+"/view/"+issue["issueKey"]]))
+                    if not issue["estimatedHours"] is None: 
+                        readied_issue_with_etime_count += 1
+                    else:
+                        adv_readied_issues_no_estimated.append(utils.set_Dict(advice_issues_key,
+                            [issue["issueKey"], issue["summary"], str(backlog_url)+"/view/"+issue["issueKey"]]))
+
+                    if not len(issue["milestone"]) == 0 : 
+                        readied_issue_with_milestones_count += 1
+                    else:
+                        adv_readied_issues_no_milestones.append(utils.set_Dict(advice_issues_key,
+                            [issue["issueKey"], issue["summary"], str(backlog_url)+"/view/"+issue["issueKey"]]))
+
+                if not issue["dueDate"] is None and datetime.strptime(issue["dueDate"], '%Y-%m-%dT%H:%M:%SZ') < datetime.today(): 
+                  expired_issue_count += 1
+                  if issue["status"]["id"] == 4: 
+                      expired_closed_issue_count += 1 
+                  else:
+                      adv_expired_closed_issues.append(utils.set_Dict(advice_issues_key,
+                            [issue["issueKey"], issue["summary"], str(backlog_url)+"/view/"+issue["issueKey"]]))
 
         # users row
         users_row = []
