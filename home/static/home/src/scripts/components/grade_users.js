@@ -5,6 +5,7 @@ var GradeUsers = React.createClass({
   render: function() {
     return (
       <div>
+        <h3> 個人の活動サマリー </h3>
         <Table bordered condensed hover>
         <thead>
         <tr>

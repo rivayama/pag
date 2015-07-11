@@ -9695,10 +9695,13 @@
 
 	  render: function() {
 	    return (
+	      React.createElement("div", null, 
+	      React.createElement("h3", null, " プロジェクトの評価 "), 
 	      React.createElement(Row, null, 
 	        React.createElement(Col, {xs: 12, md: 12, lg: 10, lgOffset: 1}, 
 	          React.createElement("canvas", {id: "chart"})
 	        )
+	      )
 	      )
 	    );
 	  },
@@ -9944,6 +9947,7 @@
 	  render: function() {
 	    return (
 	      React.createElement("div", null, 
+	        React.createElement("h3", null, " 個人の活動サマリー "), 
 	        React.createElement(Table, {bordered: true, condensed: true, hover: true}, 
 	        React.createElement("thead", null, 
 	        React.createElement("tr", null, 
@@ -9987,6 +9991,7 @@
 
 	var GradeItem = React.createClass({displayName: "GradeItem",
 	  render: function() {
+	    var preFont = '';
 	    var listStyle = {marginTop: '10px'};
 	    var grades = this.props.data.concat(); // propsの変更は全体に影響するのでconcatでコピーする
 	    grades.sort(function(x,y) {
@@ -9997,6 +10002,7 @@
 	    return ( 
 	      React.createElement("div", null, 
 	        grades.map(function(grade, i) {
+	          var caption = '';
 	          var title = React.createElement("h3", null, grade.title);
 	          if (grade.point <= 5) {
 	            var detailFont = 'danger';
@@ -10011,9 +10017,35 @@
 	            var detailFont = 'default';
 	            var detailIcon = '';
 	          }
+	          if (detailFont == 'danger' && preFont == '') {
+	            var iconStyle = {
+	              color: '#CD5629',
+	            };
+	            var icon = React.createElement(Glyphicon, {glyph: "exclamation-sign"});
+	            var caption =  React.createElement("p", null, React.createElement("span", {style: iconStyle}, icon), " 修正が必要：") ;
+	            preFont = detailFont;
+	          }
+	          if (detailFont == 'warning' && preFont == 'danger') {
+	            var iconStyle = {
+	              color: '#FFCC00',
+	            };
+	            var icon = React.createElement(Glyphicon, {glyph: "warning-sign"});
+	            var caption =  React.createElement("p", null, React.createElement("span", {style: iconStyle}, icon), " 修正を考慮：") ;
+	            preFont = detailFont;
+	          }
+	          if (detailFont == 'default' && preFont == 'warning') {
+	            var iconStyle = {
+	              color: '#00ff00',
+	            };
+	            var icon = React.createElement(Glyphicon, {glyph: "ok-sign"});
+	            var caption =  React.createElement("p", null, React.createElement("span", {style: iconStyle}, icon), " 問題は見つかりませんでした：") ;
+	            preFont = detailFont;
+	          }
 	          return ( grade.title == 'Total Point' ?
 	            React.createElement("div", {key: 'grade_'+i}) 
 	              :
+	            React.createElement("div", null, 
+	             caption, 
 	            React.createElement(Panel, {header: title, eventKey: i, bsStyle: detailFont, key: 'grade_'+i}, 
 	              React.createElement("p", null, grade.advice.message), 
 	              React.createElement("a", {href: "#collapseIsseus"+i, "data-toggle": "collapse", "aria-expanded": "false", "aria-controls": "collapseIsseus"+i}, "改善が必要なチケット（", grade.advice.issues.length, "件）"), 
@@ -10024,6 +10056,7 @@
 	                  })
 	                )
 	              )
+	            )
 	            )
 	          );
 	        })
