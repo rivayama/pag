@@ -65,6 +65,7 @@ var Grader = React.createClass({
       dataType: 'json',
       cache: false,
       success: function(summarydata) {
+        if (! this.state.isLoading) {return; }
         if (summarydata.project_id != project_id) { return; } // Don't render if not current project_id
         if (typeof(summarydata.error) != 'undefined') {
           this.setState({isLoading: false, isSummary: false, isFailed: true, failedMsg: summarydata.error.message});
