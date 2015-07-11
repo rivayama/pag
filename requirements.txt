@@ -7,7 +7,6 @@ django-pgjson==0.3.0
 django-toolbelt==0.0.1
 -e git+https://github.com/fantix/gevent.git@71dd2d4d1d3332ed87f79c19d54d97bdcacdcf6d#egg=gevent-master
 greenlet==0.4.7
-grequests==0.2.0
 gunicorn==19.3.0
 oauthlib==0.7.2
 psycopg2==2.6
