@@ -13,7 +13,7 @@ var GradeTotal = React.createClass({
       color: '#FFCC00',
     };
     var starEmptyStyle = {
-      color: '#cccccc',
+      color: '#9da0a4',
     };
     var border = {
       color: '#00ff00',
