@@ -23,7 +23,7 @@ var GradeUsers = React.createClass({
             <tr>
             <td>{user.name}</td>
             <td>{user.created}</td>
-            <td>{user.in_progress}</td>
+            <td>{user.no_closed}</td>
             <td>{user.updated}</td>
             <td>{user.comments_count}</td>
             <td>{user.comments_length}</td>

@@ -4,6 +4,7 @@ var Grid       = require('react-bootstrap').Grid;
 var Row       = require('react-bootstrap').Row;
 var Col       = require('react-bootstrap').Col;
 var Button    = require('react-bootstrap').Button;
+var Loading    = require('./loading.js');
 
 var GradeTotal = React.createClass({
   render: function() {
@@ -27,7 +28,7 @@ var GradeTotal = React.createClass({
       var summaryStar4 = <Glyphicon glyph='star-empty' style={starEmptyStyle} /> ;
       var summaryStar5 = <Glyphicon glyph='star-empty' style={starEmptyStyle} /> ;
       var summaryGradeStyle = {
-        color: '#CD5629',
+        color: '#f89406',
       };
     } else if (total.point < 70){
       var summaryFont = 'danger';
@@ -39,7 +40,7 @@ var GradeTotal = React.createClass({
       var summaryStar4 = <Glyphicon glyph='star-empty' style={starEmptyStyle} /> ;
       var summaryStar5 = <Glyphicon glyph='star-empty' style={starEmptyStyle} /> ;
       var summaryGradeStyle = {
-        color: '#CD5629',
+        color: '#b94a48',
       };
     } else if (total.point < 85){
       var summaryFont = 'warning';
@@ -51,7 +52,7 @@ var GradeTotal = React.createClass({
       var summaryStar4 = <Glyphicon glyph='star-empty' style={starEmptyStyle} /> ;
       var summaryStar5 = <Glyphicon glyph='star-empty' style={starEmptyStyle} /> ;
       var summaryGradeStyle = {
-        color: '#FFCC00',
+        color: '#f89406',
       };
     } else if (total.point < 95){
       var summaryFont = 'warning';
@@ -63,7 +64,7 @@ var GradeTotal = React.createClass({
       var summaryStar4 = <Glyphicon glyph='star' style={starStyle} /> ;
       var summaryStar5 = <Glyphicon glyph='star-empty'  style={starEmptyStyle}/> ;
       var summaryGradeStyle = {
-        color: '#00ff00',
+        color: '#f89406',
       };
     } else if (total.point <= 100){
       var summaryFont = 'sucess';
@@ -75,9 +76,37 @@ var GradeTotal = React.createClass({
       var summaryStar4 = <Glyphicon glyph='star' style={starStyle} /> ;
       var summaryStar5 = <Glyphicon glyph='star' style={starStyle} /> ;
       var summaryGradeStyle = {
-        color: '#00ff00',
+        color: '#468847',
       };
     }
+
+    var total_point;
+    if (typeof(total.point) != 'undefined') {
+      total_point = <div>
+            <span className="summarygrade" style={summaryGradeStyle} >
+              <strong> {summaryIcon} {summaryGrade} ({total.point}%) </strong>
+              <br/>
+            </span>
+            <div className="summarygradestar" >
+              {summaryStar1}
+              {summaryStar2}
+              {summaryStar3}
+              {summaryStar4}
+              {summaryStar5}
+            </div>
+            </div>;
+    } else {
+      total_point = <Loading />;
+    }
+    var comment_count;
+    if (typeof(total.comment_count) != 'undefined') {
+      comment_count = <div>
+            <p>コメントの数：{total.comment_count}</p>
+            </div>;
+    } else {
+      comment_count =  <Loading />;
+    }
+
     return (
       <div>
         <Row>
@@ -93,31 +122,18 @@ var GradeTotal = React.createClass({
         <tbody>
         <tr>
           <td>
-            grade
-            <div style={summaryGradeStyle} >
-              <big><strong> {summaryIcon} {summaryGrade} ({total.point}%) </strong></big>
-              <br/>
+            総合評価<br/>
+            {total_point}
+          </td>
+          <td>
+            <div className="summarymessage" >
+            <p>チケットの数：{total.issue_count}</p>
+            <p>未対応：{total.issue_no_compatible}</p>
+            <p>処理中：{total.issue_in_progress}</p>
+            <p>処理済み：{total.issue_prosessed}</p>
+            <p>完了：{total.issue_complete}</p>
+            {comment_count}
             </div>
-              {summaryStar1}
-              {summaryStar2}
-              {summaryStar3}
-              {summaryStar4}
-              {summaryStar5}
-          </td>
-          <td>
-            チケットの数
-            <br/>
-            <big>{total.issue_count}</big>
-            <br/>
-            未:{total.issue_no_compatible}　
-            処:{total.issue_in_progress}　
-            済:{total.issue_prosessed}　
-            完:{total.issue_complete}
-          </td>
-          <td>
-            コメントの数
-            <br/>
-            <big>{total.comment_count}</big>
           </td>
         </tr>
         </tbody>

@@ -25,6 +25,35 @@ def myself(request):
         user = []
     return JsonResponse(user, safe=False)
 
+@require_GET
+def summary(request, project_id):
+    try:
+        backlog = utils.backlog(request, request.session['space'], token=request.session['token'])
+        # Title
+        project_detail = backlog.get_projects_detail(project_id).json()
+        backlog_url             = backlog.get_host()
+        project_url = backlog_url + "/projects/" + project_detail["projectKey"]
+        # Issue count
+        issue_all_count = backlog.get_count_issues(project_id).json()["count"]
+        # Issue count not compatible
+        issue_no_compatible = backlog.get_count_issues_status(project_id,"1").json()["count"]
+        # Issue count in progress
+        issue_in_progress = backlog.get_count_issues_status(project_id,"2").json()["count"]
+        # Issue count prosessed
+        issue_prosessed = backlog.get_count_issues_status(project_id,"3").json()["count"]
+        # Issue count complete
+        issue_complete = backlog.get_count_issues_status(project_id,"4").json()["count"]
+        # Userlist
+        #users           = backlog.get_users(project_id).json()
+
+        summary_key       = ["project_id","project_name", "project_url", "issue_count", "issue_no_compatible", "issue_in_progress", "issue_prosessed", "issue_complete"]
+
+        result_summary = utils.set_Dict(summary_key, [project_id, project_detail["name"], project_url, issue_all_count, issue_no_compatible, issue_in_progress, issue_prosessed, issue_complete])
+
+
+    except KeyError:
+        result_summary = []
+    return JsonResponse(result_summary, safe=False)
 
 @require_GET
 def grade(request, project_id):
@@ -61,7 +90,7 @@ def grade(request, project_id):
         detail_key        = ["title", "count", "all_count", "point", "advice"]
         summary_key       = ["point", "issue_count", "comment_count", "project_id", "project_name", "project_url", "issue_no_compatible", "issue_in_progress", "issue_prosessed", "issue_complete"]
         grade_key         = ["summary", "detail", "users"]
-        users_key         = ["name", "created", "assigned", "closed", "in_progress", "comments_count", "comments_length", "updated"]
+        users_key         = ["name", "created", "assigned", "closed", "in_progress", "no_closed", "comments_count", "comments_length", "updated"]
 
         all_issue_count = backlog.get_count_issues(project_id).json()["count"]
         limit = 200
@@ -195,6 +224,7 @@ def grade(request, project_id):
                 all_count   = backlog.get_count_issues_assigned(project_id, user["id"]).json()["count"]
                 in_progress = backlog.get_count_issues_assigned_status(project_id, user["id"], "2").json()["count"]
                 closed      = backlog.get_count_issues_assigned_status(project_id, user["id"], "4").json()["count"]
+                no_closed   = all_count - closed
 
                 users_row.append([
                     user["name"],
@@ -202,6 +232,7 @@ def grade(request, project_id):
                     all_count,
                     closed,
                     in_progress,
+                    no_closed,
                     user_comment_count[user_id],
                     user_comment_chars[user_id],
                     user_update_count[user_id] ])

@@ -9553,9 +9553,11 @@
 	  getInitialState: function() {
 	    return {
 	      isLoading: false,
+	      isSummary: false,
 	      isFailed: false,
 	      failedMsg: '',
-	      grade: {detail: [], summary:{}, users: []}
+	      grade: {detail: [], summary:{}, users: []},
+	      summary: {}
 	    };
 	  },
 
@@ -9569,7 +9571,9 @@
 	  },
 
 	  executeGradeApi: function(force) {
-	    this.setState({isLoading: true, isFailed: false, grade: []});
+	    this.setState({isLoading: true, isSummary: false, isFailed: false, grade: []});
+	    this.executeSummaryApi(/*force*/false);
+	    this.setState({isLoading: true, isSummary: false, isFailed: false, grade: []});
 	    $.ajax({
 	      url: '/api/grade/' + project_id + (force ? '?force=true' : ''),
 	      dataType: 'json',
@@ -9577,14 +9581,29 @@
 	      success: function(data) {
 	        if (data.summary.project_id != project_id) { return; } // Don't render if not current project_id
 	        if (typeof(data.error) != 'undefined') {
-	          this.setState({isLoading: false, isFailed: true, failedMsg: data.error.message});
+	          this.setState({isLoading: false, isSummary: false, isFailed: true, failedMsg: data.error.message});
 	        } else if (data.detail.length > 0) {
-	          this.setState({isLoading: false, isFailed: false, grade: data});
+	          this.setState({isLoading: false, isSummary: false, isFailed: false, grade: data});
 	        }
 	      }.bind(this),
 	      error: function(xhr, status, err) {
 	        if (! this.state.isLoading) { return; } // Don't render if loading is finished by the other project
-	        this.setState({isLoading: false, isFailed: true, failedMsg: "エラー！接続がタイムアウトしました。"});
+	        this.setState({isLoading: false, isSummary: false, isFailed: true, failedMsg: "エラー！接続がタイムアウトしました。"});
+	      }.bind(this)
+	    });
+	  },
+
+	  executeSummaryApi: function(force) {
+	    $.ajax({
+	      url: '/api/summary/' + project_id + (force ? '?force=true' : ''),
+	      dataType: 'json',
+	      cache: false,
+	      success: function(summarydata) {
+	        this.setState({isLoading: false, isSummary: true, isFailed: false, summary: summarydata});
+	      }.bind(this),
+	      error: function(xhr, status, err) {
+	        if (! this.state.isLoading) { return; } // Don't render if loading is finished by the other project
+	        this.setState({isLoading: false, isSummary: false, isFailed: true, failedMsg: "エラー！接続がタイムアウトしました。"});
 	      }.bind(this)
 	    });
 	  },
@@ -9599,6 +9618,11 @@
 	    var page;
 	    if (this.state.isLoading) {
 	      page = React.createElement(Loading, null);
+	    } else if (this.state.isSummary) {
+	      page = React.createElement("div", null, 
+	        React.createElement(GradeTotal, {data: this.state.summary, executer: this.executeGradeApi}), 
+	        React.createElement(Loading, null)
+	      );
 	    } else if (this.state.isFailed) {
 	      page = React.createElement(Alert, {bsStyle: "danger"}, this.state.failedMsg);
 	    } else {
@@ -9810,6 +9834,7 @@
 	var Row       = __webpack_require__(3).Row;
 	var Col       = __webpack_require__(3).Col;
 	var Button    = __webpack_require__(3).Button;
+	var Loading    = __webpack_require__(90);
 
 	var GradeTotal = React.createClass({displayName: "GradeTotal",
 	  render: function() {
@@ -9833,7 +9858,7 @@
 	      var summaryStar4 = React.createElement(Glyphicon, {glyph: "star-empty", style: starEmptyStyle}) ;
 	      var summaryStar5 = React.createElement(Glyphicon, {glyph: "star-empty", style: starEmptyStyle}) ;
 	      var summaryGradeStyle = {
-	        color: '#CD5629',
+	        color: '#f89406',
 	      };
 	    } else if (total.point < 70){
 	      var summaryFont = 'danger';
@@ -9845,7 +9870,7 @@
 	      var summaryStar4 = React.createElement(Glyphicon, {glyph: "star-empty", style: starEmptyStyle}) ;
 	      var summaryStar5 = React.createElement(Glyphicon, {glyph: "star-empty", style: starEmptyStyle}) ;
 	      var summaryGradeStyle = {
-	        color: '#CD5629',
+	        color: '#b94a48',
 	      };
 	    } else if (total.point < 85){
 	      var summaryFont = 'warning';
@@ -9857,7 +9882,7 @@
 	      var summaryStar4 = React.createElement(Glyphicon, {glyph: "star-empty", style: starEmptyStyle}) ;
 	      var summaryStar5 = React.createElement(Glyphicon, {glyph: "star-empty", style: starEmptyStyle}) ;
 	      var summaryGradeStyle = {
-	        color: '#FFCC00',
+	        color: '#f89406',
 	      };
 	    } else if (total.point < 95){
 	      var summaryFont = 'warning';
@@ -9869,7 +9894,7 @@
 	      var summaryStar4 = React.createElement(Glyphicon, {glyph: "star", style: starStyle}) ;
 	      var summaryStar5 = React.createElement(Glyphicon, {glyph: "star-empty", style: starEmptyStyle}) ;
 	      var summaryGradeStyle = {
-	        color: '#00ff00',
+	        color: '#f89406',
 	      };
 	    } else if (total.point <= 100){
 	      var summaryFont = 'sucess';
@@ -9881,9 +9906,37 @@
 	      var summaryStar4 = React.createElement(Glyphicon, {glyph: "star", style: starStyle}) ;
 	      var summaryStar5 = React.createElement(Glyphicon, {glyph: "star", style: starStyle}) ;
 	      var summaryGradeStyle = {
-	        color: '#00ff00',
+	        color: '#468847',
 	      };
 	    }
+
+	    var total_point;
+	    if (typeof(total.point) != 'undefined') {
+	      total_point = React.createElement("div", null, 
+	            React.createElement("span", {className: "summarygrade", style: summaryGradeStyle}, 
+	              React.createElement("strong", null, " ", summaryIcon, " ", summaryGrade, " (", total.point, "%) "), 
+	              React.createElement("br", null)
+	            ), 
+	            React.createElement("div", {className: "summarygradestar"}, 
+	              summaryStar1, 
+	              summaryStar2, 
+	              summaryStar3, 
+	              summaryStar4, 
+	              summaryStar5
+	            )
+	            );
+	    } else {
+	      total_point = React.createElement(Loading, null);
+	    }
+	    var comment_count;
+	    if (typeof(total.comment_count) != 'undefined') {
+	      comment_count = React.createElement("div", null, 
+	            React.createElement("p", null, "コメントの数：", total.comment_count)
+	            );
+	    } else {
+	      comment_count =  React.createElement(Loading, null);
+	    }
+
 	    return (
 	      React.createElement("div", null, 
 	        React.createElement(Row, null, 
@@ -9899,31 +9952,18 @@
 	        React.createElement("tbody", null, 
 	        React.createElement("tr", null, 
 	          React.createElement("td", null, 
-	            "grade", 
-	            React.createElement("div", {style: summaryGradeStyle}, 
-	              React.createElement("big", null, React.createElement("strong", null, " ", summaryIcon, " ", summaryGrade, " (", total.point, "%) ")), 
-	              React.createElement("br", null)
-	            ), 
-	              summaryStar1, 
-	              summaryStar2, 
-	              summaryStar3, 
-	              summaryStar4, 
-	              summaryStar5
+	            "総合評価", React.createElement("br", null), 
+	            total_point
 	          ), 
 	          React.createElement("td", null, 
-	            "チケットの数", 
-	            React.createElement("br", null), 
-	            React.createElement("big", null, total.issue_count), 
-	            React.createElement("br", null), 
-	            "未:", total.issue_no_compatible, "　" + " " +
-	            "処:", total.issue_in_progress, "　" + " " +
-	            "済:", total.issue_prosessed, "　" + " " +
-	            "完:", total.issue_complete
-	          ), 
-	          React.createElement("td", null, 
-	            "コメントの数", 
-	            React.createElement("br", null), 
-	            React.createElement("big", null, total.comment_count)
+	            React.createElement("div", {className: "summarymessage"}, 
+	            React.createElement("p", null, "チケットの数：", total.issue_count), 
+	            React.createElement("p", null, "未対応：", total.issue_no_compatible), 
+	            React.createElement("p", null, "処理中：", total.issue_in_progress), 
+	            React.createElement("p", null, "処理済み：", total.issue_prosessed), 
+	            React.createElement("p", null, "完了：", total.issue_complete), 
+	            comment_count
+	            )
 	          )
 	        )
 	        )
@@ -9965,7 +10005,7 @@
 	            React.createElement("tr", null, 
 	            React.createElement("td", null, user.name), 
 	            React.createElement("td", null, user.created), 
-	            React.createElement("td", null, user.in_progress), 
+	            React.createElement("td", null, user.no_closed), 
 	            React.createElement("td", null, user.updated), 
 	            React.createElement("td", null, user.comments_count), 
 	            React.createElement("td", null, user.comments_length)
@@ -10019,26 +10059,26 @@
 	          }
 	          if (detailFont == 'danger' && preFont == '') {
 	            var iconStyle = {
-	              color: '#CD5629',
+	              color: '#b94a48',
 	            };
 	            var icon = React.createElement(Glyphicon, {glyph: "exclamation-sign"});
-	            var caption =  React.createElement("p", null, React.createElement("span", {style: iconStyle}, icon), " 修正が必要：") ;
+	            var caption =  React.createElement("h4", null, React.createElement("span", {style: iconStyle}, icon), " 修正が必要：") ;
 	            preFont = detailFont;
 	          }
 	          if (detailFont == 'warning' && preFont == 'danger') {
 	            var iconStyle = {
-	              color: '#FFCC00',
+	              color: '#f89406',
 	            };
-	            var icon = React.createElement(Glyphicon, {glyph: "warning-sign"});
-	            var caption =  React.createElement("p", null, React.createElement("span", {style: iconStyle}, icon), " 修正を考慮：") ;
+	            var icon = React.createElement(Glyphicon, {glyph: "exclamation-sign"});
+	            var caption =  React.createElement("h4", null, React.createElement("span", {style: iconStyle}, icon), " 修正を考慮：") ;
 	            preFont = detailFont;
 	          }
 	          if (detailFont == 'default' && preFont == 'warning') {
 	            var iconStyle = {
-	              color: '#00ff00',
+	              color: '#468847',
 	            };
 	            var icon = React.createElement(Glyphicon, {glyph: "ok-sign"});
-	            var caption =  React.createElement("p", null, React.createElement("span", {style: iconStyle}, icon), " 問題は見つかりませんでした：") ;
+	            var caption =  React.createElement("h4", null, React.createElement("span", {style: iconStyle}, icon), " 問題は見つかりませんでした：") ;
 	            preFont = detailFont;
 	          }
 	          return ( grade.title == 'Total Point' ?

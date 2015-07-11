@@ -19,9 +19,11 @@ var Grader = React.createClass({
   getInitialState: function() {
     return {
       isLoading: false,
+      isSummary: false,
       isFailed: false,
       failedMsg: '',
-      grade: {detail: [], summary:{}, users: []}
+      grade: {detail: [], summary:{}, users: []},
+      summary: {}
     };
   },
 
@@ -35,7 +37,9 @@ var Grader = React.createClass({
   },
 
   executeGradeApi: function(force) {
-    this.setState({isLoading: true, isFailed: false, grade: []});
+    this.setState({isLoading: true, isSummary: false, isFailed: false, grade: []});
+    this.executeSummaryApi(/*force*/false);
+    this.setState({isLoading: true, isSummary: false, isFailed: false, grade: []});
     $.ajax({
       url: '/api/grade/' + project_id + (force ? '?force=true' : ''),
       dataType: 'json',
@@ -43,14 +47,29 @@ var Grader = React.createClass({
       success: function(data) {
         if (data.summary.project_id != project_id) { return; } // Don't render if not current project_id
         if (typeof(data.error) != 'undefined') {
-          this.setState({isLoading: false, isFailed: true, failedMsg: data.error.message});
+          this.setState({isLoading: false, isSummary: false, isFailed: true, failedMsg: data.error.message});
         } else if (data.detail.length > 0) {
-          this.setState({isLoading: false, isFailed: false, grade: data});
+          this.setState({isLoading: false, isSummary: false, isFailed: false, grade: data});
         }
       }.bind(this),
       error: function(xhr, status, err) {
         if (! this.state.isLoading) { return; } // Don't render if loading is finished by the other project
-        this.setState({isLoading: false, isFailed: true, failedMsg: "エラー！接続がタイムアウトしました。"});
+        this.setState({isLoading: false, isSummary: false, isFailed: true, failedMsg: "エラー！接続がタイムアウトしました。"});
+      }.bind(this)
+    });
+  },
+
+  executeSummaryApi: function(force) {
+    $.ajax({
+      url: '/api/summary/' + project_id + (force ? '?force=true' : ''),
+      dataType: 'json',
+      cache: false,
+      success: function(summarydata) {
+        this.setState({isLoading: false, isSummary: true, isFailed: false, summary: summarydata});
+      }.bind(this),
+      error: function(xhr, status, err) {
+        if (! this.state.isLoading) { return; } // Don't render if loading is finished by the other project
+        this.setState({isLoading: false, isSummary: false, isFailed: true, failedMsg: "エラー！接続がタイムアウトしました。"});
       }.bind(this)
     });
   },
@@ -65,6 +84,11 @@ var Grader = React.createClass({
     var page;
     if (this.state.isLoading) {
       page = <Loading />;
+    } else if (this.state.isSummary) {
+      page = <div>
+        <GradeTotal data={this.state.summary} executer={this.executeGradeApi} />
+        <Loading />
+      </div>;
     } else if (this.state.isFailed) {
       page = <Alert bsStyle='danger'>{this.state.failedMsg}</Alert>;
     } else {

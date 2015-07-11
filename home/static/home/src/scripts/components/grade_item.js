@@ -31,26 +31,26 @@ var GradeItem = React.createClass({
           }
           if (detailFont == 'danger' && preFont == '') {
             var iconStyle = {
-              color: '#CD5629',
+              color: '#b94a48',
             };
             var icon = <Glyphicon glyph='exclamation-sign' />;
-            var caption =  <p><span style={iconStyle}>{icon}</span> 修正が必要：</p> ;
+            var caption =  <h4><span style={iconStyle}>{icon}</span> 修正が必要：</h4> ;
             preFont = detailFont;
           }
           if (detailFont == 'warning' && preFont == 'danger') {
             var iconStyle = {
-              color: '#FFCC00',
+              color: '#f89406',
             };
-            var icon = <Glyphicon glyph='warning-sign' />;
-            var caption =  <p><span style={iconStyle}>{icon}</span> 修正を考慮：</p> ;
+            var icon = <Glyphicon glyph='exclamation-sign' />;
+            var caption =  <h4><span style={iconStyle}>{icon}</span> 修正を考慮：</h4> ;
             preFont = detailFont;
           }
           if (detailFont == 'default' && preFont == 'warning') {
             var iconStyle = {
-              color: '#00ff00',
+              color: '#468847',
             };
             var icon = <Glyphicon glyph='ok-sign' />;
-            var caption =  <p><span style={iconStyle}>{icon}</span> 問題は見つかりませんでした：</p> ;
+            var caption =  <h4><span style={iconStyle}>{icon}</span> 問題は見つかりませんでした：</h4> ;
             preFont = detailFont;
           }
           return ( grade.title == 'Total Point' ?
