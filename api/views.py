@@ -6,7 +6,6 @@ import collections
 from pag import utils
 from .models import Grade
 
-
 @require_GET
 def projects(request):
     try:
@@ -15,6 +14,7 @@ def projects(request):
     except KeyError:
         projects = []
     return JsonResponse(projects, safe=False)
+
 
 @require_GET
 def myself(request):
@@ -25,35 +25,25 @@ def myself(request):
         user = []
     return JsonResponse(user, safe=False)
 
+
 @require_GET
 def summary(request, project_id):
     try:
-        backlog = utils.backlog(request, request.session['space'], token=request.session['token'])
-        # Title
-        project_detail = backlog.get_projects_detail(project_id).json()
-        backlog_url             = backlog.get_host()
-        project_url = backlog_url + "/projects/" + project_detail["projectKey"]
-        # Issue count
-        issue_all_count = backlog.get_count_issues(project_id).json()["count"]
-        # Issue count not compatible
+        backlog             = utils.backlog(request, request.session['space'], token=request.session['token'])
+        project_detail      = backlog.get_projects_detail(project_id).json()
+        backlog_url         = backlog.get_host()
+        project_url         = backlog_url + "/projects/" + project_detail["projectKey"]
+        issue_all_count     = backlog.get_count_issues(project_id).json()["count"]
         issue_no_compatible = backlog.get_count_issues_status(project_id,"1").json()["count"]
-        # Issue count in progress
-        issue_in_progress = backlog.get_count_issues_status(project_id,"2").json()["count"]
-        # Issue count prosessed
-        issue_prosessed = backlog.get_count_issues_status(project_id,"3").json()["count"]
-        # Issue count complete
-        issue_complete = backlog.get_count_issues_status(project_id,"4").json()["count"]
-        # Userlist
-        #users           = backlog.get_users(project_id).json()
-
-        summary_key       = ["project_id","project_name", "project_url", "issue_count", "issue_no_compatible", "issue_in_progress", "issue_prosessed", "issue_complete"]
-
-        result_summary = utils.set_Dict(summary_key, [project_id, project_detail["name"], project_url, issue_all_count, issue_no_compatible, issue_in_progress, issue_prosessed, issue_complete])
-
-
+        issue_in_progress   = backlog.get_count_issues_status(project_id,"2").json()["count"]
+        issue_prosessed     = backlog.get_count_issues_status(project_id,"3").json()["count"]
+        issue_complete      = backlog.get_count_issues_status(project_id,"4").json()["count"]
+        summary_key         = ["project_id","project_name", "project_url", "issue_count", "issue_no_compatible", "issue_in_progress", "issue_prosessed", "issue_complete"]
+        result_summary      = utils.set_Dict(summary_key, [project_id, project_detail["name"], project_url, issue_all_count, issue_no_compatible, issue_in_progress, issue_prosessed, issue_complete])
     except KeyError:
         result_summary = []
     return JsonResponse(result_summary, safe=False)
+
 
 @require_GET
 def grade(request, project_id):
