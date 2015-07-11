@@ -10,6 +10,7 @@ env:
     BACKLOG_CLIENT_SECRET="Dummy client_secret"
 install:
   - pip install --upgrade pip
+  - pip install Cython
   - pip install -r requirements.txt
 script:
   - touch .env
