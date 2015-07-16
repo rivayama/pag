@@ -83,10 +83,10 @@ def grade(request, project_id):
         users_key         = ["name", "created", "assigned", "closed", "in_progress", "no_closed", "comments_count", "comments_length", "updated"]
 
         all_issue_count = backlog.get_count_issues(project_id).json()["count"]
-        limit = 200
+        limit = 100
         if all_issue_count >= limit:
             summary = {"project_id": project_id}
-            error   = {"message": "申し訳ございません。現在%d件以上のチケットを持つプロジェクトの分析には対応しておりません。" % limit}
+            error   = {"message": "チケット数が多いためバックグラウンドで実行しています。30分後を目安にもう一度ご確認ください。"}
             return JsonResponse({"summary": summary, "error": error})
 
         c = int(all_issue_count / 100)
