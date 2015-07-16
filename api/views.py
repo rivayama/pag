@@ -5,6 +5,8 @@ import collections
 
 from pag import utils
 from .models import Grade
+from home.models import Task
+
 
 @require_GET
 def projects(request):
@@ -85,6 +87,11 @@ def grade(request, project_id):
         all_issue_count = backlog.get_count_issues(project_id).json()["count"]
         limit = 100
         if all_issue_count >= limit:
+            try:
+                task = Task.objects.get(space=request.session['space'], project_id=project_id)
+            except: # XXX Want to catch "DoesNotExist" exception...
+                Task(space=request.session['space'], token=request.session['token'], project_id=project_id).save()
+
             summary = {"project_id": project_id}
             error   = {"message": "チケット数が多いためバックグラウンドで実行しています。30分後を目安にもう一度ご確認ください。"}
             return JsonResponse({"summary": summary, "error": error})
@@ -335,8 +342,8 @@ def grade(request, project_id):
             issue_complete
         ])
 
-        result_grade = utils.set_Dict(grade_key, [result_summary, result_detail, result_users])
-        Grade(data=result_grade).save() # Save cache
+        result_grade = utils.set_dict(grade_key, [result_summary, result_detail, result_users])
+        grade(data=result_grade).save() # save cache
 
     except KeyError:
         result_grade = []
