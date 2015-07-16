@@ -15,7 +15,7 @@ var GradeItem = React.createClass({
       <div>
         {grades.map(function(grade, i) {
           var caption = '';
-          var title = <h3>{grade.title}</h3>;
+          var title = <h3>{grade.title} ({grade.point}/10) </h3>;
           if (grade.point <= 5) {
             var detailFont = 'danger';
             var detailIcon = <Glyphicon glyph='fire' />;
@@ -53,8 +53,13 @@ var GradeItem = React.createClass({
             var caption =  <h4><span style={iconStyle}>{icon}</span> 問題は見つかりませんでした：</h4> ;
             preFont = detailFont;
           }
-          return ( grade.title == 'Total Point' ?
-            <div key={'grade_'+i}></div> 
+          return ( grade.point == '10' ?
+            <div>
+             {caption}
+            <Panel header={title} eventKey={i} bsStyle={detailFont} key={'grade_'+i}>
+              <p>{grade.advice.message}</p>
+            </Panel>
+            </div>
               :
             <div>
              {caption}

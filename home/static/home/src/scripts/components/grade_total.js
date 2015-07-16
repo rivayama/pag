@@ -122,7 +122,7 @@ var GradeTotal = React.createClass({
         <tbody>
         <tr>
           <td>
-            総合評価<br/>
+            プロジェクトの評価<br/>
             {total_point}
           </td>
           <td>

@@ -53,7 +53,7 @@ var Grader = React.createClass({
         }
       }.bind(this),
       error: function(xhr, status, err) {
-        if (! this.state.isLoading) { return; } // Don't render if loading is finished by the other project
+        if (! this.state.isLoading && ! this.state.isSummary) { return; } // Don't render if loading is finished by the other project
         this.setState({isLoading: false, isSummary: false, isFailed: true, failedMsg: "エラー！接続がタイムアウトしました。"});
       }.bind(this)
     });
@@ -74,7 +74,6 @@ var Grader = React.createClass({
         }
       }.bind(this),
       error: function(xhr, status, err) {
-        if (! this.state.isLoading) { return; } // Don't render if loading is finished by the other project
         this.setState({isLoading: false, isSummary: false, isFailed: true, failedMsg: "エラー！接続がタイムアウトしました。"});
       }.bind(this)
     });
