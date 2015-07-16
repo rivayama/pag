@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'home',
     'api',
     'gunicorn',
+    'cronjobs',
 )
 
 MIDDLEWARE_CLASSES = (
