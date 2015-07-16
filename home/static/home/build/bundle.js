@@ -9587,7 +9587,7 @@
 	        }
 	      }.bind(this),
 	      error: function(xhr, status, err) {
-	        if (! this.state.isLoading) { return; } // Don't render if loading is finished by the other project
+	        if (! this.state.isLoading && ! this.state.isSummary) { return; } // Don't render if loading is finished by the other project
 	        this.setState({isLoading: false, isSummary: false, isFailed: true, failedMsg: "エラー！接続がタイムアウトしました。"});
 	      }.bind(this)
 	    });
@@ -9608,7 +9608,6 @@
 	        }
 	      }.bind(this),
 	      error: function(xhr, status, err) {
-	        if (! this.state.isLoading) { return; } // Don't render if loading is finished by the other project
 	        this.setState({isLoading: false, isSummary: false, isFailed: true, failedMsg: "エラー！接続がタイムアウトしました。"});
 	      }.bind(this)
 	    });
@@ -9726,7 +9725,7 @@
 	  render: function() {
 	    return (
 	      React.createElement("div", null, 
-	      React.createElement("h3", null, " プロジェクトの評価 "), 
+	      React.createElement("h3", null, " プロジェクト評価の詳細 "), 
 	      React.createElement(Row, null, 
 	        React.createElement(Col, {xs: 12, md: 12, lg: 10, lgOffset: 1}, 
 	          React.createElement("canvas", {id: "chart"})
@@ -9958,7 +9957,7 @@
 	        React.createElement("tbody", null, 
 	        React.createElement("tr", null, 
 	          React.createElement("td", null, 
-	            "総合評価", React.createElement("br", null), 
+	            "プロジェクトの評価", React.createElement("br", null), 
 	            total_point
 	          ), 
 	          React.createElement("td", null, 
@@ -10049,7 +10048,7 @@
 	      React.createElement("div", null, 
 	        grades.map(function(grade, i) {
 	          var caption = '';
-	          var title = React.createElement("h3", null, grade.title);
+	          var title = React.createElement("h3", null, grade.title, " (", grade.point, "/10) ");
 	          if (grade.point <= 5) {
 	            var detailFont = 'danger';
 	            var detailIcon = React.createElement(Glyphicon, {glyph: "fire"});
@@ -10087,8 +10086,13 @@
 	            var caption =  React.createElement("h4", null, React.createElement("span", {style: iconStyle}, icon), " 問題は見つかりませんでした：") ;
 	            preFont = detailFont;
 	          }
-	          return ( grade.title == 'Total Point' ?
-	            React.createElement("div", {key: 'grade_'+i}) 
+	          return ( grade.point == '10' ?
+	            React.createElement("div", null, 
+	             caption, 
+	            React.createElement(Panel, {header: title, eventKey: i, bsStyle: detailFont, key: 'grade_'+i}, 
+	              React.createElement("p", null, grade.advice.message)
+	            )
+	            )
 	              :
 	            React.createElement("div", null, 
 	             caption, 
