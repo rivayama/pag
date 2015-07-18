@@ -36,11 +36,11 @@ def summary(request, project_id):
         backlog_url         = backlog.get_host()
         project_url         = backlog_url + "/projects/" + project_detail["projectKey"]
         issue_all_count     = backlog.get_count_issues(project_id).json()["count"]
-        issue_no_compatible = backlog.get_count_issues_status(project_id,"1").json()["count"]
-        issue_in_progress   = backlog.get_count_issues_status(project_id,"2").json()["count"]
-        issue_prosessed     = backlog.get_count_issues_status(project_id,"3").json()["count"]
-        issue_complete      = backlog.get_count_issues_status(project_id,"4").json()["count"]
-        summary_key         = ["project_id","project_name", "project_url", "issue_count", "issue_no_compatible", "issue_in_progress", "issue_prosessed", "issue_complete"]
+        issue_no_compatible = backlog.get_count_issues_status(project_id, "1").json()["count"]
+        issue_in_progress   = backlog.get_count_issues_status(project_id, "2").json()["count"]
+        issue_prosessed     = backlog.get_count_issues_status(project_id, "3").json()["count"]
+        issue_complete      = backlog.get_count_issues_status(project_id, "4").json()["count"]
+        summary_key         = ["project_id", "project_name", "project_url", "issue_count", "issue_no_compatible", "issue_in_progress", "issue_prosessed", "issue_complete"]
         result_summary      = utils.set_Dict(summary_key, [project_id, project_detail["name"], project_url, issue_all_count, issue_no_compatible, issue_in_progress, issue_prosessed, issue_complete])
     except KeyError:
         result_summary = []
@@ -49,6 +49,14 @@ def summary(request, project_id):
 
 @require_GET
 def grade(request, project_id):
+    grade = compute_grade(request, project_id)
+    return JsonResponse(grade, safe=False)
+
+
+def compute_grade(request, project_id):
+    if type(project_id).__name__ == 'int':
+        project_id = str(project_id)
+
     try:
         backlog = utils.backlog(request, request.session['space'], token=request.session['token'])
 
@@ -58,7 +66,7 @@ def grade(request, project_id):
                 f = request.GET['force']
                 cache.delete()
             except KeyError:
-                return JsonResponse(cache.data, safe=False)
+                return cache.data
 
         backlog_url             = backlog.get_host()
         project_detail          = backlog.get_projects_detail(project_id).json()
@@ -85,16 +93,21 @@ def grade(request, project_id):
         users_key         = ["name", "created", "assigned", "closed", "in_progress", "no_closed", "comments_count", "comments_length", "updated"]
 
         all_issue_count = backlog.get_count_issues(project_id).json()["count"]
-        limit = 100
-        if all_issue_count >= limit:
-            try:
-                task = Task.objects.get(space=request.session['space'], project_id=project_id)
-            except: # XXX Want to catch "DoesNotExist" exception...
-                Task(space=request.session['space'], token=request.session['token'], project_id=project_id).save()
 
-            summary = {"project_id": project_id}
-            error   = {"message": "チケット数が多いためバックグラウンドで実行しています。30分後を目安にもう一度ご確認ください。"}
-            return JsonResponse({"summary": summary, "error": error})
+        try:
+            # Force execute if background is ON.
+            b = request.GET['background']
+        except KeyError:
+            limit = 100
+            if all_issue_count >= limit:
+                try:
+                    task = Task.objects.get(space=request.session['space'], project_id=project_id)
+                except: # XXX want to catch "DoesNotExist" exception...
+                    Task(space=request.session['space'], token=request.session['token'], project_id=project_id).save()
+
+                summary = {"project_id": project_id}
+                error   = {"message": "チケット数が多いためバックグラウンドで実行しています。30分後を目安にもう一度ご確認ください。"}
+                return {"summary": summary, "error": error}
 
         c = int(all_issue_count / 100)
         pages = c if (all_issue_count % 100) == 0 else c + 1
@@ -342,11 +355,10 @@ def grade(request, project_id):
             issue_complete
         ])
 
-        result_grade = utils.set_dict(grade_key, [result_summary, result_detail, result_users])
-        grade(data=result_grade).save() # save cache
+        result_grade = utils.set_Dict(grade_key, [result_summary, result_detail, result_users])
+        Grade(data=result_grade).save() # save cache
 
     except KeyError:
         result_grade = []
 
-    return JsonResponse(result_grade, safe=False)
-
+    return result_grade
