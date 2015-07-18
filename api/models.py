@@ -1,7 +1,6 @@
 from django.db import models
 from django_pgjson.fields import JsonBField
 
-
 class Grade(models.Model):
     data = JsonBField()
 
