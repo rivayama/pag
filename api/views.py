@@ -158,6 +158,7 @@ def compute_grade(request, project_id):
             comments = backlog.get_comments(issue["id"]).json()
 
             for comment in comments:
+                if comment == 'errors': continue # What's errors? Pass it anyway...
                 user_id = comment["createdUser"]["id"]
                 user_comment_count[user_id] += 1 if comment["content"] else 0
                 user_update_count[user_id] += 1
