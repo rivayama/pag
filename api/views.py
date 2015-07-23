@@ -85,7 +85,7 @@ def compute_grade(request, project_id):
         issue_complete      = backlog.get_count_issues_status(project_id,"4").json()["count"]
 
         # set dictionary key
-        advice_key        = ["message", "issues"]
+        advice_key        = ["message", "issues", "detail"]
         advice_issues_key = ["issue_key", "issue_summary", "issue_url"]
         detail_key        = ["title", "count", "all_count", "point", "advice"]
         summary_key       = ["point", "issue_count", "comment_count", "project_id", "project_name", "project_url", "issue_no_compatible", "issue_in_progress", "issue_prosessed", "issue_complete"]
@@ -262,27 +262,27 @@ def compute_grade(request, project_id):
         point_closed_issue_with_resolution       = utils.get_point(closed_issue_with_resolution_count,  closed_issue_count,  10)
         point_readied_issue_with_milestones      = utils.get_point(readied_issue_with_milestones_count, readied_issue_count, 10)
 
-        advice_message_detailed              = "チケット開始時の詳細を十分に書いて、チケットの意図を正しく伝えましょう"
-        advice_message_comment               = "コメントには十分な量の文字を記入して、有用な情報を残しましょう"
-        advice_message_closed_no_comment     = "チケットを完了する前にコメントを残して、作業した内容を残しましょう"
-        advice_message_no_duedate            = "作業開始前に見積もりを完了させましょう"
-        advice_message_no_estimated          = "作業開始前に見積もりを完了させましょう"
-        advice_message_expired_closed_issues = "期日を過ぎたタスクを更新しましょう"
-        advice_message_no_actualHours        = "終了したチケットに実績時間を残して、次回作業を行う際の参考にしましょう"
-        advice_message_no_assigner           = "開始したチケットへ担当者をアサインして、担当者を明確にしましょう"
-        advice_message_no_resolution         = "終了したチケットに完了理由をを入力して、 完了理由を明確にしましょう"
-        advice_message_no_milestones         = "チケットをマイルストーンへ関連づけ、チケットがプロジェクト上のどのステップに属するか明確にしましょう"
+        advice_message_detailed              = "詳細に十分な文字数が書かれていない課題が存在します。今後、課題を作成する際は、詳細へ十分な量の指示や意図を記載するようにしましょう。"
+        advice_message_comment               = "コメントに十分な文字数が書かれていない課題が存在します。 今後、コメントを残す際は、十分な量の文字数を記載するようにしましょう。"
+        advice_message_closed_no_comment     = "コメントが一回も記入されていない課題が存在します。 終了する前に課題に対して、コメントを残しましょう。"
+        advice_message_no_duedate            = "開始日が入った課題に、期限日が記入されていないものがあります。 開始日が入った課題に対して、期限日を記入して見積もりを完成させましょう。"
+        advice_message_no_estimated          = "開始日が入った課題に、予定時間が記入されていないものがあります。 予定時間を記入して、見積もりを完成させましょう。"
+        advice_message_expired_closed_issues = "期限日を過ぎているにも関わらず、終了していない課題が存在します。 まだ終了していない課題に対しては、正しい期限日を設定し直しましょう。また、すでに終了している課題は、状態を更新するようにしましょう。"
+        advice_message_no_actualHours        = "開始日が入った課題に、期限日が記入されていないものがあります。 開始日が入った課題に対して、期限日を記入して見積もりを完成させましょう。"
+        advice_message_no_assigner           = "開始日が入った課題に、担当者が設定されていないものがあります。 開始日が入った課題に対して、担当者を設定しましょう。"
+        advice_message_no_resolution         = "完了理由が入力されていない課題が存在します。 完了理由を入力して、完了した理由を明確にしましょう。"
+        advice_message_no_milestones         = "マイルストーンの関連付けが行われていない課題が存在します。マイルストーンを作成して、課題をマイルストーンへ関連付けましょう。"
 
         if point_detailed_issue == 10:
             advice_message_detailed = "チケット開始時の詳細に十分な文字が書かれています。この調子でチケットの意図を正しく伝えていきましょう"
         if point_detailed_comment == 10:
             advice_message_comment = "コメントには十分な量の文字を記入されています。この調子でコメントに有用な情報を残しましょう"                                       
         if point_closed_issue_with_comment == 10:
-            advice_message_closed_no_comment = "チケットを完了する前にコメントが残されており、作業内容が記録されています"                                   
+            advice_message_closed_no_comment = "チケットを完了する前にコメントが残されており、作業の詳細が記録されています"                                   
         if point_readied_issue_with_date == 10:
-            advice_message_no_duedate = "作業開始前に期限日が設定されており、見積もりが完了しています"
+            advice_message_no_duedate = "課題開始前に期限日が設定されており、見積もりが完了しています"
         if point_readies_issue_with_estimated_hours == 10:
-            advice_message_no_estimated = "作業開始前に予定時間が設定されており、見積もりが完了しています"
+            advice_message_no_estimated = "課題開始前に予定時間が設定されており、見積もりが完了しています"
         if point_expired_and_closed_issue == 10:
             advice_message_expired_closed_issues = "期日を過ぎたタスクはありません"
         if point_closed_issue_with_actual_hours == 10:
@@ -295,17 +295,17 @@ def compute_grade(request, project_id):
             advice_message_no_milestones = "チケットをマイルストーンへ関連づけられています" 
 
         advice_rows = [
-            ["", []],
-            [advice_message_detailed,          adv_issues_little_detailed],
-            [advice_message_comment,           adv_issues_little_comment],
-            [advice_message_closed_no_comment, adv_closed_issues_no_comment],
-            [advice_message_no_duedate,        adv_readied_issue_no_duedate],
-            [advice_message_no_estimated,      adv_readied_issues_no_estimated],
-            [advice_message_no_actualHours,    adv_expired_closed_issues],
-            [advice_message_no_actualHours,    adv_closed_issues_no_actualHours],
-            [advice_message_no_assigner,       adv_readied_issues_no_assigner],
-            [advice_message_no_resolution,     adv_closed_issues_no_resolution],
-            [advice_message_no_milestones,     adv_readied_issues_no_milestones]
+            ["", [],""],
+            [advice_message_detailed,          adv_issues_little_detailed, "課題の指示や意図を詳細に記載する事で、課題で実施する事が明確になります。詳細に対し、100〜400文字程度の指示内容を記載する事でこの評価項目に対する点数は上がります。"],
+            [advice_message_comment,           adv_issues_little_comment, "コメントを残す事で、どのような経過を経て、課題が終了したか追跡する事ができるようになります。1回あたりのコメントに対し、100〜400文字程度の指示内容を記載する事でこの評価項目に対する点数は上がります。"],
+            [advice_message_closed_no_comment, adv_closed_issues_no_comment, " コメントを残す事で、どのような経過を経て、課題が終了したか追跡する事ができるようになります。 終了した課題に対して、コメントを一回以上記入する事で、この評価項目に対する点数は上がります。"],
+            [advice_message_no_duedate,        adv_readied_issue_no_duedate, "課題開始時には、課題に対する期限日を設定する事で 今後のスケジュールを立てる事ができます。開始日が入った課題に対して、期限日を記入する事で、この評価項目に対する点数は上がります。"],
+            [advice_message_no_estimated,      adv_readied_issues_no_estimated, "課題開始時には、作業時間を予め見積もりが行われている事で、作業計画を立てる事ができます。開始日が入力された課題に対して、予定時間を記入する事で、この評価項目に対する点数は上がります。"],
+            [advice_message_expired_closed_issues,    adv_expired_closed_issues, "実際の進捗に合わせて、期限日を更新する事で作業の進捗が明確になります。期限日を過ぎた課題を終了する事で、この評価項目に対する点数は上がります。"],
+            [advice_message_no_actualHours,    adv_closed_issues_no_actualHours, "実績時間を記入し、次回の作業見積もり時に参考にする事で、見積もりの精度が良くなります。終了した課題に対して、実績時間を記入する事で、この評価項目に対する点数は上がります。"],
+            [advice_message_no_assigner,       adv_readied_issues_no_assigner, "課題の担当者が設定されている事で、各プロジェクトメンバーが担当する作業が明確になります。開始日が入った課題に対して、担当者を設定する事で、この評価項目に対する点数は上がります。"],
+            [advice_message_no_resolution,     adv_closed_issues_no_resolution, "完了理由を入力する事で、実際に課題に対して対応を行ったかどうかが明確になります。終了している課題に対して、完了理由を入力する事で、この評価項目に対する点数は上がります。"],
+            [advice_message_no_milestones,     adv_readied_issues_no_milestones, "マイルストーンを活用する事で、課題がプロジェクト上のどのようなステップに属するか整理されます。課題に対して、マイルストーンを設定する事で、この評価項目に対する点数は上がります。"]
         ]
 
         result_advices = [""] * len(advice_rows)

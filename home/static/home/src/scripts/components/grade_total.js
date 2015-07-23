@@ -4,6 +4,8 @@ var Grid       = require('react-bootstrap').Grid;
 var Row       = require('react-bootstrap').Row;
 var Col       = require('react-bootstrap').Col;
 var Button    = require('react-bootstrap').Button;
+var Popover    = require('react-bootstrap').Popover;
+var OverlayTrigger    = require('react-bootstrap').OverlayTrigger;
 var Loading    = require('./loading.js');
 
 var GradeTotal = React.createClass({
@@ -122,7 +124,14 @@ var GradeTotal = React.createClass({
         <tbody>
         <tr>
           <td>
-            プロジェクトの評価<br/>
+            プロジェクトの評価　
+              <OverlayTrigger trigger='click' placement='right' overlay={<Popover >
+                複数の評価基準を用いてプロジェクト活動の評価を行った評価結果を表示しています。<br/>取得した点数に応じて、以下の評価結果を表示しています。<br/>
+                A：95点以上　B：85点以上　C：70点以上　D：50以上　E：49未満
+              </Popover>}>
+              <Button bsStyle='link'>詳細</Button>
+              </OverlayTrigger>
+            <br/>
             {total_point}
           </td>
           <td>

@@ -9839,6 +9839,8 @@
 	var Row       = __webpack_require__(3).Row;
 	var Col       = __webpack_require__(3).Col;
 	var Button    = __webpack_require__(3).Button;
+	var Popover    = __webpack_require__(3).Popover;
+	var OverlayTrigger    = __webpack_require__(3).OverlayTrigger;
 	var Loading    = __webpack_require__(90);
 
 	var GradeTotal = React.createClass({displayName: "GradeTotal",
@@ -9957,7 +9959,14 @@
 	        React.createElement("tbody", null, 
 	        React.createElement("tr", null, 
 	          React.createElement("td", null, 
-	            "プロジェクトの評価", React.createElement("br", null), 
+	            "プロジェクトの評価　", 
+	              React.createElement(OverlayTrigger, {trigger: "click", placement: "right", overlay: React.createElement(Popover, null, 
+	                "複数の評価基準を用いてプロジェクト活動の評価を行った評価結果を表示しています。", React.createElement("br", null), "取得した点数に応じて、以下の評価結果を表示しています。", React.createElement("br", null), 
+	                "A：95点以上　B：85点以上　C：70点以上　D：50以上　E：49未満"
+	              )}, 
+	              React.createElement(Button, {bsStyle: "link"}, "詳細")
+	              ), 
+	            React.createElement("br", null), 
 	            total_point
 	          ), 
 	          React.createElement("td", null, 
@@ -10033,6 +10042,9 @@
 
 	var Panel     = __webpack_require__(3).Panel;
 	var Glyphicon = __webpack_require__(3).Glyphicon;
+	var OverlayTrigger    = __webpack_require__(3).OverlayTrigger;
+	var Button    = __webpack_require__(3).Button;
+	var Popover    = __webpack_require__(3).Popover;
 
 	var GradeItem = React.createClass({displayName: "GradeItem",
 	  render: function() {
@@ -10090,14 +10102,26 @@
 	            React.createElement("div", null, 
 	             caption, 
 	            React.createElement(Panel, {header: title, eventKey: i, bsStyle: detailFont, key: 'grade_'+i}, 
-	              React.createElement("p", null, grade.advice.message)
+	              React.createElement("p", null, grade.advice.message, 
+	              React.createElement(OverlayTrigger, {trigger: "click", placement: "right", overlay: React.createElement(Popover, null, 
+	                grade.advice.detail
+	              )}, 
+	              React.createElement(Button, {bsStyle: "link"}, "詳細")
+	              )
+	              )
 	            )
 	            )
 	              :
 	            React.createElement("div", null, 
 	             caption, 
 	            React.createElement(Panel, {header: title, eventKey: i, bsStyle: detailFont, key: 'grade_'+i}, 
-	              React.createElement("p", null, grade.advice.message), 
+	              React.createElement("p", null, grade.advice.message, 
+	              React.createElement(OverlayTrigger, {trigger: "click", placement: "right", overlay: React.createElement(Popover, null, 
+	                grade.advice.detail
+	              )}, 
+	              React.createElement(Button, {bsStyle: "link"}, "詳細")
+	              )
+	              ), 
 	              React.createElement("a", {href: "#collapseIsseus"+i, "data-toggle": "collapse", "aria-expanded": "false", "aria-controls": "collapseIsseus"+i}, "改善が必要なチケット（", grade.advice.issues.length, "件）"), 
 	              React.createElement("div", {className: "collapse", id: "collapseIsseus"+i}, 
 	                React.createElement("ul", {style: listStyle}, 

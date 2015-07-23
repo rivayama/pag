@@ -1,5 +1,8 @@
 var Panel     = require('react-bootstrap').Panel;
 var Glyphicon = require('react-bootstrap').Glyphicon;
+var OverlayTrigger    = require('react-bootstrap').OverlayTrigger;
+var Button    = require('react-bootstrap').Button;
+var Popover    = require('react-bootstrap').Popover;
 
 var GradeItem = React.createClass({
   render: function() {
@@ -57,14 +60,26 @@ var GradeItem = React.createClass({
             <div>
              {caption}
             <Panel header={title} eventKey={i} bsStyle={detailFont} key={'grade_'+i}>
-              <p>{grade.advice.message}</p>
+              <p>{grade.advice.message}
+              <OverlayTrigger trigger='click' placement='right' overlay={<Popover >
+                {grade.advice.detail}
+              </Popover>}>
+              <Button bsStyle='link'>詳細</Button>
+              </OverlayTrigger>
+              </p>
             </Panel>
             </div>
               :
             <div>
              {caption}
             <Panel header={title} eventKey={i} bsStyle={detailFont} key={'grade_'+i}>
-              <p>{grade.advice.message}</p>
+              <p>{grade.advice.message}
+              <OverlayTrigger trigger='click' placement='right' overlay={<Popover >
+                {grade.advice.detail}
+              </Popover>}>
+              <Button bsStyle='link'>詳細</Button>
+              </OverlayTrigger>
+              </p>
               <a href={"#collapseIsseus"+i} data-toggle="collapse" aria-expanded="false" aria-controls={"collapseIsseus"+i}>改善が必要なチケット（{grade.advice.issues.length}件）</a>
               <div className="collapse" id={"collapseIsseus"+i}>
                 <ul style={listStyle}>
