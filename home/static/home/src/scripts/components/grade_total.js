@@ -9,6 +9,75 @@ var OverlayTrigger    = require('react-bootstrap').OverlayTrigger;
 var Loading    = require('./loading.js');
 
 var GradeTotal = React.createClass({
+
+  getChartData: function() {
+    var chartData = [
+          {
+                    value: this.props.data.issue_no_compatible,
+                    color:"#F7464A",
+                    fillColor:"#F7464A",
+                    highlight: "#FF5A5E",
+                    label: "未対応"
+          },
+          {
+                    value: this.props.data.issue_in_progress,
+                    color: "#FDB45C",
+                    fillColor:"#FDB45C",
+                    highlight: "#FFC870",
+                    label: "処理中"
+          },
+          {
+                    value: this.props.data.issue_prosessed,
+                    color: "#46BFBD",
+                    fillColor:"#46BFBD",
+                    highlight: "#5AD3D1",
+                    label: "処理済み"
+          },
+          {
+                    value: this.props.data.issue_complete,
+                    color: "#949FB1",
+                    fillColor:"#949FB1",
+                    highlight: "#A8B3C5",
+                    label: "完了"
+          },
+   ];
+   return chartData;
+  },
+  
+  chartOptions: function(  ){
+    var chartOption = {
+      //Boolean - Whether we should show a stroke on each segment
+      segmentShowStroke : true,
+
+      responsive: true,
+      //String - The colour of each segment stroke
+      segmentStrokeColor : "#fff",
+
+      //Number - The width of each segment stroke
+      segmentStrokeWidth : 2,
+
+      //Number - The percentage of the chart that we cut out of the middle
+      percentageInnerCutout : 50, // This is 0 for Pie charts
+
+      //Number - Amount of animation steps
+      animationSteps : 100,
+
+      //String - Animation easing effect
+      animationEasing : "easeOutBounce",
+
+      //Boolean - Whether we animate the rotation of the Doughnut
+      animateRotate : true,
+
+      //Boolean - Whether we animate scaling the Doughnut from the centre
+      animateScale : false,
+
+      //String - A legend template
+      legendTemplate : "<ul class=\"legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"color:<%=segments[i].fillColor%><%=segments[i].lineColor%>;font-size:large\">■</span>&nbsp;&nbsp;<%=segments[i].label%></li><%}%></ul>"
+    };
+    return chartOption;
+
+  },
+
   render: function() {
     var total = this.props.data;
     var starStyle = {
@@ -123,7 +192,7 @@ var GradeTotal = React.createClass({
         <Table bordered condensed >
         <tbody>
         <tr>
-          <td>
+          <td className="col-xs-12 col-sm-6 col-md-6 col-md-6">
             プロジェクトの評価　
               <OverlayTrigger trigger='click' placement='right' overlay={<Popover >
                 複数の評価基準を用いてプロジェクト活動の評価を行った評価結果を表示しています。<br/>取得した点数に応じて、以下の評価結果を表示しています。<br/>
@@ -134,14 +203,14 @@ var GradeTotal = React.createClass({
             <br/>
             {total_point}
           </td>
-          <td>
-            <div className="summarymessage" >
-            <p>チケットの数：{total.issue_count}</p>
-            <p>未対応：{total.issue_no_compatible}</p>
-            <p>処理中：{total.issue_in_progress}</p>
-            <p>処理済み：{total.issue_prosessed}</p>
-            <p>完了：{total.issue_complete}</p>
-            {comment_count}
+          <td className="col-xs-12 col-sm-6 col-md-6 col-md-6">
+            <div className="col-xs-6 col-sm-6 col-md-6 col-md-6">
+            課題の状態
+              <canvas id="ticketchart"></canvas>
+            </div>
+            <div className="col-xs-6 col-sm-6 col-md-6 col-md-6">
+              <br/>
+              <div id="pieLegend"></div>
             </div>
           </td>
         </tr>
@@ -149,7 +218,14 @@ var GradeTotal = React.createClass({
         </Table>
       </div>
     );
+  },
+
+  componentDidMount: function() {
+    var context = document.getElementById("ticketchart").getContext("2d");
+    var graph = new Chart(context).Doughnut(this.getChartData(), this.chartOptions());
+    document.getElementById("pieLegend").innerHTML = graph.generateLegend();
   }
+
 });
 
 module.exports = GradeTotal;
