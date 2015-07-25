@@ -4,6 +4,8 @@ from pag import utils
 
 from django.http import HttpRequest
 from api.views import compute_grade
+import re
+
 
 def index(request):
     return render(request, 'home/index.html', {})
@@ -13,9 +15,13 @@ def index(request):
 # Reactでフォームを描画するとトークンの埋め込みに別途処理が必要になるため
 @csrf_exempt
 def auth(request):
-    backlog = utils.backlog(request, request.POST['space'])
+    space = request.POST['space']
+    if not space or not re.match(r'^\w+$', space):
+        utils.debug('Error!!!')
+        return render(request, 'home/index.html', {})
+    backlog = utils.backlog(request, space)
     auth_url, state = backlog.auth_url()
-    request.session['space'] = request.POST['space']
+    request.session['space'] = space
     request.session['state'] = state
     return redirect(auth_url)
 
