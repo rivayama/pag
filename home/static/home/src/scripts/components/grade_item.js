@@ -18,45 +18,39 @@ var GradeItem = React.createClass({
       <div>
         {grades.map(function(grade, i) {
           var caption = '';
-          var title = <h3>{grade.title} ({grade.point}/10) </h3>;
-          if (grade.point <= 5) {
+          var title = <h3>{grade.title} ({grade.point}%) </h3>;
+          if (grade.point <= 50) {
             var detailFont = 'danger';
             var detailIcon = <Glyphicon glyph='fire' />;
-          } else if (grade.point <= 7){
+          } else if (grade.point <= 69){
             var detailFont = 'danger';
             var detailIcon = '';
-          } else if (grade.point <= 9){
+          } else if (grade.point <= 99){
             var detailFont = 'warning';
             var detailIcon = '';
-          } else if (grade.point == 10){
+          } else if (grade.point == 100){
             var detailFont = 'default';
             var detailIcon = '';
           }
-          if (detailFont == 'danger' && preFont == '') {
-            var iconStyle = {
-              color: '#b94a48',
-            };
+          if (detailFont == 'danger' && preFont != 'danger') {
+            var iconStyle = { color: '#b94a48' };
             var icon = <Glyphicon glyph='exclamation-sign' />;
             var caption =  <h4><span style={iconStyle}>{icon}</span> 修正が必要：</h4> ;
             preFont = detailFont;
           }
-          if (detailFont == 'warning' && preFont == 'danger') {
-            var iconStyle = {
-              color: '#f89406',
-            };
+          if (detailFont == 'warning' && preFont != 'warning') {
+            var iconStyle = { color: '#f89406' };
             var icon = <Glyphicon glyph='exclamation-sign' />;
             var caption =  <h4><span style={iconStyle}>{icon}</span> 修正を考慮：</h4> ;
             preFont = detailFont;
           }
-          if (detailFont == 'default' && preFont == 'warning') {
-            var iconStyle = {
-              color: '#468847',
-            };
+          if (detailFont == 'default' && preFont != 'default') {
+            var iconStyle = { color: '#468847' };
             var icon = <Glyphicon glyph='ok-sign' />;
             var caption =  <h4><span style={iconStyle}>{icon}</span> 問題は見つかりませんでした：</h4> ;
             preFont = detailFont;
           }
-          return ( grade.point == '10' ?
+          return ( grade.point == '100' ?
             <div>
              {caption}
             <Panel header={title} eventKey={i} bsStyle={detailFont} key={'grade_'+i}>

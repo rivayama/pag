@@ -237,7 +237,10 @@ def compute_grade(request, project_id):
             no_closed   = all_count - closed
             comment_count_each = 0
             if user_comment_chars[user_id] > 0:
-                comment_count_each = round(user_comment_chars[user_id] / user_comment_count[user_id],0)
+                try:
+                    comment_count_each = round(user_comment_chars[user_id] / user_comment_count[user_id], 0)
+                except ZeroDivisionError:
+                    comment_count_each = 0
 
             users_row.append([
                 user["name"],
