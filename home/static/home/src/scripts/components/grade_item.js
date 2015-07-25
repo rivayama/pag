@@ -64,7 +64,7 @@ var GradeItem = React.createClass({
               <OverlayTrigger trigger='click' placement='right' overlay={<Popover >
                 {grade.advice.detail}
               </Popover>}>
-              <Button bsStyle='link'>詳細</Button>
+              <a>詳細</a>
               </OverlayTrigger>
               </p>
             </Panel>
@@ -77,7 +77,7 @@ var GradeItem = React.createClass({
               <OverlayTrigger trigger='click' placement='right' overlay={<Popover >
                 {grade.advice.detail}
               </Popover>}>
-              <Button bsStyle='link'>詳細</Button>
+              <a>詳細</a>
               </OverlayTrigger>
               </p>
               <a href={"#collapseIsseus"+i} data-toggle="collapse" aria-expanded="false" aria-controls={"collapseIsseus"+i}>改善が必要なチケット（{grade.advice.issues.length}件）</a>

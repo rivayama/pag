@@ -129,7 +129,7 @@ var GradeTotal = React.createClass({
                 複数の評価基準を用いてプロジェクト活動の評価を行った評価結果を表示しています。<br/>取得した点数に応じて、以下の評価結果を表示しています。<br/>
                 A：95点以上　B：85点以上　C：70点以上　D：50以上　E：49未満
               </Popover>}>
-              <Button bsStyle='link'>詳細</Button>
+              <a>詳細</a>
               </OverlayTrigger>
             <br/>
             {total_point}
