@@ -90,7 +90,7 @@ def compute_grade(request, project_id):
         detail_key        = ["title", "count", "all_count", "point", "advice"]
         summary_key       = ["point", "issue_count", "comment_count", "project_id", "project_name", "project_url", "issue_no_compatible", "issue_in_progress", "issue_prosessed", "issue_complete"]
         grade_key         = ["summary", "detail", "users"]
-        users_key         = ["name", "created", "assigned", "closed", "in_progress", "no_closed", "comments_count", "comments_length", "updated"]
+        users_key         = ["name", "created", "assigned", "closed", "in_progress", "no_closed", "comments_count", "comments_length", "updated", "comments_length_each"]
 
         all_issue_count = backlog.get_count_issues(project_id).json()["count"]
 
@@ -230,23 +230,26 @@ def compute_grade(request, project_id):
         # users row
         users_row = []
         for user in users:
-            if user["roleType"] != 6: #一般ユーザ
-                user_id = user["id"]
-                all_count   = backlog.get_count_issues_assigned(project_id, user["id"]).json()["count"]
-                in_progress = backlog.get_count_issues_assigned_status(project_id, user["id"], "2").json()["count"]
-                closed      = backlog.get_count_issues_assigned_status(project_id, user["id"], "4").json()["count"]
-                no_closed   = all_count - closed
+            user_id = user["id"]
+            all_count   = backlog.get_count_issues_assigned(project_id, user["id"]).json()["count"]
+            in_progress = backlog.get_count_issues_assigned_status(project_id, user["id"], "2").json()["count"]
+            closed      = backlog.get_count_issues_assigned_status(project_id, user["id"], "4").json()["count"]
+            no_closed   = all_count - closed
+            comment_count_each = 0
+            if user_comment_chars[user_id] > 0:
+                comment_count_each = round(user_comment_chars[user_id] / user_comment_count[user_id],0)
 
-                users_row.append([
-                    user["name"],
-                    user_create_issue_count[user_id],
-                    all_count,
-                    closed,
-                    in_progress,
-                    no_closed,
-                    user_comment_count[user_id],
-                    user_comment_chars[user_id],
-                    user_update_count[user_id] ])
+            users_row.append([
+                user["name"],
+                user_create_issue_count[user_id],
+                all_count,
+                closed,
+                in_progress,
+                no_closed,
+                user_comment_count[user_id],
+                user_comment_chars[user_id],
+                user_update_count[user_id],
+                comment_count_each ])
 
         result_users = [""] * len(users_row)
         for i in range(len(users_row)):
@@ -297,16 +300,16 @@ def compute_grade(request, project_id):
         advice_message_no_resolution         = "完了理由が入力されていない課題が存在します。 完了理由を入力して、完了した理由を明確にしましょう。"
         advice_message_no_milestones         = "マイルストーンの関連付けが行われていない課題が存在します。マイルストーンを作成して、課題をマイルストーンへ関連付けましょう。"
 
-        if point_detailed_issue                     == max_point_detailed_issue:                     advice_message_detailed              = "チケット開始時の詳細に十分な文字が書かれています。この調子でチケットの意図を正しく伝えていきましょう"
-        if point_detailed_comment                   == max_point_detailed_comment:                   advice_message_comment               = "コメントには十分な量の文字を記入されています。この調子でコメントに有用な情報を残しましょう"
-        if point_closed_issue_with_comment          == max_point_closed_issue_with_comment:          advice_message_closed_no_comment     = "チケットを完了する前にコメントが残されており、作業の詳細が記録されています"
-        if point_readied_issue_with_date            == max_point_readied_issue_with_date:            advice_message_no_duedate            = "課題開始前に期限日が設定されており、見積もりが完了しています"
-        if point_readies_issue_with_estimated_hours == max_point_readies_issue_with_estimated_hours: advice_message_no_estimated          = "課題開始前に予定時間が設定されており、見積もりが完了しています"
-        if point_expired_and_closed_issue           == max_point_expired_and_closed_issue:           advice_message_expired_closed_issues = "期日を過ぎたタスクはありません"
-        if point_closed_issue_with_actual_hours     == max_point_closed_issue_with_actual_hours:     advice_message_no_actualHours        = "終了したチケットに実績時間が記録されています"
-        if point_readies_issue_with_assigner        == max_point_readies_issue_with_assigner:        advice_message_no_assigner           = "開始したチケットへ担当者がアサインされており、担当者が明確になっています"
-        if point_closed_issue_with_resolution       == max_point_closed_issue_with_resolution:       advice_message_no_resolution         = "終了したチケットに完了理由が記入されており、完了理由が明確になっています"
-        if point_readied_issue_with_milestones      == max_point_readied_issue_with_milestones:      advice_message_no_milestones         = "チケットをマイルストーンへ関連づけられています"
+        if point_detailed_issue                     == max_point_detailed_issue:                     advice_message_detailed              = "チケット開始時の詳細に十分な文字が書かれています。この調子でチケットの意図を正しく伝えていきましょう。"
+        if point_detailed_comment                   == max_point_detailed_comment:                   advice_message_comment               = "コメントには十分な量の文字を記入されています。この調子でコメントに有用な情報を残しましょう。"
+        if point_closed_issue_with_comment          == max_point_closed_issue_with_comment:          advice_message_closed_no_comment     = "チケットを完了する前にコメントが残されており、作業の詳細が記録されています。"
+        if point_readied_issue_with_date            == max_point_readied_issue_with_date:            advice_message_no_duedate            = "課題開始前に期限日が設定されており、見積もりが完了しています。"
+        if point_readies_issue_with_estimated_hours == max_point_readies_issue_with_estimated_hours: advice_message_no_estimated          = "課題開始前に予定時間が設定されており、見積もりが完了しています。"
+        if point_expired_and_closed_issue           == max_point_expired_and_closed_issue:           advice_message_expired_closed_issues = "期日を過ぎたタスクはありません。"
+        if point_closed_issue_with_actual_hours     == max_point_closed_issue_with_actual_hours:     advice_message_no_actualHours        = "終了したチケットに実績時間が記録されています。"
+        if point_readies_issue_with_assigner        == max_point_readies_issue_with_assigner:        advice_message_no_assigner           = "開始したチケットへ担当者がアサインされており、担当者が明確になっています。"
+        if point_closed_issue_with_resolution       == max_point_closed_issue_with_resolution:       advice_message_no_resolution         = "終了したチケットに完了理由が記入されており、完了理由が明確になっています。"
+        if point_readied_issue_with_milestones      == max_point_readied_issue_with_milestones:      advice_message_no_milestones         = "チケットをマイルストーンへ関連づけられています。"
 
         advice_rows = [
             ["", [],""],

@@ -9964,7 +9964,7 @@
 	                "複数の評価基準を用いてプロジェクト活動の評価を行った評価結果を表示しています。", React.createElement("br", null), "取得した点数に応じて、以下の評価結果を表示しています。", React.createElement("br", null), 
 	                "A：95点以上　B：85点以上　C：70点以上　D：50以上　E：49未満"
 	              )}, 
-	              React.createElement(Button, {bsStyle: "link"}, "詳細")
+	              React.createElement("a", null, "詳細")
 	              ), 
 	            React.createElement("br", null), 
 	            total_point
@@ -9999,6 +9999,12 @@
 
 	var GradeUsers = React.createClass({displayName: "GradeUsers",
 	  render: function() {
+	    var users = this.props.data.concat(); // propsの変更は全体に影響するのでconcatでコピーする
+	    users.sort(function(x,y) {
+	      if (x.created > y.created) return -1;
+	      if (x.created < y.created) return 1;
+	      return 0;
+	    });
 	    return (
 	      React.createElement("div", null, 
 	        React.createElement("h3", null, " 個人の活動サマリー "), 
@@ -10010,11 +10016,12 @@
 	          React.createElement("th", null, "担当中のチケット数"), 
 	          React.createElement("th", null, "チケット更新回数"), 
 	          React.createElement("th", null, "コメント回数"), 
-	          React.createElement("th", null, "コメントした文字数")
+	          React.createElement("th", null, "コメント文字数"), 
+	          React.createElement("th", null, "一回あたりのコメント文字数")
 	        )
 	        ), 
 	        React.createElement("tbody", null, 
-	        this.props.data.map(function(user, i) {
+	        users.map(function(user, i) {
 	          return (
 	            React.createElement("tr", null, 
 	            React.createElement("td", null, user.name), 
@@ -10022,7 +10029,8 @@
 	            React.createElement("td", null, user.no_closed), 
 	            React.createElement("td", null, user.updated), 
 	            React.createElement("td", null, user.comments_count), 
-	            React.createElement("td", null, user.comments_length)
+	            React.createElement("td", null, user.comments_length), 
+	            React.createElement("td", null, user.comments_length_each)
 	            )
 	          );
 	        })
@@ -10106,7 +10114,7 @@
 	              React.createElement(OverlayTrigger, {trigger: "click", placement: "right", overlay: React.createElement(Popover, null, 
 	                grade.advice.detail
 	              )}, 
-	              React.createElement(Button, {bsStyle: "link"}, "詳細")
+	              React.createElement("a", null, "詳細")
 	              )
 	              )
 	            )
@@ -10119,7 +10127,7 @@
 	              React.createElement(OverlayTrigger, {trigger: "click", placement: "right", overlay: React.createElement(Popover, null, 
 	                grade.advice.detail
 	              )}, 
-	              React.createElement(Button, {bsStyle: "link"}, "詳細")
+	              React.createElement("a", null, "詳細")
 	              )
 	              ), 
 	              React.createElement("a", {href: "#collapseIsseus"+i, "data-toggle": "collapse", "aria-expanded": "false", "aria-controls": "collapseIsseus"+i}, "改善が必要なチケット（", grade.advice.issues.length, "件）"), 
