@@ -252,16 +252,39 @@ def compute_grade(request, project_id):
         for i in range(len(users_row)):
             result_users[i] = utils.set_Dict(users_key, users_row[i])
 
-        point_detailed_issue                     = utils.get_point(detailed_issue_count,                all_issue_count,     10)
-        point_detailed_comment                   = utils.get_point(detailed_comment_count,              all_comment_count,   10)
-        point_closed_issue_with_comment          = utils.get_point(closed_issue_with_comment_count,     closed_issue_count,  10)
-        point_readied_issue_with_date            = utils.get_point(readied_issue_with_ddate_count,      readied_issue_count, 10)
-        point_readies_issue_with_estimated_hours = utils.get_point(readied_issue_with_etime_count,      readied_issue_count, 10)
-        point_expired_and_closed_issue           = utils.get_point(expired_closed_issue_count,          expired_issue_count, 10)
-        point_closed_issue_with_actual_hours     = utils.get_point(closed_issue_with_atime_count,       closed_issue_count,  10)
-        point_readies_issue_with_assigner        = utils.get_point(readied_issue_with_assigner_count,   readied_issue_count, 10)
-        point_closed_issue_with_resolution       = utils.get_point(closed_issue_with_resolution_count,  closed_issue_count,  10)
-        point_readied_issue_with_milestones      = utils.get_point(readied_issue_with_milestones_count, readied_issue_count, 10)
+        # 重み付け
+        max_point_detailed_issue                     = 17
+        max_point_detailed_comment                   = 15
+        max_point_closed_issue_with_comment          =  3
+        max_point_readied_issue_with_date            =  4
+        max_point_readies_issue_with_estimated_hours = 10
+        max_point_expired_and_closed_issue           =  4
+        max_point_closed_issue_with_actual_hours     = 17
+        max_point_readies_issue_with_assigner        =  5
+        max_point_closed_issue_with_resolution       = 15
+        max_point_readied_issue_with_milestones      = 10
+
+        point_detailed_issue                     = utils.get_point(detailed_issue_count,                all_issue_count,     max_point_detailed_issue)
+        point_detailed_comment                   = utils.get_point(detailed_comment_count,              all_comment_count,   max_point_detailed_comment)
+        point_closed_issue_with_comment          = utils.get_point(closed_issue_with_comment_count,     closed_issue_count,  max_point_closed_issue_with_comment)
+        point_readied_issue_with_date            = utils.get_point(readied_issue_with_ddate_count,      readied_issue_count, max_point_readied_issue_with_date)
+        point_readies_issue_with_estimated_hours = utils.get_point(readied_issue_with_etime_count,      readied_issue_count, max_point_readies_issue_with_estimated_hours)
+        point_expired_and_closed_issue           = utils.get_point(expired_closed_issue_count,          expired_issue_count, max_point_expired_and_closed_issue)
+        point_closed_issue_with_actual_hours     = utils.get_point(closed_issue_with_atime_count,       closed_issue_count,  max_point_closed_issue_with_actual_hours)
+        point_readies_issue_with_assigner        = utils.get_point(readied_issue_with_assigner_count,   readied_issue_count, max_point_readies_issue_with_assigner)
+        point_closed_issue_with_resolution       = utils.get_point(closed_issue_with_resolution_count,  closed_issue_count,  max_point_closed_issue_with_resolution)
+        point_readied_issue_with_milestones      = utils.get_point(readied_issue_with_milestones_count, readied_issue_count, max_point_readied_issue_with_milestones)
+
+        percent_detailed_issue                     = utils.get_percent(detailed_issue_count,                all_issue_count)
+        percent_detailed_comment                   = utils.get_percent(detailed_comment_count,              all_comment_count)
+        percent_closed_issue_with_comment          = utils.get_percent(closed_issue_with_comment_count,     closed_issue_count)
+        percent_readied_issue_with_date            = utils.get_percent(readied_issue_with_ddate_count,      readied_issue_count)
+        percent_readies_issue_with_estimated_hours = utils.get_percent(readied_issue_with_etime_count,      readied_issue_count)
+        percent_expired_and_closed_issue           = utils.get_percent(expired_closed_issue_count,          expired_issue_count)
+        percent_closed_issue_with_actual_hours     = utils.get_percent(closed_issue_with_atime_count,       closed_issue_count)
+        percent_readies_issue_with_assigner        = utils.get_percent(readied_issue_with_assigner_count,   readied_issue_count)
+        percent_closed_issue_with_resolution       = utils.get_percent(closed_issue_with_resolution_count,  closed_issue_count)
+        percent_readied_issue_with_milestones      = utils.get_percent(readied_issue_with_milestones_count, readied_issue_count)
 
         advice_message_detailed              = "詳細に十分な文字数が書かれていない課題が存在します。今後、課題を作成する際は、詳細へ十分な量の指示や意図を記載するようにしましょう。"
         advice_message_comment               = "コメントに十分な文字数が書かれていない課題が存在します。 今後、コメントを残す際は、十分な量の文字数を記載するようにしましょう。"
@@ -274,38 +297,28 @@ def compute_grade(request, project_id):
         advice_message_no_resolution         = "完了理由が入力されていない課題が存在します。 完了理由を入力して、完了した理由を明確にしましょう。"
         advice_message_no_milestones         = "マイルストーンの関連付けが行われていない課題が存在します。マイルストーンを作成して、課題をマイルストーンへ関連付けましょう。"
 
-        if point_detailed_issue == 10:
-            advice_message_detailed = "チケット開始時の詳細に十分な文字が書かれています。この調子でチケットの意図を正しく伝えていきましょう"
-        if point_detailed_comment == 10:
-            advice_message_comment = "コメントには十分な量の文字を記入されています。この調子でコメントに有用な情報を残しましょう"                                       
-        if point_closed_issue_with_comment == 10:
-            advice_message_closed_no_comment = "チケットを完了する前にコメントが残されており、作業の詳細が記録されています"                                   
-        if point_readied_issue_with_date == 10:
-            advice_message_no_duedate = "課題開始前に期限日が設定されており、見積もりが完了しています"
-        if point_readies_issue_with_estimated_hours == 10:
-            advice_message_no_estimated = "課題開始前に予定時間が設定されており、見積もりが完了しています"
-        if point_expired_and_closed_issue == 10:
-            advice_message_expired_closed_issues = "期日を過ぎたタスクはありません"
-        if point_closed_issue_with_actual_hours == 10:
-            advice_message_no_actualHours = "終了したチケットに実績時間が記録されています"
-        if point_readies_issue_with_assigner == 10:
-            advice_message_no_assigner = "開始したチケットへ担当者がアサインされており、担当者が明確になっています"
-        if point_closed_issue_with_resolution == 10:
-            advice_message_no_resolution = "終了したチケットに完了理由が記入されており、完了理由が明確になっています"
-        if point_readied_issue_with_milestones == 10:
-            advice_message_no_milestones = "チケットをマイルストーンへ関連づけられています" 
+        if point_detailed_issue                     == max_point_detailed_issue:                     advice_message_detailed              = "チケット開始時の詳細に十分な文字が書かれています。この調子でチケットの意図を正しく伝えていきましょう"
+        if point_detailed_comment                   == max_point_detailed_comment:                   advice_message_comment               = "コメントには十分な量の文字を記入されています。この調子でコメントに有用な情報を残しましょう"
+        if point_closed_issue_with_comment          == max_point_closed_issue_with_comment:          advice_message_closed_no_comment     = "チケットを完了する前にコメントが残されており、作業の詳細が記録されています"
+        if point_readied_issue_with_date            == max_point_readied_issue_with_date:            advice_message_no_duedate            = "課題開始前に期限日が設定されており、見積もりが完了しています"
+        if point_readies_issue_with_estimated_hours == max_point_readies_issue_with_estimated_hours: advice_message_no_estimated          = "課題開始前に予定時間が設定されており、見積もりが完了しています"
+        if point_expired_and_closed_issue           == max_point_expired_and_closed_issue:           advice_message_expired_closed_issues = "期日を過ぎたタスクはありません"
+        if point_closed_issue_with_actual_hours     == max_point_closed_issue_with_actual_hours:     advice_message_no_actualHours        = "終了したチケットに実績時間が記録されています"
+        if point_readies_issue_with_assigner        == max_point_readies_issue_with_assigner:        advice_message_no_assigner           = "開始したチケットへ担当者がアサインされており、担当者が明確になっています"
+        if point_closed_issue_with_resolution       == max_point_closed_issue_with_resolution:       advice_message_no_resolution         = "終了したチケットに完了理由が記入されており、完了理由が明確になっています"
+        if point_readied_issue_with_milestones      == max_point_readied_issue_with_milestones:      advice_message_no_milestones         = "チケットをマイルストーンへ関連づけられています"
 
         advice_rows = [
             ["", [],""],
-            [advice_message_detailed,          adv_issues_little_detailed, "課題の指示や意図を詳細に記載する事で、課題で実施する事が明確になります。詳細に対し、100〜400文字程度の指示内容を記載する事でこの評価項目に対する点数は上がります。"],
-            [advice_message_comment,           adv_issues_little_comment, "コメントを残す事で、どのような経過を経て、課題が終了したか追跡する事ができるようになります。1回あたりのコメントに対し、100〜400文字程度の指示内容を記載する事でこの評価項目に対する点数は上がります。"],
-            [advice_message_closed_no_comment, adv_closed_issues_no_comment, " コメントを残す事で、どのような経過を経て、課題が終了したか追跡する事ができるようになります。 終了した課題に対して、コメントを一回以上記入する事で、この評価項目に対する点数は上がります。"],
-            [advice_message_no_duedate,        adv_readied_issue_no_duedate, "課題開始時には、課題に対する期限日を設定する事で 今後のスケジュールを立てる事ができます。開始日が入った課題に対して、期限日を記入する事で、この評価項目に対する点数は上がります。"],
-            [advice_message_no_estimated,      adv_readied_issues_no_estimated, "課題開始時には、作業時間を予め見積もりが行われている事で、作業計画を立てる事ができます。開始日が入力された課題に対して、予定時間を記入する事で、この評価項目に対する点数は上がります。"],
+            [advice_message_detailed,          adv_issues_little_detailed,       "課題の指示や意図を詳細に記載する事で、課題で実施する事が明確になります。詳細に対し、100〜400文字程度の指示内容を記載する事でこの評価項目に対する点数は上がります。"],
+            [advice_message_comment,           adv_issues_little_comment,        "コメントを残す事で、どのような経過を経て、課題が終了したか追跡する事ができるようになります。1回あたりのコメントに対し、100〜400文字程度の指示内容を記載する事でこの評価項目に対する点数は上がります。"],
+            [advice_message_closed_no_comment, adv_closed_issues_no_comment,     "コメントを残す事で、どのような経過を経て、課題が終了したか追跡する事ができるようになります。 終了した課題に対して、コメントを一回以上記入する事で、この評価項目に対する点数は上がります。"],
+            [advice_message_no_duedate,        adv_readied_issue_no_duedate,     "課題開始時には、課題に対する期限日を設定する事で 今後のスケジュールを立てる事ができます。開始日が入った課題に対して、期限日を記入する事で、この評価項目に対する点数は上がります。"],
+            [advice_message_no_estimated,      adv_readied_issues_no_estimated,  "課題開始時には、作業時間を予め見積もりが行われている事で、作業計画を立てる事ができます。開始日が入力された課題に対して、予定時間を記入する事で、この評価項目に対する点数は上がります。"],
             [advice_message_expired_closed_issues,    adv_expired_closed_issues, "実際の進捗に合わせて、期限日を更新する事で作業の進捗が明確になります。期限日を過ぎた課題を終了する事で、この評価項目に対する点数は上がります。"],
             [advice_message_no_actualHours,    adv_closed_issues_no_actualHours, "実績時間を記入し、次回の作業見積もり時に参考にする事で、見積もりの精度が良くなります。終了した課題に対して、実績時間を記入する事で、この評価項目に対する点数は上がります。"],
-            [advice_message_no_assigner,       adv_readied_issues_no_assigner, "課題の担当者が設定されている事で、各プロジェクトメンバーが担当する作業が明確になります。開始日が入った課題に対して、担当者を設定する事で、この評価項目に対する点数は上がります。"],
-            [advice_message_no_resolution,     adv_closed_issues_no_resolution, "完了理由を入力する事で、実際に課題に対して対応を行ったかどうかが明確になります。終了している課題に対して、完了理由を入力する事で、この評価項目に対する点数は上がります。"],
+            [advice_message_no_assigner,       adv_readied_issues_no_assigner,   "課題の担当者が設定されている事で、各プロジェクトメンバーが担当する作業が明確になります。開始日が入った課題に対して、担当者を設定する事で、この評価項目に対する点数は上がります。"],
+            [advice_message_no_resolution,     adv_closed_issues_no_resolution,  "完了理由を入力する事で、実際に課題に対して対応を行ったかどうかが明確になります。終了している課題に対して、完了理由を入力する事で、この評価項目に対する点数は上がります。"],
             [advice_message_no_milestones,     adv_readied_issues_no_milestones, "マイルストーンを活用する事で、課題がプロジェクト上のどのようなステップに属するか整理されます。課題に対して、マイルストーンを設定する事で、この評価項目に対する点数は上がります。"]
         ]
 
@@ -314,16 +327,16 @@ def compute_grade(request, project_id):
             result_advices[i] = utils.set_Dict(advice_key,advice_rows[i])
 
         grade_rows = [
-            utils.get_row("課題の詳細を詳しく書く",       detailed_issue_count,                 all_issue_count,     point_detailed_issue,                     result_advices[1]),
-            utils.get_row("コメントを詳しく書く",         detailed_comment_count,               all_comment_count,   point_detailed_comment,                   result_advices[2]),
-            utils.get_row("完了した課題にコメントを残す", closed_issue_with_comment_count,      closed_issue_count,  point_closed_issue_with_comment,          result_advices[3]),
-            utils.get_row("期限日を設定する",             readied_issue_with_ddate_count,       readied_issue_count, point_readied_issue_with_date,            result_advices[4]),
-            utils.get_row("予定時間を見積もる",           readied_issue_with_etime_count,       readied_issue_count, point_readies_issue_with_estimated_hours, result_advices[5]),
-            utils.get_row("期限までに完了させる",         expired_closed_issue_count,           expired_issue_count, point_expired_and_closed_issue,           result_advices[6]),
-            utils.get_row("実績時間を記録する",           closed_issue_with_atime_count,        closed_issue_count,  point_closed_issue_with_actual_hours,     result_advices[7]),
-            utils.get_row("担当者を設定する",             readied_issue_with_assigner_count,    readied_issue_count, point_readies_issue_with_assigner,        result_advices[8]),
-            utils.get_row("完了理由を入れる",             closed_issue_with_resolution_count,   closed_issue_count,  point_closed_issue_with_resolution,       result_advices[9]),
-            utils.get_row("マイルストーンを活用する",     readied_issue_with_milestones_count,  readied_issue_count, point_readied_issue_with_milestones,      result_advices[10])
+            utils.get_row("課題の詳細を詳しく書く",       detailed_issue_count,                 all_issue_count,     percent_detailed_issue,                     result_advices[1]),
+            utils.get_row("コメントを詳しく書く",         detailed_comment_count,               all_comment_count,   percent_detailed_comment,                   result_advices[2]),
+            utils.get_row("完了した課題にコメントを残す", closed_issue_with_comment_count,      closed_issue_count,  percent_closed_issue_with_comment,          result_advices[3]),
+            utils.get_row("期限日を設定する",             readied_issue_with_ddate_count,       readied_issue_count, percent_readied_issue_with_date,            result_advices[4]),
+            utils.get_row("予定時間を見積もる",           readied_issue_with_etime_count,       readied_issue_count, percent_readies_issue_with_estimated_hours, result_advices[5]),
+            utils.get_row("期限までに完了させる",         expired_closed_issue_count,           expired_issue_count, percent_expired_and_closed_issue,           result_advices[6]),
+            utils.get_row("実績時間を記録する",           closed_issue_with_atime_count,        closed_issue_count,  percent_closed_issue_with_actual_hours,     result_advices[7]),
+            utils.get_row("担当者を設定する",             readied_issue_with_assigner_count,    readied_issue_count, percent_readies_issue_with_assigner,        result_advices[8]),
+            utils.get_row("完了理由を入れる",             closed_issue_with_resolution_count,   closed_issue_count,  percent_closed_issue_with_resolution,       result_advices[9]),
+            utils.get_row("マイルストーンを活用する",     readied_issue_with_milestones_count,  readied_issue_count, percent_readied_issue_with_milestones,      result_advices[10])
         ]
 
         result_detail = [""] * len(grade_rows)
