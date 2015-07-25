@@ -17,8 +17,8 @@ def index(request):
 def auth(request):
     space = request.POST['space']
     if not space or not re.match(r'^\w+$', space):
-        utils.debug('Error!!!')
         return render(request, 'home/index.html', {})
+
     backlog = utils.backlog(request, space)
     auth_url, state = backlog.auth_url()
     request.session['space'] = space
