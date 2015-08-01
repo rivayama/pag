@@ -1,5 +1,7 @@
+from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse, HttpResponse
-from django.views.decorators.http import require_GET
+from django.views.decorators.http import require_GET, require_POST
+from django.core.mail import send_mail
 from datetime import datetime
 import collections
 
@@ -382,3 +384,20 @@ def compute_grade(request, project_id):
         result_grade = []
 
     return result_grade
+
+
+@require_POST
+@csrf_exempt
+def request(request):
+    if not request.POST['request']:
+        return JsonResponse({'error': 1}, safe=False)
+
+    subject   = '【PAG】お問い合わせ・リクエストが届いています'
+    message   = request.POST['request']
+    mail_from = 'no-reply@projectautograder.herokuapp.com'
+    to_list   = ['a1412tk@aiit.ac.jp', 'a1428mn@aiit.ac.jp']
+
+    send_mail(subject, message, mail_from, to_list, fail_silently=False)
+    return JsonResponse({'result': 1}, safe=False)
+
+

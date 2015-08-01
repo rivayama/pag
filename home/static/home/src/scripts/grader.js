@@ -3,15 +3,16 @@
 
 var project_id = 0;
 
-var Alert      = require('react-bootstrap').Alert;
-var UserMenu   = require('./components/user_menu.js');
-var MenuButton = require('./components/menu_button.js');
-var Loading    = require('./components/loading.js');
+var Alert       = require('react-bootstrap').Alert;
+var RequestForm = require('./components/request_form.js');
+var UserMenu    = require('./components/user_menu.js');
+var MenuButton  = require('./components/menu_button.js');
+var Loading     = require('./components/loading.js');
 
-var GradeChart = require('./components/grade_chart.js');
-var GradeTotal = require('./components/grade_total.js');
-var GradeUsers = require('./components/grade_users.js');
-var GradeItem  = require('./components/grade_item.js');
+var GradeChart  = require('./components/grade_chart.js');
+var GradeTotal  = require('./components/grade_total.js');
+var GradeUsers  = require('./components/grade_users.js');
+var GradeItem   = require('./components/grade_item.js');
 
 
 var Grader = React.createClass({
@@ -114,9 +115,15 @@ var Grader = React.createClass({
             </div>
             <div id="navbar" className="navbar-collapse collapse">
               <UserMenu />
+              <ul className="nav navbar-nav navbar-right">
+                <li>
+                  <a href="#" data-toggle="modal" data-target="#requestForm">ご意見・リクエスト</a>
+                </li>
+              </ul>
             </div>
           </div>
         </nav>
+        <RequestForm />
         <div className="container-fluid">
           <div className="row">
             <div className="col-sm-3 col-md-2 sidebar">
