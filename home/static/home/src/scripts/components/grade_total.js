@@ -1,12 +1,12 @@
 var Table     = require('react-bootstrap').Table;
 var Glyphicon = require('react-bootstrap').Glyphicon;
-var Grid       = require('react-bootstrap').Grid;
+var Grid      = require('react-bootstrap').Grid;
 var Row       = require('react-bootstrap').Row;
 var Col       = require('react-bootstrap').Col;
 var Button    = require('react-bootstrap').Button;
-var Popover    = require('react-bootstrap').Popover;
-var OverlayTrigger    = require('react-bootstrap').OverlayTrigger;
-var Loading    = require('./loading.js');
+var Popover   = require('react-bootstrap').Popover;
+var OverlayTrigger = require('react-bootstrap').OverlayTrigger;
+var Loading   = require('./loading.js');
 
 var GradeTotal = React.createClass({
 
@@ -17,28 +17,28 @@ var GradeTotal = React.createClass({
                     color:"#F7464A",
                     fillColor:"#F7464A",
                     highlight: "#FF5A5E",
-                    label: "未対応"
+                    label: "未対応 ("+ this.props.data.issue_no_compatible +"件)"
           },
           {
                     value: this.props.data.issue_in_progress,
                     color: "#FDB45C",
                     fillColor:"#FDB45C",
                     highlight: "#FFC870",
-                    label: "処理中"
+                    label: "処理中 ("+ this.props.data.issue_in_progress +"件)"
           },
           {
                     value: this.props.data.issue_prosessed,
                     color: "#46BFBD",
                     fillColor:"#46BFBD",
                     highlight: "#5AD3D1",
-                    label: "処理済み"
+                    label: "処理済み ("+ this.props.data.issue_prosessed +"件)"
           },
           {
                     value: this.props.data.issue_complete,
                     color: "#949FB1",
                     fillColor:"#949FB1",
                     highlight: "#A8B3C5",
-                    label: "完了"
+                    label: "完了 ("+ this.props.data.issue_complete +"件)"
           },
    ];
    return chartData;
@@ -81,10 +81,10 @@ var GradeTotal = React.createClass({
   render: function() {
     var total = this.props.data;
     var starStyle = {
-      color: '#FFCC00',
+      color: '#FFCA28',
     };
     var starEmptyStyle = {
-      color: '#9da0a4',
+      color: '#BDBDBD',
     };
     var border = {
       color: '#00ff00',
@@ -189,10 +189,10 @@ var GradeTotal = React.createClass({
           </Col>
         </Row>
 
-        <Table bordered condensed >
+        <Table bordered condensed>
         <tbody>
         <tr>
-          <td className="col-xs-12 col-sm-6 col-md-6 col-md-6">
+          <td className="col-xs-6 col-sm-6 col-md-6 col-md-6">
             プロジェクトの評価　
               <OverlayTrigger trigger='click' placement='right' overlay={<Popover >
                 複数の評価基準を用いてプロジェクト活動の評価を行った評価結果を表示しています。<br/>取得した点数に応じて、以下の評価結果を表示しています。<br/>
@@ -203,7 +203,7 @@ var GradeTotal = React.createClass({
             <br/>
             {total_point}
           </td>
-          <td className="col-xs-12 col-sm-6 col-md-6 col-md-6">
+          <td className="col-xs-6 col-sm-6 col-md-6 col-md-6">
             <div className="col-xs-6 col-sm-6 col-md-6 col-md-6">
             課題の状態
               <canvas id="ticketchart"></canvas>

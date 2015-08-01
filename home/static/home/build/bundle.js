@@ -752,13 +752,13 @@
 
 	var Table     = __webpack_require__(12).Table;
 	var Glyphicon = __webpack_require__(12).Glyphicon;
-	var Grid       = __webpack_require__(12).Grid;
+	var Grid      = __webpack_require__(12).Grid;
 	var Row       = __webpack_require__(12).Row;
 	var Col       = __webpack_require__(12).Col;
 	var Button    = __webpack_require__(12).Button;
-	var Popover    = __webpack_require__(12).Popover;
-	var OverlayTrigger    = __webpack_require__(12).OverlayTrigger;
-	var Loading    = __webpack_require__(7);
+	var Popover   = __webpack_require__(12).Popover;
+	var OverlayTrigger = __webpack_require__(12).OverlayTrigger;
+	var Loading   = __webpack_require__(7);
 
 	var GradeTotal = React.createClass({displayName: "GradeTotal",
 
@@ -769,28 +769,28 @@
 	                    color:"#F7464A",
 	                    fillColor:"#F7464A",
 	                    highlight: "#FF5A5E",
-	                    label: "未対応"
+	                    label: "未対応 ("+ this.props.data.issue_no_compatible +"件)"
 	          },
 	          {
 	                    value: this.props.data.issue_in_progress,
 	                    color: "#FDB45C",
 	                    fillColor:"#FDB45C",
 	                    highlight: "#FFC870",
-	                    label: "処理中"
+	                    label: "処理中 ("+ this.props.data.issue_in_progress +"件)"
 	          },
 	          {
 	                    value: this.props.data.issue_prosessed,
 	                    color: "#46BFBD",
 	                    fillColor:"#46BFBD",
 	                    highlight: "#5AD3D1",
-	                    label: "処理済み"
+	                    label: "処理済み ("+ this.props.data.issue_prosessed +"件)"
 	          },
 	          {
 	                    value: this.props.data.issue_complete,
 	                    color: "#949FB1",
 	                    fillColor:"#949FB1",
 	                    highlight: "#A8B3C5",
-	                    label: "完了"
+	                    label: "完了 ("+ this.props.data.issue_complete +"件)"
 	          },
 	   ];
 	   return chartData;
@@ -833,10 +833,10 @@
 	  render: function() {
 	    var total = this.props.data;
 	    var starStyle = {
-	      color: '#FFCC00',
+	      color: '#FFCA28',
 	    };
 	    var starEmptyStyle = {
-	      color: '#9da0a4',
+	      color: '#BDBDBD',
 	    };
 	    var border = {
 	      color: '#00ff00',
@@ -944,7 +944,7 @@
 	        React.createElement(Table, {bordered: true, condensed: true}, 
 	        React.createElement("tbody", null, 
 	        React.createElement("tr", null, 
-	          React.createElement("td", {className: "col-xs-12 col-sm-6 col-md-6 col-md-6"}, 
+	          React.createElement("td", {className: "col-xs-6 col-sm-6 col-md-6 col-md-6"}, 
 	            "プロジェクトの評価　", 
 	              React.createElement(OverlayTrigger, {trigger: "click", placement: "right", overlay: React.createElement(Popover, null, 
 	                "複数の評価基準を用いてプロジェクト活動の評価を行った評価結果を表示しています。", React.createElement("br", null), "取得した点数に応じて、以下の評価結果を表示しています。", React.createElement("br", null), 
@@ -955,7 +955,7 @@
 	            React.createElement("br", null), 
 	            total_point
 	          ), 
-	          React.createElement("td", {className: "col-xs-12 col-sm-6 col-md-6 col-md-6"}, 
+	          React.createElement("td", {className: "col-xs-6 col-sm-6 col-md-6 col-md-6"}, 
 	            React.createElement("div", {className: "col-xs-6 col-sm-6 col-md-6 col-md-6"}, 
 	            "課題の状態", 
 	              React.createElement("canvas", {id: "ticketchart"})
