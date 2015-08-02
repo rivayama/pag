@@ -5,6 +5,7 @@
 .installed.cfg
 __minitage__*
 bin/*
+/src
 develop-eggs
 downloads
 eggs

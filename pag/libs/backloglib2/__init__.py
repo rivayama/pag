@@ -2,7 +2,6 @@
 # -*- coding:utf-8 -*-
 
 import os
-from django.http import JsonResponse
 from requests_oauthlib import OAuth2Session
 
 client_id     = os.environ.get('BACKLOG_CLIENT_ID')
@@ -27,6 +26,10 @@ class Backlog():
         return self.client.authorization_url(base_url)
 
 
+    def get_host(self):
+        return self.host
+
+
     def fetch_token(self, auth_response_uri):
         return self.client.fetch_token(
             '%s/api/v2/oauth2/token' % (self.host),
@@ -49,8 +52,6 @@ class Backlog():
         api = '%s/api/v2/users/myself' % (self.host)
         return self.client.get(api)
 
-    def get_host(self):
-        return self.host
 
     def get_users(self, project_id):
         api = '%s/api/v2/projects/%s/users' % (self.host, project_id)
@@ -67,12 +68,28 @@ class Backlog():
         return self.client.get(api, params=params)
 
 
+    def get_comments(self, issue_id):
+        api = '%s/api/v2/issues/%d/comments' % (self.host, issue_id)
+        return self.client.get(api)
+
+
     def get_count_issues(self, project_id):
         api = '%s/api/v2/issues/count?projectId[]=%s' % (self.host, project_id)
         return self.client.get(api)
 
 
-    def get_comment(self, issue_id):
-        api = '%s/api/v2/issues/%d/comments' % (self.host, issue_id)
+    def get_count_issues_assigned(self, project_id, assigneeId):
+        api = '%s/api/v2/issues/count?projectId[]=%s&assigneeId[]=%s' % (self.host, project_id, assigneeId)
         return self.client.get(api)
+
+
+    def get_count_issues_assigned_status(self, project_id, assigneeId, statusId):
+        api = '%s/api/v2/issues/count?projectId[]=%s&assigneeId[]=%s&statusId[]=%s' % (self.host, project_id, assigneeId, statusId)
+        return self.client.get(api)
+
+
+    def get_count_issues_status(self, project_id, statusId):
+        api = '%s/api/v2/issues/count?projectId[]=%s&statusId[]=%s' % (self.host, project_id, statusId)
+        return self.client.get(api)
+
 

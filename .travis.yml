@@ -9,10 +9,9 @@ env:
     BACKLOG_CLIENT_ID="Dummy client_id"
     BACKLOG_CLIENT_SECRET="Dummy client_secret"
 install:
-  - pip install -r requirements.txt
+  - pip install --upgrade pip
 script:
   - touch .env
-  - python manage.py test
 deploy:
   provider: heroku
   api_key:

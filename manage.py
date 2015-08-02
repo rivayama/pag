@@ -2,7 +2,9 @@
 import os
 import sys
 import dotenv
-dotenv.read_dotenv()
+
+if os.path.exists('.env'):
+    dotenv.read_dotenv()
 
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pag.settings")

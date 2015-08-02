@@ -41,6 +41,14 @@ def get_point(numer, denom, max_point):
     return point
 
 
+def get_percent(numer, denom):
+    try:
+        percent = (numer / denom) * 100
+    except ZeroDivisionError:
+        percent = 0
+    return percent
+
+
 def get_row(title, numer, denom, point, advice):
     return [title, int(numer), int(denom), int(point), advice]
 

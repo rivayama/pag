@@ -108,3 +108,21 @@ body#grader .placeholder img {
   border-radius: 50%;
 }
 
+body#grader .summarygrade  {
+  font-size: 300%;
+}
+body#grader .summarygradestar  {
+  font-size: x-large;
+}
+body#grader .summarymessage p  {
+  text-justify:auto;
+  text-align:justify;
+  margin: 0;
+  padding: 0;
+}
+
+body#grader .legend {
+    list-style-type: none;
+    padding: 0px;
+}
+
