@@ -2,6 +2,7 @@
 'use strict';
 
 var ButtonInput = require('react-bootstrap').ButtonInput;
+var Rules = require('./components/rules.js');
 
 var Randing = React.createClass({
   render: function() {
@@ -11,6 +12,11 @@ var Randing = React.createClass({
           <div className="masthead clearfix">
             <div className="inner">
               <h3 className="masthead-brand">PAG</h3>
+              <nav>
+                <ul className="nav masthead-nav">
+                  <li><a href="#" data-toggle="modal" data-target="#rules">利用規約</a></li>
+                </ul>
+              </nav>
             </div>
           </div>
           <div className="inner cover">
@@ -35,7 +41,8 @@ var Randing = React.createClass({
             </div>
           </div>
         </div>
-       </div>
+        <Rules />
+      </div>
     );
   }
 });

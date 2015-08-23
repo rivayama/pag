@@ -24,6 +24,24 @@ body#randing .input-group-addon {
   text-shadow: none; /* Prevent inheritence from `body` */
 }
 
+.modal {
+  color: #333;
+  text-shadow: none;
+  text-align: left;
+}
+.modal-body h4 {
+  margin-top: 15px;
+}
+.modal-body a,
+.modal-body a:focus,
+.modal-body a:hover {
+  color: #23527c !important;
+}
+.modal-body a:focus,
+.modal-body a:hover {
+  text-decoration: underline !important;
+}
+
 
 /*
  * Base structure
@@ -83,8 +101,7 @@ body#randing .masthead-nav > li + li {
 body#randing .masthead-nav > li > a {
   padding-right: 0;
   padding-left: 0;
-  font-size: 16px;
-  font-weight: bold;
+  font-size: 13px;
   color: #fff; /* IE8 proofing */
   color: rgba(255,255,255,.75);
   border-bottom: 2px solid transparent;

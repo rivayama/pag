@@ -326,6 +326,7 @@
 	'use strict';
 
 	var ButtonInput = __webpack_require__(12).ButtonInput;
+	var Rules = __webpack_require__(82);
 
 	var Randing = React.createClass({displayName: "Randing",
 	  render: function() {
@@ -334,7 +335,12 @@
 	        React.createElement("div", {className: "cover-container"}, 
 	          React.createElement("div", {className: "masthead clearfix"}, 
 	            React.createElement("div", {className: "inner"}, 
-	              React.createElement("h3", {className: "masthead-brand"}, "PAG")
+	              React.createElement("h3", {className: "masthead-brand"}, "PAG"), 
+	              React.createElement("nav", null, 
+	                React.createElement("ul", {className: "nav masthead-nav"}, 
+	                  React.createElement("li", null, React.createElement("a", {href: "#", "data-toggle": "modal", "data-target": "#rules"}, "利用規約"))
+	                )
+	              )
 	            )
 	          ), 
 	          React.createElement("div", {className: "inner cover"}, 
@@ -358,8 +364,9 @@
 	              React.createElement("p", null, "2015 Koyama PBL / AIIT")
 	            )
 	          )
-	        )
-	       )
+	        ), 
+	        React.createElement(Rules, null)
+	      )
 	    );
 	  }
 	});
@@ -2058,15 +2065,15 @@
 
 	var _Button2 = _interopRequireDefault(_Button);
 
-	var _FormGroup = __webpack_require__(71);
+	var _FormGroup = __webpack_require__(70);
 
 	var _FormGroup2 = _interopRequireDefault(_FormGroup);
 
-	var _InputBase2 = __webpack_require__(72);
+	var _InputBase2 = __webpack_require__(71);
 
 	var _InputBase3 = _interopRequireDefault(_InputBase2);
 
-	var _utilsChildrenValueInputValidation = __webpack_require__(73);
+	var _utilsChildrenValueInputValidation = __webpack_require__(72);
 
 	var _utilsChildrenValueInputValidation2 = _interopRequireDefault(_utilsChildrenValueInputValidation);
 
@@ -2223,7 +2230,7 @@
 
 	var _utilsValidComponentChildren2 = _interopRequireDefault(_utilsValidComponentChildren);
 
-	var _utilsCreateChainedFunction = __webpack_require__(70);
+	var _utilsCreateChainedFunction = __webpack_require__(73);
 
 	var _utilsCreateChainedFunction2 = _interopRequireDefault(_utilsCreateChainedFunction);
 
@@ -3040,7 +3047,7 @@
 
 	var _classnames2 = _interopRequireDefault(_classnames);
 
-	var _utilsCreateChainedFunction = __webpack_require__(70);
+	var _utilsCreateChainedFunction = __webpack_require__(73);
 
 	var _utilsCreateChainedFunction2 = _interopRequireDefault(_utilsCreateChainedFunction);
 
@@ -3198,7 +3205,7 @@
 
 	var _classnames2 = _interopRequireDefault(_classnames);
 
-	var _utilsCreateChainedFunction = __webpack_require__(70);
+	var _utilsCreateChainedFunction = __webpack_require__(73);
 
 	var _utilsCreateChainedFunction2 = _interopRequireDefault(_utilsCreateChainedFunction);
 
@@ -3575,7 +3582,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _InputBase2 = __webpack_require__(72);
+	var _InputBase2 = __webpack_require__(71);
 
 	var _InputBase3 = _interopRequireDefault(_InputBase2);
 
@@ -3587,7 +3594,7 @@
 
 	var _FormControls2 = _interopRequireDefault(_FormControls);
 
-	var _utilsDeprecationWarning = __webpack_require__(76);
+	var _utilsDeprecationWarning = __webpack_require__(75);
 
 	var _utilsDeprecationWarning2 = _interopRequireDefault(_utilsDeprecationWarning);
 
@@ -3646,7 +3653,7 @@
 
 	var _utilsValidComponentChildren2 = _interopRequireDefault(_utilsValidComponentChildren);
 
-	var _utilsObjectAssign = __webpack_require__(75);
+	var _utilsObjectAssign = __webpack_require__(76);
 
 	var _utilsObjectAssign2 = _interopRequireDefault(_utilsObjectAssign);
 
@@ -4178,7 +4185,7 @@
 
 	var _utilsValidComponentChildren2 = _interopRequireDefault(_utilsValidComponentChildren);
 
-	var _utilsCreateChainedFunction = __webpack_require__(70);
+	var _utilsCreateChainedFunction = __webpack_require__(73);
 
 	var _utilsCreateChainedFunction2 = _interopRequireDefault(_utilsCreateChainedFunction);
 
@@ -4313,7 +4320,7 @@
 
 	var _utilsValidComponentChildren2 = _interopRequireDefault(_utilsValidComponentChildren);
 
-	var _utilsCreateChainedFunction = __webpack_require__(70);
+	var _utilsCreateChainedFunction = __webpack_require__(73);
 
 	var _utilsCreateChainedFunction2 = _interopRequireDefault(_utilsCreateChainedFunction);
 
@@ -4579,11 +4586,11 @@
 
 	var _OverlayMixin2 = _interopRequireDefault(_OverlayMixin);
 
-	var _utilsCreateChainedFunction = __webpack_require__(70);
+	var _utilsCreateChainedFunction = __webpack_require__(73);
 
 	var _utilsCreateChainedFunction2 = _interopRequireDefault(_utilsCreateChainedFunction);
 
-	var _utilsCreateContextWrapper = __webpack_require__(77);
+	var _utilsCreateContextWrapper = __webpack_require__(78);
 
 	var _utilsCreateContextWrapper2 = _interopRequireDefault(_utilsCreateContextWrapper);
 
@@ -4683,15 +4690,15 @@
 
 	var _OverlayMixin2 = _interopRequireDefault(_OverlayMixin);
 
-	var _RootCloseWrapper = __webpack_require__(78);
+	var _RootCloseWrapper = __webpack_require__(77);
 
 	var _RootCloseWrapper2 = _interopRequireDefault(_RootCloseWrapper);
 
-	var _utilsCreateChainedFunction = __webpack_require__(70);
+	var _utilsCreateChainedFunction = __webpack_require__(73);
 
 	var _utilsCreateChainedFunction2 = _interopRequireDefault(_utilsCreateChainedFunction);
 
-	var _utilsCreateContextWrapper = __webpack_require__(77);
+	var _utilsCreateContextWrapper = __webpack_require__(78);
 
 	var _utilsCreateContextWrapper2 = _interopRequireDefault(_utilsCreateContextWrapper);
 
@@ -4699,7 +4706,7 @@
 
 	var _utilsDomUtils2 = _interopRequireDefault(_utilsDomUtils);
 
-	var _utilsObjectAssign = __webpack_require__(75);
+	var _utilsObjectAssign = __webpack_require__(76);
 
 	var _utilsObjectAssign2 = _interopRequireDefault(_utilsObjectAssign);
 
@@ -5596,7 +5603,7 @@
 
 	var _utilsValidComponentChildren2 = _interopRequireDefault(_utilsValidComponentChildren);
 
-	var _utilsCreateChainedFunction = __webpack_require__(70);
+	var _utilsCreateChainedFunction = __webpack_require__(73);
 
 	var _utilsCreateChainedFunction2 = _interopRequireDefault(_utilsCreateChainedFunction);
 
@@ -6110,7 +6117,7 @@
 
 	var _utilsValidComponentChildren2 = _interopRequireDefault(_utilsValidComponentChildren);
 
-	var _utilsCreateChainedFunction = __webpack_require__(70);
+	var _utilsCreateChainedFunction = __webpack_require__(73);
 
 	var _utilsCreateChainedFunction2 = _interopRequireDefault(_utilsCreateChainedFunction);
 
@@ -7309,48 +7316,6 @@
 /* 70 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/**
-	 * Safe chained function
-	 *
-	 * Will only create a new function if needed,
-	 * otherwise will pass back existing functions or null.
-	 *
-	 * @param {function} one
-	 * @param {function} two
-	 * @returns {function|null}
-	 */
-	'use strict';
-
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	function createChainedFunction(one, two) {
-	  var hasOne = typeof one === 'function';
-	  var hasTwo = typeof two === 'function';
-
-	  if (!hasOne && !hasTwo) {
-	    return null;
-	  }
-	  if (!hasOne) {
-	    return two;
-	  }
-	  if (!hasTwo) {
-	    return one;
-	  }
-
-	  return function chainedFunction() {
-	    one.apply(this, arguments);
-	    two.apply(this, arguments);
-	  };
-	}
-
-	exports['default'] = createChainedFunction;
-	module.exports = exports['default'];
-
-/***/ },
-/* 71 */
-/***/ function(module, exports, __webpack_require__) {
-
 	'use strict';
 
 	Object.defineProperty(exports, '__esModule', {
@@ -7430,7 +7395,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 72 */
+/* 71 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7457,7 +7422,7 @@
 
 	var _classnames2 = _interopRequireDefault(_classnames);
 
-	var _FormGroup = __webpack_require__(71);
+	var _FormGroup = __webpack_require__(70);
 
 	var _FormGroup2 = _interopRequireDefault(_FormGroup);
 
@@ -7702,7 +7667,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 73 */
+/* 72 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7732,6 +7697,48 @@
 	  return error;
 	}
 
+	module.exports = exports['default'];
+
+/***/ },
+/* 73 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Safe chained function
+	 *
+	 * Will only create a new function if needed,
+	 * otherwise will pass back existing functions or null.
+	 *
+	 * @param {function} one
+	 * @param {function} two
+	 * @returns {function|null}
+	 */
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	function createChainedFunction(one, two) {
+	  var hasOne = typeof one === 'function';
+	  var hasTwo = typeof two === 'function';
+
+	  if (!hasOne && !hasTwo) {
+	    return null;
+	  }
+	  if (!hasOne) {
+	    return two;
+	  }
+	  if (!hasTwo) {
+	    return one;
+	  }
+
+	  return function chainedFunction() {
+	    one.apply(this, arguments);
+	    two.apply(this, arguments);
+	  };
+	}
+
+	exports['default'] = createChainedFunction;
 	module.exports = exports['default'];
 
 /***/ },
@@ -7858,6 +7865,35 @@
 /* 75 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	exports['default'] = deprecationWarning;
+
+	function deprecationWarning(oldname, newname, link) {
+	  if (process.env.NODE_ENV !== 'production') {
+	    if (typeof console === 'undefined' || typeof console.warn !== 'function') {
+	      return;
+	    }
+
+	    var message = '' + oldname + ' is deprecated. Use ' + newname + ' instead.';
+	    console.warn(message);
+
+	    if (link) {
+	      console.warn('You can read more about it here ' + link);
+	    }
+	  }
+	}
+
+	module.exports = exports['default'];
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(81)))
+
+/***/ },
+/* 76 */
+/***/ function(module, exports, __webpack_require__) {
+
 	/**
 	 * Copyright 2014, Facebook, Inc.
 	 * All rights reserved.
@@ -7913,145 +7949,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 76 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
-
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	exports['default'] = deprecationWarning;
-
-	function deprecationWarning(oldname, newname, link) {
-	  if (process.env.NODE_ENV !== 'production') {
-	    if (typeof console === 'undefined' || typeof console.warn !== 'function') {
-	      return;
-	    }
-
-	    var message = '' + oldname + ' is deprecated. Use ' + newname + ' instead.';
-	    console.warn(message);
-
-	    if (link) {
-	      console.warn('You can read more about it here ' + link);
-	    }
-	  }
-	}
-
-	module.exports = exports['default'];
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(81)))
-
-/***/ },
 /* 77 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-	exports['default'] = createContextWrapper;
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
-
-	var _react = __webpack_require__(41);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	/**
-	 * Creates new trigger class that injects context into overlay.
-	 */
-
-	function createContextWrapper(Trigger, propName) {
-	  return function (contextTypes) {
-	    var ContextWrapper = (function (_React$Component) {
-	      function ContextWrapper() {
-	        _classCallCheck(this, ContextWrapper);
-
-	        if (_React$Component != null) {
-	          _React$Component.apply(this, arguments);
-	        }
-	      }
-
-	      _inherits(ContextWrapper, _React$Component);
-
-	      _createClass(ContextWrapper, [{
-	        key: 'getChildContext',
-	        value: function getChildContext() {
-	          return this.props.context;
-	        }
-	      }, {
-	        key: 'render',
-	        value: function render() {
-	          // Strip injected props from below.
-	          var _props = this.props;
-	          var wrapped = _props.wrapped;
-
-	          var props = _objectWithoutProperties(_props, ['wrapped']);
-
-	          // eslint-disable-line object-shorthand
-	          delete props.context;
-
-	          return _react2['default'].cloneElement(wrapped, props);
-	        }
-	      }]);
-
-	      return ContextWrapper;
-	    })(_react2['default'].Component);
-
-	    ContextWrapper.childContextTypes = contextTypes;
-
-	    var TriggerWithContext = (function () {
-	      function TriggerWithContext() {
-	        _classCallCheck(this, TriggerWithContext);
-	      }
-
-	      _createClass(TriggerWithContext, [{
-	        key: 'render',
-	        value: function render() {
-	          var props = _extends({}, this.props);
-	          props[propName] = this.getWrappedOverlay();
-
-	          return _react2['default'].createElement(
-	            Trigger,
-	            props,
-	            this.props.children
-	          );
-	        }
-	      }, {
-	        key: 'getWrappedOverlay',
-	        value: function getWrappedOverlay() {
-	          return _react2['default'].createElement(ContextWrapper, {
-	            context: this.context,
-	            wrapped: this.props[propName]
-	          });
-	        }
-	      }]);
-
-	      return TriggerWithContext;
-	    })();
-
-	    TriggerWithContext.contextTypes = contextTypes;
-
-	    return TriggerWithContext;
-	  };
-	}
-
-	module.exports = exports['default'];
-
-/***/ },
-/* 78 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8179,6 +8077,115 @@
 	module.exports = exports['default'];
 
 /***/ },
+/* 78 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	exports['default'] = createContextWrapper;
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+	var _react = __webpack_require__(41);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	/**
+	 * Creates new trigger class that injects context into overlay.
+	 */
+
+	function createContextWrapper(Trigger, propName) {
+	  return function (contextTypes) {
+	    var ContextWrapper = (function (_React$Component) {
+	      function ContextWrapper() {
+	        _classCallCheck(this, ContextWrapper);
+
+	        if (_React$Component != null) {
+	          _React$Component.apply(this, arguments);
+	        }
+	      }
+
+	      _inherits(ContextWrapper, _React$Component);
+
+	      _createClass(ContextWrapper, [{
+	        key: 'getChildContext',
+	        value: function getChildContext() {
+	          return this.props.context;
+	        }
+	      }, {
+	        key: 'render',
+	        value: function render() {
+	          // Strip injected props from below.
+	          var _props = this.props;
+	          var wrapped = _props.wrapped;
+
+	          var props = _objectWithoutProperties(_props, ['wrapped']);
+
+	          // eslint-disable-line object-shorthand
+	          delete props.context;
+
+	          return _react2['default'].cloneElement(wrapped, props);
+	        }
+	      }]);
+
+	      return ContextWrapper;
+	    })(_react2['default'].Component);
+
+	    ContextWrapper.childContextTypes = contextTypes;
+
+	    var TriggerWithContext = (function () {
+	      function TriggerWithContext() {
+	        _classCallCheck(this, TriggerWithContext);
+	      }
+
+	      _createClass(TriggerWithContext, [{
+	        key: 'render',
+	        value: function render() {
+	          var props = _extends({}, this.props);
+	          props[propName] = this.getWrappedOverlay();
+
+	          return _react2['default'].createElement(
+	            Trigger,
+	            props,
+	            this.props.children
+	          );
+	        }
+	      }, {
+	        key: 'getWrappedOverlay',
+	        value: function getWrappedOverlay() {
+	          return _react2['default'].createElement(ContextWrapper, {
+	            context: this.context,
+	            wrapped: this.props[propName]
+	          });
+	        }
+	      }]);
+
+	      return TriggerWithContext;
+	    })();
+
+	    TriggerWithContext.contextTypes = contextTypes;
+
+	    return TriggerWithContext;
+	  };
+	}
+
+	module.exports = exports['default'];
+
+/***/ },
 /* 79 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -8206,11 +8213,11 @@
 
 	var _classnames2 = _interopRequireDefault(_classnames);
 
-	var _InputBase2 = __webpack_require__(72);
+	var _InputBase2 = __webpack_require__(71);
 
 	var _InputBase3 = _interopRequireDefault(_InputBase2);
 
-	var _utilsChildrenValueInputValidation = __webpack_require__(73);
+	var _utilsChildrenValueInputValidation = __webpack_require__(72);
 
 	var _utilsChildrenValueInputValidation2 = _interopRequireDefault(_utilsChildrenValueInputValidation);
 
@@ -8405,6 +8412,52 @@
 	    throw new Error('process.chdir is not supported');
 	};
 	process.umask = function() { return 0; };
+
+
+/***/ },
+/* 82 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Rules = React.createClass({displayName: "Rules",
+
+	  render: function() {
+	    return (
+	      React.createElement("div", {className: "modal fade", id: "rules", tabindex: "-1", role: "dialog", "aria-labelledby": "myModalLabel"}, 
+	        React.createElement("div", {className: "modal-dialog modal-lg", role: "document"}, 
+	          React.createElement("div", {className: "modal-content"}, 
+	            React.createElement("div", {className: "modal-header"}, 
+	              React.createElement("button", {type: "button", className: "close", "data-dismiss": "modal", "aria-label": "Close"}, React.createElement("span", {"aria-hidden": "true"}, "×")), 
+	              React.createElement("h4", {className: "modal-title", id: "myModalLabel"}, "利用規約")
+	            ), 
+	            React.createElement("div", {className: "modal-body"}, 
+	              React.createElement("p", null, "Project Auto Grader（以下「本サービス」といいます。）のご利用にあたっては、以下の規約（以下「本規約」といいます。）が適用されます。本サービスには、本規約のほか本サービスのご利用にあたって適用されるご利用上の注意等を定める場合があります。ご利用上の注意等と本規約が矛盾する場合には、ご利用上の注意等が優先して適用されます。"), 
+	              React.createElement("h4", null, "本サービスの概要"), 
+	              React.createElement("p", null, "本サービスは株式会社ヌーラボ（", React.createElement("a", {href: "https://nulab-inc.com/", target: "_blank"}, "https://nulab-inc.com/"), "）が提供するサービス、Backlog（", React.createElement("a", {href: "http://www.backlog.jp/", target: "_blank"}, "http://www.backlog.jp/"), "）のAPIを利用したプロジェクト分析サービスです。本サービスは利用ユーザーの同意の元にBacklogからプロジェクト情報を取得・分析・表示を行います。利用ユーザーは、本サービスの利用に当たって、本サービス所定の手続き及びBacklogの認証手続きを承認する必要があります。"), 
+	              React.createElement("h4", null, "免責事項"), 
+	              React.createElement("ol", null, 
+	                React.createElement("li", null, "本サービスは、本サービス独自の評価基準に基づいてプロジェクトを分析するものであり、分析結果の完全性、正確性、適合性、有効性等に関し、いかなる保証及び責任を負わないものとします。"), 
+	                React.createElement("li", null, "通信回線やコンピュータなどの障害によるシステムの中断・遅滞・中止・データの消失、データへの不正アクセスにより利用ユーザーに生じた損害について、本サービスに故意又は重過失がない限り、本サービスは一切責任を負わないものとします。"), 
+	                React.createElement("li", null, "利用ユーザーが本サービスを通じて閲覧及び取得した情報に起因して、当該利用ユーザーに損害が生じた場合、本サービスに故意又は重過失がある場合を除き、本サービスはその責任を負わないものとします。")
+	              ), 
+	              React.createElement("h4", null, "個人情報の取り扱い"), 
+	              React.createElement("ol", null, 
+	                React.createElement("li", null, "本サービスは、利用ユーザーから取得した個人情報を、本サービスの提供にのみ利用するものとします。"), 
+	                React.createElement("li", null, "本サービスは、個人情報保護法を遵守し、前項の個人情報を安全に管理します。")
+	              ), 
+	              React.createElement("p", null, "以上")
+	            ), 
+	            React.createElement("div", {className: "modal-footer"}, 
+	              React.createElement("button", {type: "button", className: "btn btn-default", "data-dismiss": "modal"}, "閉じる")
+	            )
+	          )
+	        )
+	      )
+	    );
+	  },
+
+	});
+
+	module.exports = Rules;
 
 
 /***/ }
