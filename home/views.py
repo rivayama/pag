@@ -16,7 +16,7 @@ def index(request):
 @csrf_exempt
 def auth(request):
     space = request.POST['space']
-    if not space or not re.match(r'^[a-zA-Z0-9_-.]+$', space):
+    if not space or not re.match(r'^[a-zA-Z0-9._-]+$', space):
         return render(request, 'home/index.html', {})
 
     backlog = utils.backlog(request, space)
