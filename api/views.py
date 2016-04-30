@@ -100,7 +100,7 @@ def compute_grade(request, project_id):
             # Force execute if background is ON.
             b = request.GET['background']
         except KeyError:
-            limit = 100
+            limit = 50
             if all_issue_count >= limit:
                 try:
                     task = Task.objects.get(space=request.session['space'], project_id=project_id)
