@@ -23,8 +23,8 @@ def grade():
         request.GET     = {'force': 1, 'background': 1}
         try:
             compute_grade(request, task.project_id)
-        except TokenExpiredError:
-            print('Token expired.')
+        except:
+            print('Something error happened.')
         task.delete()
         print('End.')
 
