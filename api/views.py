@@ -9,6 +9,7 @@ from pag import utils
 from .models import Grade
 from home.models import Task
 
+foreground_limit = 40
 
 @require_GET
 def projects(request):
@@ -100,8 +101,7 @@ def compute_grade(request, project_id):
             # Force execute if background is ON.
             b = request.GET['background']
         except KeyError:
-            limit = 50
-            if all_issue_count >= limit:
+            if all_issue_count >= foreground_limit:
                 try:
                     task = Task.objects.get(space=request.session['space'], project_id=project_id)
                 except: # XXX want to catch "DoesNotExist" exception...
